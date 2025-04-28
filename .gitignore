@@ -3,3 +3,4 @@
 ################################################################################
 
 /Clockify Invoice Generator/.vs/Clockify Invoice Generator
+*.env
