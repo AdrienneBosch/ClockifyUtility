@@ -9,12 +9,13 @@ from docx.shared import Pt
 from docx.enum.text import WD_PARAGRAPH_ALIGNMENT
 from docx2pdf import convert
 from docx.oxml import OxmlElement
+from docx.shared import RGBColor
 from docx.oxml.ns import qn
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
 CONSTANT_LINE_ITEMS = [{"description": "GitHub Co-pilot ($10/month)", "amount": 10.00}]
-TABLE_STYLE_CANDIDATES = ["Light List Accent 1", "Medium Grid 1 Accent 1", "Table Grid"]
+TABLE_STYLE_CANDIDATES = ["Medium Shading 1 Accent 2"]
 _project_cache = {}
 
 class DocumentFormatter:
@@ -26,9 +27,10 @@ class DocumentFormatter:
         run = p.add_run(text)
         run.bold = True
         run.font.size = Pt(26)
+        run.font.color.rgb = RGBColor(0xC0, 0x50, 0x4D)
         p.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
         p.paragraph_format.space_after = Pt(6)
-        self._add_separator(p, color="666666", size=8)
+        self._add_separator(p, color="c0504d", size=8)
 
     def add_heading(self, text: str):
         p = self.doc.add_paragraph()
@@ -36,7 +38,7 @@ class DocumentFormatter:
         run.bold = True
         run.font.size = Pt(18)
         p.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
-        self._add_separator(p, color="666666", size=6)
+        self._add_separator(p, color="c0504d", size=6)
 
     def add_paragraph(self, text: str):
         p = self.doc.add_paragraph(text)
@@ -50,7 +52,7 @@ class DocumentFormatter:
         run.bold = True
         run.font.size = Pt(font_size)
         p.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
-        self._add_separator(p, color="666666", size=6)
+        self._add_separator(p, color="c0504d", size=6)
 
     def add_body(self, text: str):
         p = self.doc.add_paragraph(text)
