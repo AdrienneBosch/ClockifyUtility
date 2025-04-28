@@ -42,6 +42,16 @@ class DocumentFormatter:
         p = self.doc.add_paragraph(text)
         p.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
 
+    def add_heading_level(self, level: int, text: str):
+        size_map = {1: 20, 2: 18, 3: 16, 4: 14}
+        font_size = size_map.get(level, 14)
+        p = self.doc.add_paragraph()
+        run = p.add_run(text)
+        run.bold = True
+        run.font.size = Pt(font_size)
+        p.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
+        self._add_separator(p, color="666666", size=6)
+
     def add_body(self, text: str):
         p = self.doc.add_paragraph(text)
         p.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
@@ -227,7 +237,7 @@ def generate_invoice(summary, month_year):
 
     doc.add_paragraph()
 
-    formatter.add_heading("Contact Information")
+    formatter.add_heading_level(2, "Contact Information")
     formatter.add_body(frm)
     if email:
         formatter.add_body(f"Email: {email}")
@@ -236,19 +246,22 @@ def generate_invoice(summary, month_year):
 
     doc.add_paragraph()
 
-    formatter.add_heading("Wise Banking Details")
+    formatter.add_heading_level(2, "Banking Details")
     for key, val in bank.items():
         formatter.add_body(f"{key}: {val}")
 
     doc.add_paragraph()
 
-    formatter.add_heading("Address")
+    formatter.add_heading_level(2, "Address")
     for line in addr:
         formatter.add_body(line)
 
     doc.add_paragraph()
 
-    formatter.add_heading("Billing Details")
+    formatter.add_heading_level(2, "Billing Details")
+    
+    doc.add_paragraph()
+
     table_builder.create_billing_table(summary, rate)
 
     doc.add_paragraph()
