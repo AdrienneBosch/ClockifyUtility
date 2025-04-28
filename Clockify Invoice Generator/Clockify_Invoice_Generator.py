@@ -212,7 +212,9 @@ def generate_invoice(summary, month_year):
     month_folder = os.path.join(year_folder, now.strftime("%B"))
     ensure_directory(month_folder)
 
-    filename = f"Invoice_{month_year}.docx"
+    from_name = os.getenv("FROM_NAME", "Invoice")
+    filename = f"{from_name} Invoice ({month_year}).docx"
+
     filepath = os.path.join(month_folder, filename)
     clear_existing_file(filepath)
 
