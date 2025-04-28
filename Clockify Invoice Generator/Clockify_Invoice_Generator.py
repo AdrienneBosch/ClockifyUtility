@@ -25,8 +25,8 @@ class DocumentFormatter:
         p = self.doc.add_paragraph()
         run = p.add_run(text)
         run.bold = True
-        run.font.size = Pt(24)
-        p.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
+        run.font.size = Pt(26)
+        p.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
         p.paragraph_format.space_after = Pt(6)
         self._add_separator(p, color="666666", size=8)
 
