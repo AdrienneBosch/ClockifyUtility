@@ -109,14 +109,6 @@ def generate_invoice(summary, month_year):
 
     doc.add_paragraph()
 
-    # Address
-    p = doc.add_paragraph()
-    run = p.add_run("Address")
-    run.bold = True
-    p.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
-    for line in addr:
-        doc.add_paragraph(line)
-
     # Contact Information
     doc.add_paragraph()
     p = doc.add_paragraph()
@@ -130,7 +122,31 @@ def generate_invoice(summary, month_year):
 
     doc.add_paragraph()
 
+    # Banking Details
+    p = doc.add_paragraph()
+    run = p.add_run("Wise Banking Details")
+    run.bold = True
+    for key, val in bank.items():
+        doc.add_paragraph(f"{key}: {val}")
+
+    doc.add_paragraph()
+
+    # Address
+    p = doc.add_paragraph()
+    run = p.add_run("Address")
+    run.bold = True
+    p.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
+    for line in addr:
+        doc.add_paragraph(line)
+
+    doc.add_paragraph()
+
     # Billing Table
+    p = doc.add_paragraph()
+    run = p.add_run("Billing Details")
+    run.bold = True
+    p.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
+
     table = doc.add_table(rows=1, cols=4)
     for style in TABLE_STYLE_CANDIDATES:
         try:
@@ -167,17 +183,6 @@ def generate_invoice(summary, month_year):
     row[3].text = f"${total:.2f}"; row[3].paragraphs[0].alignment = WD_PARAGRAPH_ALIGNMENT.RIGHT
 
     doc.add_paragraph()
-
-    # Banking Details
-    p = doc.add_paragraph()
-    run = p.add_run("Wise Banking Details")
-    run.bold = True
-    for key, val in bank.items():
-        doc.add_paragraph(f"{key}: {val}")
-    for line in addr:
-        doc.add_paragraph(line)
-    if email:
-        doc.add_paragraph(f"Email: {email}")
 
     filename = f"Invoice_{month_year}.docx"
     doc.save(filename)
