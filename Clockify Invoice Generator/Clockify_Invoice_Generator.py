@@ -6,23 +6,23 @@ from dotenv import load_dotenv
 from docx import Document
 from docx2pdf import convert
 
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(levelname)s - %(message)s"
+)
+
 INDUSTRY = "Software Developer"
 CONSTANT_LINE_ITEMS = [
     {"description": "GitHub Co-pilot subscription", "amount": 10.00}
 ]
 _project_cache = {}
 
-# Load configuration
 def load_env():
-    logging.info("Loading environment variables.")
+    logging.info("Loading environment variables")
     load_dotenv()
 
-# Fetch detailed entries with project info
-def get_time_entries(
-    start,
-    end
-):
-    logging.info(f"Fetching detailed report entries from {start} to {end}.")
+def get_time_entries(start, end):
+    logging.info(f"Fetching detailed report entries from {start} to {end}")
     url = (
         f"https://reports.api.clockify.me/v1/"
         f"workspaces/{os.getenv('WORKSPACE_ID')}/reports/detailed"
@@ -31,7 +31,6 @@ def get_time_entries(
         "X-Api-Key": os.getenv("CLOCKIFY_API_KEY"),
         "Content-Type": "application/json"
     }
-
     entries = []
     page = 1
     while True:
@@ -42,6 +41,7 @@ def get_time_entries(
             "users": {"ids": [os.getenv("USER_ID")]},
             "detailedFilter": {"page": page, "pageSize": 50}
         }
+        logging.info(f"Requesting page {page}")
         resp = requests.post(url, headers=headers, json=body)
         resp.raise_for_status()
         batch = resp.json().get("timeentries", [])
@@ -49,14 +49,10 @@ def get_time_entries(
             break
         entries.extend(batch)
         page += 1
-
     logging.info(f"Total entries fetched: {len(entries)}")
     return entries
 
-# Cache and fetch project name by ID
-def get_project_name(
-    project_id
-):
+def get_project_name(project_id):
     if project_id in _project_cache:
         return _project_cache[project_id]
     url = (
@@ -70,11 +66,8 @@ def get_project_name(
     _project_cache[project_id] = name
     return name
 
-# Summarize hours per project
-def process_entries(
-    entries
-):
-    logging.info("Summarizing billable hours by project.")
+def process_entries(entries):
+    logging.info("Summarizing billable hours by project")
     summary = {}
     for e in entries:
         if not e.get("billable"):
@@ -87,13 +80,10 @@ def process_entries(
         hrs = parse_duration_to_hours(dur)
         summary.setdefault(proj, 0)
         summary[proj] += hrs
-    logging.info(f"{len(summary)} projects summarized.")
+    logging.info(f"{len(summary)} projects summarized")
     return summary
 
-# Convert ISO8601 or seconds to hours
-def parse_duration_to_hours(
-    duration
-):
+def parse_duration_to_hours(duration):
     if isinstance(duration, (int, float)):
         return duration / 3600
     if duration.startswith("PT"):
@@ -108,41 +98,46 @@ def parse_duration_to_hours(
         return h + m/60 + s/3600
     return 0
 
-# Create invoice document with clear sections
-def generate_invoice(
-    summary,
-    month_year
-):
-    load_env()
-    from_name       = os.getenv("FROM_NAME")
-    company         = os.getenv("COMPANY_NAME")
-    addr1           = os.getenv("COMPANY_ADDRESS_LINE1")
-    addr2           = os.getenv("COMPANY_ADDRESS_LINE2")
-    addr3           = os.getenv("COMPANY_ADDRESS_LINE3")
-    acct_num        = os.getenv("BANK_ACCOUNT_NUMBER")
-    acct_holder     = os.getenv("BANK_ACCOUNT_HOLDER")
-    routing         = os.getenv("BANK_ROUTING_NUMBER")
-    swift           = os.getenv("BANK_SWIFT")
-    rate            = float(os.getenv("HOURLY_RATE"))
+def generate_invoice(summary, month_year):
+    logging.info(f"Generating invoice for {month_year}")
+    from_name   = os.getenv("FROM_NAME")
+    addr1       = os.getenv("COMPANY_ADDRESS_LINE1")
+    addr2       = os.getenv("COMPANY_ADDRESS_LINE2")
+    addr3       = os.getenv("COMPANY_ADDRESS_LINE3")
+    email       = os.getenv("CONTACT_EMAIL", "")
+    phone       = os.getenv("CONTACT_PHONE", "")
+    acct_num    = os.getenv("BANK_ACCOUNT_NUMBER")
+    acct_holder = os.getenv("BANK_ACCOUNT_HOLDER")
+    routing     = os.getenv("BANK_ROUTING_NUMBER")
+    swift       = os.getenv("BANK_SWIFT")
+    rate        = float(os.getenv("HOURLY_RATE"))
 
     doc = Document()
     doc.add_heading(f"Invoice - {month_year} - {from_name}", level=1)
 
-    doc.add_heading("From / Address", level=2)
-    doc.add_paragraph(from_name)
-    doc.add_paragraph(company)
+    doc.add_heading("Address", level=3)
     doc.add_paragraph(addr1)
     doc.add_paragraph(addr2)
     doc.add_paragraph(addr3)
-    doc.add_paragraph(f"Industry: {INDUSTRY}")
-    doc.add_paragraph(f"Date: {datetime.now():%Y-%m-%d}")
-    doc.add_paragraph(f"To: {os.getenv('CLIENT_NAME')}")
 
-    doc.add_heading("Billable Hours", level=2)
+    doc.add_paragraph("-" * 50)
+
+    doc.add_heading("Contact Information", level=3)
+    if email:
+        doc.add_paragraph(f"Email: {email}")
+    if phone:
+        doc.add_paragraph(f"Phone: {phone}")
+
+    doc.add_paragraph("-" * 50)
+
+    doc.add_heading("Billable Hours & Charges", level=2)
     table = doc.add_table(rows=1, cols=4)
-    table.style = "Table Grid"
+    try:
+        table.style = "Iron Boardroom"
+    except KeyError:
+        table.style = "Table Grid"
     hdr = table.rows[0].cells
-    hdr[0].text = "Project"
+    hdr[0].text = "Description"
     hdr[1].text = "Hours"
     hdr[2].text = "Rate"
     hdr[3].text = "Amount"
@@ -157,10 +152,21 @@ def generate_invoice(
         row[3].text = f"${amt:.2f}"
         total += amt
 
-    doc.add_heading("Additional Charges", level=2)
     for item in CONSTANT_LINE_ITEMS:
-        p = doc.add_paragraph(f"{item['description']}: ${item['amount']:.2f}")
+        row = table.add_row().cells
+        row[0].text = item["description"]
+        row[1].text = ""
+        row[2].text = ""
+        row[3].text = f"${item['amount']:.2f}"
         total += item["amount"]
+
+    footer_row = table.add_row().cells
+    footer_row[0].text = "Total"
+    footer_row[1].text = ""
+    footer_row[2].text = ""
+    footer_row[3].text = f"${total:.2f}"
+
+    doc.add_paragraph("-" * 50)
 
     doc.add_heading("Banking Details", level=2)
     doc.add_paragraph(f"Account Number: {acct_num}")
@@ -168,23 +174,16 @@ def generate_invoice(
     doc.add_paragraph(f"Routing Number: {routing}")
     doc.add_paragraph(f"SWIFT: {swift}")
 
-    doc.add_heading("Total Due", level=2)
-    doc.add_paragraph(f"${total:.2f}")
-
     filename = f"Invoice_{month_year}.docx"
     doc.save(filename)
-    logging.info(f"Saved invoice as {filename}.")
+    logging.info(f"Saved invoice as {filename}")
     return filename
 
-# Convert .docx to .pdf
-def convert_to_pdf(
-    docx_filename
-):
-    logging.info(f"Converting {docx_filename} to PDF.")
+def convert_to_pdf(docx_filename):
+    logging.info(f"Converting {docx_filename} to PDF")
     convert(docx_filename)
-    logging.info("Conversion complete.")
+    logging.info("Conversion complete")
 
-# Determine current month range
 def get_current_month_range():
     today = datetime.today()
     start = today.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
@@ -193,7 +192,7 @@ def get_current_month_range():
     return start.isoformat() + "Z", end.isoformat() + "Z"
 
 def main():
-    logging.info("Starting invoice generation.")
+    logging.info("Starting invoice generation")
     load_env()
     start, end = get_current_month_range()
     entries = get_time_entries(start, end)
@@ -201,7 +200,7 @@ def main():
     month_year = datetime.now().strftime("%B_%Y")
     docx = generate_invoice(summary, month_year)
     convert_to_pdf(docx)
-    logging.info("Done.")
+    logging.info("Invoice generation complete")
 
 if __name__ == "__main__":
     main()
