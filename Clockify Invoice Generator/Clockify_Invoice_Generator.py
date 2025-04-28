@@ -1,137 +1,175 @@
 import os
 import requests
-from datetime import datetime
+import logging
+from datetime import datetime, timedelta
 from dotenv import load_dotenv
 from docx import Document
-from docx.shared import Inches
 from docx2pdf import convert
 
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(levelname)s - %(message)s"
+)
+
 def load_env():
+    logging.info("Loading environment variables from .env file.")
     load_dotenv()
 
-def get_time_entries(start, end):
-    url = f"https://api.clockify.me/api/v1/workspaces/{os.getenv('WORKSPACE_ID')}/user/{os.getenv('USER_ID')}/time-entries"
-    
+def get_time_entries(
+    start,
+    end
+):
+    logging.info(f"Fetching detailed report entries from {start} to {end}.")
+    url = (
+        f"https://reports.api.clockify.me/v1/"
+        f"workspaces/{os.getenv('WORKSPACE_ID')}/reports/detailed"
+    )
     headers = {
         "X-Api-Key": os.getenv("CLOCKIFY_API_KEY"),
         "Content-Type": "application/json"
     }
-    
-    params = {
-        "start": start,
-        "end": end,
-        "page-size": 50
-    }
-    
+
     all_entries = []
     page = 1
-    
     while True:
-        params["page"] = page
-        response = requests.get(url, headers=headers, params=params)
-        response.raise_for_status()
-        entries = response.json()
-        
+        body = {
+            "dateRangeStart": start,
+            "dateRangeEnd": end,
+            "exportType": "JSON",
+            "users": {"ids": [os.getenv("USER_ID")]},
+            "detailedFilter": {"page": page, "pageSize": 50}
+        }
+        logging.info(f"Requesting detailed report page {page}.")
+        response = requests.post(url, headers=headers, json=body)
+        try:
+            response.raise_for_status()
+        except requests.HTTPError as e:
+            logging.exception(f"Failed to fetch detailed report page {page}.")
+            raise e
+
+        data = response.json()
+        entries = data.get("timeentries", [])
         if not entries:
+            logging.info("No more detailed entries to fetch.")
             break
-        
+
+        logging.info(f"Fetched {len(entries)} detailed entries on page {page}.")
         all_entries.extend(entries)
         page += 1
-    
+
+    logging.info(f"Total detailed entries fetched: {len(all_entries)}")
     return all_entries
 
-def process_entries(entries):
+def process_entries(
+    entries
+):
+    logging.info("Processing detailed entries into project summaries.")
     project_summary = {}
-    
+
     for entry in entries:
         if not entry.get("billable"):
             continue
-        
-        project_name = entry["project"]["name"] if entry.get("project") else "No Project"
-        duration_seconds = entry["timeInterval"].get("duration", "PT0S")
-        
-        hours = parse_duration_to_hours(duration_seconds)
-        
-        if project_name not in project_summary:
-            project_summary[project_name] = 0
-        
+
+        project_name = entry.get("project", {}).get("name", "No Project")
+        duration = entry["timeInterval"].get("duration", 0)
+        hours = parse_duration_to_hours(duration)
+
+        project_summary.setdefault(project_name, 0)
         project_summary[project_name] += hours
-    
+
+    logging.info(f"Processed summaries for {len(project_summary)} projects.")
     return project_summary
 
-def parse_duration_to_hours(duration):
+def parse_duration_to_hours(
+    duration
+):
+    if isinstance(duration, (int, float)):
+        return duration / 3600
     if duration.startswith("PT"):
         duration = duration[2:]
-    
-    hours = 0
-    minutes = 0
-    seconds = 0
-    
+    hours = minutes = seconds = 0
     if "H" in duration:
-        hours_part, duration = duration.split("H")
-        hours = int(hours_part)
+        h, duration = duration.split("H")
+        hours = int(h)
     if "M" in duration:
-        minutes_part, duration = duration.split("M")
-        minutes = int(minutes_part)
+        m, duration = duration.split("M")
+        minutes = int(m)
     if "S" in duration:
-        seconds_part = duration.replace("S", "")
-        seconds = int(seconds_part)
-    
-    total_hours = hours + minutes / 60 + seconds / 3600
-    return total_hours
+        s = duration.replace("S", "")
+        seconds = int(s)
+    return hours + minutes / 60 + seconds / 3600
 
-def generate_invoice(project_summary, month_year):
+def generate_invoice(
+    project_summary,
+    month_year
+):
+    logging.info(f"Generating invoice document for {month_year}.")
     hourly_rate = float(os.getenv("HOURLY_RATE"))
-    
+
     document = Document()
     document.add_heading(f'Invoice - {month_year}', 0)
-    
     document.add_paragraph(f'Company: {os.getenv("COMPANY_NAME")}')
     document.add_paragraph(f'Client: {os.getenv("CLIENT_NAME")}')
-    document.add_paragraph(f'Date: {datetime.now().strftime("%Y-%m-%d")}')
-    
+    document.add_paragraph(f'Date: {datetime.now():%Y-%m-%d}')
+
     table = document.add_table(rows=1, cols=4)
+    table.style = 'Table Grid'
     hdr_cells = table.rows[0].cells
     hdr_cells[0].text = 'Project'
-    hdr_cells[1].text = 'Hours Worked'
-    hdr_cells[2].text = 'Hourly Rate'
-    hdr_cells[3].text = 'Total Amount'
-    
-    total_amount = 0
-    
-    for project, hours in project_summary.items():
-        row_cells = table.add_row().cells
-        row_cells[0].text = project
-        row_cells[1].text = f"{hours:.2f}"
-        row_cells[2].text = f"${hourly_rate:.2f}"
-        project_total = hours * hourly_rate
-        row_cells[3].text = f"${project_total:.2f}"
-        total_amount += project_total
-    
-    document.add_paragraph()
-    document.add_paragraph(f'Total Amount Due: ${total_amount:.2f}')
-    
-    invoice_filename = f'Invoice_{month_year}.docx'
-    document.save(invoice_filename)
-    
-    return invoice_filename
+    hdr_cells[1].text = 'Hours'
+    hdr_cells[2].text = 'Rate'
+    hdr_cells[3].text = 'Amount'
 
-def convert_to_pdf(docx_filename):
-    convert(docx_filename)
+    total_amount = 0
+    for project, hours in project_summary.items():
+        row = table.add_row().cells
+        row[0].text = project
+        row[1].text = f"{hours:.2f}"
+        row[2].text = f"${hourly_rate:.2f}"
+        amt = hours * hourly_rate
+        row[3].text = f"${amt:.2f}"
+        total_amount += amt
+
+    document.add_paragraph()
+    document.add_paragraph(f'Total Due: ${total_amount:.2f}')
+
+    filename = f'Invoice_{month_year}.docx'
+    document.save(filename)
+    logging.info(f"Saved Word invoice as {filename}.")
+    return filename
+
+def convert_to_pdf(
+    docx_filename
+):
+    logging.info(f"Converting {docx_filename} to PDF.")
+    try:
+        convert(docx_filename)
+        logging.info(f"PDF created: {docx_filename.replace('.docx', '.pdf')}")
+    except Exception:
+        logging.exception("Conversion to PDF failed.")
+        raise
+
+def get_current_month_range():
+    today = datetime.today()
+    start = today.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+    next_month = start.replace(day=28) + timedelta(days=4)
+    end = next_month.replace(day=1) - timedelta(seconds=1)
+    return start.isoformat() + "Z", end.isoformat() + "Z"
 
 def main():
+    logging.info("Starting invoice generation.")
     load_env()
-    
-    start_date = "2025-05-01T00:00:00Z"
-    end_date = "2025-05-31T23:59:59Z"
-    
-    entries = get_time_entries(start=start_date, end=end_date)
-    
-    project_summary = process_entries(entries)
-    
-    invoice_docx = generate_invoice(project_summary, "May_2025")
-    
-    convert_to_pdf(invoice_docx)
+    start_date, end_date = get_current_month_range()
+    try:
+        entries = get_time_entries(start_date, end_date)
+        summary = process_entries(entries)
+        month_year = datetime.now().strftime("%B_%Y")
+        docx = generate_invoice(summary, month_year)
+        convert_to_pdf(docx)
+    except Exception:
+        logging.exception("Invoice generation failed.")
+        raise
+    logging.info("Invoice generation complete.")
 
 if __name__ == "__main__":
     main()
