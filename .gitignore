@@ -1,0 +1,7 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/Clockify Invoice Generator/.vs/Clockify Invoice Generator
+*.env
+/Clockify Invoice Generator/output/2025/April
