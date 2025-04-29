@@ -15,7 +15,7 @@ from docx.oxml.ns import qn
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
 CONSTANT_LINE_ITEMS = [{"description": "GitHub Co-pilot ($10/month)", "amount": 10.00}]
-TABLE_STYLE_CANDIDATES = ["Medium Shading 1 Accent 2"]
+TABLE_STYLE = ["Medium Shading 1 Accent 2"]
 _project_cache = {}
 
 class DocumentFormatter:
@@ -76,13 +76,8 @@ class TableBuilder:
 
     def create_billing_table(self, summary: dict, rate: float):
         table = self.doc.add_table(rows=1, cols=4)
-        for style in TABLE_STYLE_CANDIDATES:
-            try:
-                table.style = style
-                break
-            except KeyError:
-                continue
-
+        table.style = TABLE_STYLE
+           
         hdr = table.rows[0].cells
         headers = ("Project", "Hours", "Rate", "Amount")
         for i, text in enumerate(headers):
