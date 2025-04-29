@@ -1,5 +1,4 @@
 import os
-import shutil
 import requests
 import logging
 from datetime import datetime, timedelta
@@ -16,6 +15,16 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(
 
 CONSTANT_LINE_ITEMS = [{"description": "GitHub Co-pilot ($10/month)", "amount": 10.00}]
 TABLE_STYLE = "Medium Shading 1 Accent 2"
+TITLE_FONT_SIZE = 26
+TITLE_COLOR = RGBColor(0xC0, 0x50, 0x4D)
+HEADING_FONT_SIZE = 18
+HEADING_LEVEL_SIZES = {1: 20, 2: 18, 3: 16, 4: 14}
+BODY_FONT_SIZE = 12
+SEPARATOR_COLOR = "c0504d"
+SEPARATOR_SIZE_TITLE = 8
+SEPARATOR_SIZE_HEADING = 6
+DEFAULT_SEPARATOR_COLOR = "666666"
+DEFAULT_SEPARATOR_SIZE = 6
 _project_cache = {}
 
 class DocumentFormatter:
