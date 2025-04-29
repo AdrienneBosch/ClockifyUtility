@@ -266,7 +266,12 @@ def generate_invoice(summary, month_year):
 
     formatter.add_heading_level(2, "Banking Details")
     for key, val in bank.items():
-        formatter.add_body(f"{key}: {val}")
+        p = doc.add_paragraph()
+        run_key = p.add_run(f"{key}: ")
+        run_key.bold = True
+        p.add_run(val)
+        p.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
+
 
     doc.add_paragraph()
 
