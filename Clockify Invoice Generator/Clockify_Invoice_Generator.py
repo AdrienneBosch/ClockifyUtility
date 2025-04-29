@@ -15,7 +15,7 @@ from docx.oxml.ns import qn
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
 CONSTANT_LINE_ITEMS = [{"description": "GitHub Co-pilot ($10/month)", "amount": 10.00}]
-TABLE_STYLE = ["Medium Shading 1 Accent 2"]
+TABLE_STYLE = "Medium Shading 1 Accent 2"
 _project_cache = {}
 
 class DocumentFormatter:
@@ -73,11 +73,11 @@ class DocumentFormatter:
 class TableBuilder:
     def __init__(self, doc: Document):
         self.doc = doc
-
+        
     def create_billing_table(self, summary: dict, rate: float):
         table = self.doc.add_table(rows=1, cols=4)
         table.style = TABLE_STYLE
-           
+
         hdr = table.rows[0].cells
         headers = ("Project", "Hours", "Rate", "Amount")
         for i, text in enumerate(headers):
@@ -85,7 +85,9 @@ class TableBuilder:
             run.bold = True
             hdr[i].paragraphs[0].alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
 
-        total = 0.0
+        total_amount = 0.0
+        total_hours = 0.0
+
         for proj, hrs in summary.items():
             row = table.add_row().cells
             row[0].text = proj
@@ -93,21 +95,31 @@ class TableBuilder:
             row[2].text = f"${rate:.2f}"
             amt = hrs * rate
             row[3].text = f"${amt:.2f}"
+
             row[1].paragraphs[0].alignment = WD_PARAGRAPH_ALIGNMENT.RIGHT
             row[2].paragraphs[0].alignment = WD_PARAGRAPH_ALIGNMENT.RIGHT
             row[3].paragraphs[0].alignment = WD_PARAGRAPH_ALIGNMENT.RIGHT
-            total += amt
+
+            total_amount += amt
+            total_hours += hrs
 
         gh = CONSTANT_LINE_ITEMS[0]
         row = table.add_row().cells
         row[0].text = gh["description"]
+        row[1].text = ""
+        row[2].text = ""
         row[3].text = f"${gh['amount']:.2f}"
         row[3].paragraphs[0].alignment = WD_PARAGRAPH_ALIGNMENT.RIGHT
-        total += gh["amount"]
+
+        total_amount += gh["amount"]
 
         row = table.add_row().cells
         row[0].text = "Total"
-        row[3].text = f"${total:.2f}"
+        row[1].text = f"{total_hours:.2f}"
+        row[2].text = ""
+        row[3].text = f"${total_amount:.2f}"
+
+        row[1].paragraphs[0].alignment = WD_PARAGRAPH_ALIGNMENT.RIGHT
         row[3].paragraphs[0].alignment = WD_PARAGRAPH_ALIGNMENT.RIGHT
 
 def load_env():
@@ -207,6 +219,7 @@ def generate_invoice(summary, month_year):
     email = os.getenv("CONTACT_EMAIL", "")
     phone = os.getenv("CONTACT_PHONE", "")
     bank = {
+        "Bank Name": os.getenv("BANK_NAME"), 
         "Account Number": os.getenv("BANK_ACCOUNT_NUMBER"),
         "Account holder": os.getenv("BANK_ACCOUNT_HOLDER"),
         "ACH & Wire Routing Number": os.getenv("BANK_ROUTING_NUMBER"),
