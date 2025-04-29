@@ -1,5 +1,4 @@
 import os
-import shutil
 import requests
 import logging
 from datetime import datetime, timedelta
@@ -15,7 +14,17 @@ from docx.oxml.ns import qn
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
 CONSTANT_LINE_ITEMS = [{"description": "GitHub Co-pilot ($10/month)", "amount": 10.00}]
-TABLE_STYLE_CANDIDATES = ["Medium Shading 1 Accent 2"]
+TABLE_STYLE = "Medium Shading 1 Accent 2"
+TITLE_FONT_SIZE = 26
+TITLE_COLOR = RGBColor(0xC0, 0x50, 0x4D)
+HEADING_FONT_SIZE = 18
+HEADING_LEVEL_SIZES = {1: 20, 2: 18, 3: 16, 4: 14}
+BODY_FONT_SIZE = 12
+SEPARATOR_COLOR = "c0504d"
+SEPARATOR_SIZE_TITLE = 8
+SEPARATOR_SIZE_HEADING = 6
+DEFAULT_SEPARATOR_COLOR = "666666"
+DEFAULT_SEPARATOR_SIZE = 6
 _project_cache = {}
 
 class DocumentFormatter:
@@ -26,39 +35,38 @@ class DocumentFormatter:
         p = self.doc.add_paragraph()
         run = p.add_run(text)
         run.bold = True
-        run.font.size = Pt(26)
-        run.font.color.rgb = RGBColor(0xC0, 0x50, 0x4D)
+        run.font.size = Pt(TITLE_FONT_SIZE)
+        run.font.color.rgb = TITLE_COLOR
         p.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
         p.paragraph_format.space_after = Pt(6)
-        self._add_separator(p, color="c0504d", size=8)
+        self._add_separator(p, color=SEPARATOR_COLOR, size=SEPARATOR_SIZE_TITLE)
 
     def add_heading(self, text: str):
         p = self.doc.add_paragraph()
         run = p.add_run(text)
         run.bold = True
-        run.font.size = Pt(18)
+        run.font.size = Pt(HEADING_FONT_SIZE)
         p.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
-        self._add_separator(p, color="c0504d", size=6)
+        self._add_separator(p, color=SEPARATOR_COLOR, size=SEPARATOR_SIZE_HEADING)
 
     def add_paragraph(self, text: str):
         p = self.doc.add_paragraph(text)
         p.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
 
     def add_heading_level(self, level: int, text: str):
-        size_map = {1: 20, 2: 18, 3: 16, 4: 14}
-        font_size = size_map.get(level, 14)
+        font_size = HEADING_LEVEL_SIZES.get(level, BODY_FONT_SIZE)
         p = self.doc.add_paragraph()
         run = p.add_run(text)
         run.bold = True
         run.font.size = Pt(font_size)
         p.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
-        self._add_separator(p, color="c0504d", size=6)
+        self._add_separator(p, color=SEPARATOR_COLOR, size=SEPARATOR_SIZE_HEADING)
 
     def add_body(self, text: str):
         p = self.doc.add_paragraph(text)
         p.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
 
-    def _add_separator(self, paragraph, color="666666", size=6):
+    def _add_separator(self, paragraph, color=DEFAULT_SEPARATOR_COLOR, size=DEFAULT_SEPARATOR_SIZE):
         p = paragraph._p
         pPr = p.get_or_add_pPr()
         pBdr = OxmlElement('w:pBdr')
@@ -76,12 +84,7 @@ class TableBuilder:
 
     def create_billing_table(self, summary: dict, rate: float):
         table = self.doc.add_table(rows=1, cols=4)
-        for style in TABLE_STYLE_CANDIDATES:
-            try:
-                table.style = style
-                break
-            except KeyError:
-                continue
+        table.style = TABLE_STYLE
 
         hdr = table.rows[0].cells
         headers = ("Project", "Hours", "Rate", "Amount")
@@ -90,7 +93,9 @@ class TableBuilder:
             run.bold = True
             hdr[i].paragraphs[0].alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
 
-        total = 0.0
+        total_amount = 0.0
+        total_hours = 0.0
+
         for proj, hrs in summary.items():
             row = table.add_row().cells
             row[0].text = proj
@@ -98,21 +103,31 @@ class TableBuilder:
             row[2].text = f"${rate:.2f}"
             amt = hrs * rate
             row[3].text = f"${amt:.2f}"
+
             row[1].paragraphs[0].alignment = WD_PARAGRAPH_ALIGNMENT.RIGHT
             row[2].paragraphs[0].alignment = WD_PARAGRAPH_ALIGNMENT.RIGHT
             row[3].paragraphs[0].alignment = WD_PARAGRAPH_ALIGNMENT.RIGHT
-            total += amt
+
+            total_amount += amt
+            total_hours += hrs
 
         gh = CONSTANT_LINE_ITEMS[0]
         row = table.add_row().cells
         row[0].text = gh["description"]
+        row[1].text = ""
+        row[2].text = ""
         row[3].text = f"${gh['amount']:.2f}"
         row[3].paragraphs[0].alignment = WD_PARAGRAPH_ALIGNMENT.RIGHT
-        total += gh["amount"]
+
+        total_amount += gh["amount"]
 
         row = table.add_row().cells
         row[0].text = "Total"
-        row[3].text = f"${total:.2f}"
+        row[1].text = f"{total_hours:.2f}"
+        row[2].text = ""
+        row[3].text = f"${total_amount:.2f}"
+
+        row[1].paragraphs[0].alignment = WD_PARAGRAPH_ALIGNMENT.RIGHT
         row[3].paragraphs[0].alignment = WD_PARAGRAPH_ALIGNMENT.RIGHT
 
 def load_env():
@@ -212,6 +227,7 @@ def generate_invoice(summary, month_year):
     email = os.getenv("CONTACT_EMAIL", "")
     phone = os.getenv("CONTACT_PHONE", "")
     bank = {
+        "Bank Name": os.getenv("BANK_NAME"),
         "Account Number": os.getenv("BANK_ACCOUNT_NUMBER"),
         "Account holder": os.getenv("BANK_ACCOUNT_HOLDER"),
         "ACH & Wire Routing Number": os.getenv("BANK_ROUTING_NUMBER"),
@@ -250,7 +266,12 @@ def generate_invoice(summary, month_year):
 
     formatter.add_heading_level(2, "Banking Details")
     for key, val in bank.items():
-        formatter.add_body(f"{key}: {val}")
+        p = doc.add_paragraph()
+        run_key = p.add_run(f"{key}: ")
+        run_key.bold = True
+        p.add_run(val)
+        p.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
+
 
     doc.add_paragraph()
 
@@ -261,7 +282,7 @@ def generate_invoice(summary, month_year):
     doc.add_paragraph()
 
     formatter.add_heading_level(2, "Billing Details")
-    
+
     doc.add_paragraph()
 
     table_builder.create_billing_table(summary, rate)
