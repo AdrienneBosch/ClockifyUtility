@@ -35,39 +35,38 @@ class DocumentFormatter:
         p = self.doc.add_paragraph()
         run = p.add_run(text)
         run.bold = True
-        run.font.size = Pt(26)
-        run.font.color.rgb = RGBColor(0xC0, 0x50, 0x4D)
+        run.font.size = Pt(TITLE_FONT_SIZE)
+        run.font.color.rgb = TITLE_COLOR
         p.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
         p.paragraph_format.space_after = Pt(6)
-        self._add_separator(p, color="c0504d", size=8)
+        self._add_separator(p, color=SEPARATOR_COLOR, size=SEPARATOR_SIZE_TITLE)
 
     def add_heading(self, text: str):
         p = self.doc.add_paragraph()
         run = p.add_run(text)
         run.bold = True
-        run.font.size = Pt(18)
+        run.font.size = Pt(HEADING_FONT_SIZE)
         p.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
-        self._add_separator(p, color="c0504d", size=6)
+        self._add_separator(p, color=SEPARATOR_COLOR, size=SEPARATOR_SIZE_HEADING)
 
     def add_paragraph(self, text: str):
         p = self.doc.add_paragraph(text)
         p.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
 
     def add_heading_level(self, level: int, text: str):
-        size_map = {1: 20, 2: 18, 3: 16, 4: 14}
-        font_size = size_map.get(level, 14)
+        font_size = HEADING_LEVEL_SIZES.get(level, BODY_FONT_SIZE)
         p = self.doc.add_paragraph()
         run = p.add_run(text)
         run.bold = True
         run.font.size = Pt(font_size)
         p.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
-        self._add_separator(p, color="c0504d", size=6)
+        self._add_separator(p, color=SEPARATOR_COLOR, size=SEPARATOR_SIZE_HEADING)
 
     def add_body(self, text: str):
         p = self.doc.add_paragraph(text)
         p.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
 
-    def _add_separator(self, paragraph, color="666666", size=6):
+    def _add_separator(self, paragraph, color=DEFAULT_SEPARATOR_COLOR, size=DEFAULT_SEPARATOR_SIZE):
         p = paragraph._p
         pPr = p.get_or_add_pPr()
         pBdr = OxmlElement('w:pBdr')
@@ -82,7 +81,7 @@ class DocumentFormatter:
 class TableBuilder:
     def __init__(self, doc: Document):
         self.doc = doc
-        
+
     def create_billing_table(self, summary: dict, rate: float):
         table = self.doc.add_table(rows=1, cols=4)
         table.style = TABLE_STYLE
@@ -228,7 +227,7 @@ def generate_invoice(summary, month_year):
     email = os.getenv("CONTACT_EMAIL", "")
     phone = os.getenv("CONTACT_PHONE", "")
     bank = {
-        "Bank Name": os.getenv("BANK_NAME"), 
+        "Bank Name": os.getenv("BANK_NAME"),
         "Account Number": os.getenv("BANK_ACCOUNT_NUMBER"),
         "Account holder": os.getenv("BANK_ACCOUNT_HOLDER"),
         "ACH & Wire Routing Number": os.getenv("BANK_ROUTING_NUMBER"),
@@ -278,7 +277,7 @@ def generate_invoice(summary, month_year):
     doc.add_paragraph()
 
     formatter.add_heading_level(2, "Billing Details")
-    
+
     doc.add_paragraph()
 
     table_builder.create_billing_table(summary, rate)
