@@ -7,10 +7,12 @@ DEFAULT_TITLE_FONT_SIZE = 24
 DEFAULT_HEADING_SIZES = {1: 18, 2: 16, 3: 14, 4: 12}
 DEFAULT_BODY_FONT_SIZE = 11
 DEFAULT_TITLE_COLOR_HEX = "c0504d"
-DEFAULT_SEPARATOR_COLOR = "666666"
+DEFAULT_SEPARATOR_COLOR = "c0504d"
 DEFAULT_SEPARATOR_SIZE = 6
-DEFAULT_SPACING_BEFORE = 2
-DEFAULT_SPACING_AFTER = 6
+DEFAULT_HEADER_SPACING_BEFORE = 7
+DEFAULT_HEADER_SPACING_AFTER = 10
+DEFAULT_BODY_SPACING_BEFORE = 1
+DEFAULT_BODY_SPACING_AFTER = 2
 
 def hex_to_rgb_color(hexstr):
     hexstr = hexstr.strip().lstrip("#")
@@ -27,8 +29,10 @@ class DocumentFormatter:
         body_font_size=DEFAULT_BODY_FONT_SIZE,
         separator_color=DEFAULT_SEPARATOR_COLOR,
         separator_size=DEFAULT_SEPARATOR_SIZE,
-        spacing_before=DEFAULT_SPACING_BEFORE,
-        spacing_after=DEFAULT_SPACING_AFTER
+        header_spacing_before=DEFAULT_HEADER_SPACING_BEFORE,
+        header_spacing_after=DEFAULT_HEADER_SPACING_AFTER,
+        body_spacing_before=DEFAULT_BODY_SPACING_BEFORE,
+        body_spacing_after=DEFAULT_BODY_SPACING_AFTER
     ):
         self.doc = doc
         self.title_font_size = title_font_size
@@ -37,8 +41,10 @@ class DocumentFormatter:
         self.body_font_size = body_font_size
         self.separator_color = separator_color
         self.separator_size = separator_size
-        self.spacing_before = Pt(spacing_before)
-        self.spacing_after = Pt(spacing_after)
+        self.header_spacing_before = Pt(header_spacing_before)
+        self.header_spacing_after = Pt(header_spacing_after)
+        self.body_spacing_before = Pt(body_spacing_before)
+        self.body_spacing_after = Pt(body_spacing_after)
 
     def add_title(self, text):
         p = self.doc.add_paragraph()
@@ -47,8 +53,8 @@ class DocumentFormatter:
         run.font.size = Pt(self.title_font_size)
         run.font.color.rgb = self.title_color
         p.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
-        p.paragraph_format.space_before = self.spacing_before
-        p.paragraph_format.space_after = self.spacing_after
+        p.paragraph_format.space_before = self.header_spacing_before
+        p.paragraph_format.space_after = self.header_spacing_after
         self._add_separator(p)
 
     def add_heading(self, text, level=1):
@@ -58,8 +64,8 @@ class DocumentFormatter:
         run.bold = True
         run.font.size = Pt(size)
         p.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
-        p.paragraph_format.space_before = self.spacing_before
-        p.paragraph_format.space_after = self.spacing_after
+        p.paragraph_format.space_before = self.header_spacing_before
+        p.paragraph_format.space_after = self.header_spacing_after
         self._add_separator(p)
 
     def add_heading_level(self, level, text):
@@ -68,8 +74,8 @@ class DocumentFormatter:
     def add_body(self, text):
         p = self.doc.add_paragraph(text)
         p.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
-        p.paragraph_format.space_before = self.spacing_before
-        p.paragraph_format.space_after = self.spacing_after
+        p.paragraph_format.space_before = self.body_spacing_before
+        p.paragraph_format.space_after = self.body_spacing_after
 
     def add_paragraph(self, text):
         self.add_body(text)
