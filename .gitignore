@@ -5,3 +5,4 @@
 /Clockify Invoice Generator/.vs/Clockify Invoice Generator
 *.env
 /Clockify Invoice Generator/output/2025/April
+/Clockify Invoice Generator/__pycache__
