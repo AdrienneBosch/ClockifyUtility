@@ -28,6 +28,7 @@
     <Compile Include="config.py" />
     <Compile Include="formatter.py" />
     <Compile Include="generator.py" />
+    <Compile Include="logger.py" />
     <Compile Include="table_builder.py" />
     <Compile Include="utils.py" />
   </ItemGroup>
