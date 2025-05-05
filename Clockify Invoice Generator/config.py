@@ -20,8 +20,6 @@ REQUIRED_KEYS = [
     "BANK_SWIFT"
 ]
 
-OPTIONAL_KEYS = ["USER_ID", "WORKSPACE_ID"]
-
 logger = get_logger()
 
 def get_config(env_file: str):
@@ -43,26 +41,40 @@ def get_config(env_file: str):
     api_key = config["CLOCKIFY_API_KEY"]
 
     user_id = os.getenv("USER_ID")
+    workspace_id = os.getenv("WORKSPACE_ID")
+
+    needs_exit = False
+
     if not user_id:
-        user_id = fetch_user_id(api_key)
-        logger.info("USER_ID not set in .env")
-        logger.info(f"→ Your Clockify USER_ID is: {user_id}")
-        logger.info("Please copy this ID and add it to your .env file as USER_ID=")
-        return None  # Skip further processing
+        try:
+            user_id = fetch_user_id(api_key)
+            logger.info("USER_ID not set in .env")
+            logger.info(f"→ Your Clockify USER_ID is: {user_id}")
+            logger.info("Please copy this ID and add it to your .env file as USER_ID=")
+            needs_exit = True
+        except ApiError as e:
+            logger.error(str(e))
+            needs_exit = True
+
+    if not workspace_id:
+        try:
+            workspaces = fetch_workspace_ids(api_key)
+            logger.info("WORKSPACE_ID not set in .env")
+            logger.info("→ Available Clockify WORKSPACE_IDs:")
+            for w in workspaces:
+                logger.info(f"- {w['name']}: {w['id']}")
+            logger.info("Please copy the appropriate ID and add it to your .env file as WORKSPACE_ID=")
+            needs_exit = True
+        except ApiError as e:
+            logger.error(str(e))
+            needs_exit = True
+
+    if needs_exit:
+        return None
 
     config["USER_ID"] = user_id
-
-    workspace_id = os.getenv("WORKSPACE_ID")
-    if not workspace_id:
-        workspaces = fetch_workspace_ids(api_key)
-        logger.info("WORKSPACE_ID not set in .env")
-        logger.info("→ Available Clockify WORKSPACE_IDs:")
-        for w in workspaces:
-            logger.info(f"- {w['name']}: {w['id']}")
-        logger.info("Please copy the appropriate ID and add it to your .env file as WORKSPACE_ID=")
-        return None  # Skip further processing
-
     config["WORKSPACE_ID"] = workspace_id
+
     return config
 
 def fetch_user_id(api_key: str):
