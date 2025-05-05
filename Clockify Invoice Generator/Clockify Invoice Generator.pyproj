@@ -4,7 +4,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>fb77fd49-f549-4331-a398-881ea279200c</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>Clockify_Invoice_Generator.py</StartupFile>
+    <StartupFile>main.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
@@ -24,7 +24,7 @@
   <ItemGroup>
     <Compile Include="cli.py" />
     <Compile Include="clockify.py" />
-    <Compile Include="Clockify_Invoice_Generator.py" />
+    <Compile Include="main.py" />
     <Compile Include="config.py" />
     <Compile Include="exceptions.py" />
     <Compile Include="formatter.py" />
