@@ -12,6 +12,10 @@ def main():
     try:
         config = get_config(args.config)
 
+        if config is None:
+            logger.info("Configuration incomplete. Exiting without generating invoice.")
+            sys.exit(0)
+
         start = args.start
         end = args.end
 
