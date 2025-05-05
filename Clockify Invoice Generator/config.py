@@ -83,6 +83,24 @@ def get_config(env_file: str):
     output_path = os.getenv("OUTPUT_PATH", "output").strip()
     config["OUTPUT_PATH"] = os.path.abspath(output_path)
 
+    config["TITLE_FONT_SIZE"] = int(os.getenv("TITLE_FONT_SIZE", 24))
+    config["BODY_FONT_SIZE"] = int(os.getenv("BODY_FONT_SIZE", 11))
+    config["SEPARATOR_COLOR"] = os.getenv("SEPARATOR_COLOR", "c0504d")
+    config["SEPARATOR_SIZE"] = int(os.getenv("SEPARATOR_SIZE", 6))
+    config["HEADER_SPACING_BEFORE"] = int(os.getenv("HEADER_SPACING_BEFORE", 7))
+    config["HEADER_SPACING_AFTER"] = int(os.getenv("HEADER_SPACING_AFTER", 10))
+    config["BODY_SPACING_BEFORE"] = int(os.getenv("BODY_SPACING_BEFORE", 1))
+    config["BODY_SPACING_AFTER"] = int(os.getenv("BODY_SPACING_AFTER", 2))
+    
+    try:
+        heading_sizes = os.getenv("HEADING_FONT_SIZES", '{"1": 18, "2": 16, "3": 14, "4": 12}')
+        config["HEADING_FONT_SIZES"] = {int(k): int(v) for k, v in json.loads(heading_sizes).items()}
+    except (json.JSONDecodeError, ValueError):
+        raise ConfigError("Invalid JSON format in HEADING_FONT_SIZES")
+
+    return config
+
+
     try:
         line_items_raw = os.getenv("CONSTANT_LINE_ITEMS", "[]")
         config["CONSTANT_LINE_ITEMS"] = json.loads(line_items_raw)

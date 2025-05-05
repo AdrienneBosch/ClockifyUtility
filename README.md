@@ -118,15 +118,30 @@ OUTPUT_PATH=output
 CONSTANT_LINE_ITEMS=[{"description": "GitHub Co-pilot ($10/month)", "amount": 10.00}]
 TABLE_STYLE=Medium Shading 1 Accent 2
 TITLE_COLOR=c0504d
+
+TITLE_FONT_SIZE=24
+BODY_FONT_SIZE=11
+HEADING_FONT_SIZES={"1": 18, "2": 16, "3": 14, "4": 12}
+SEPARATOR_COLOR=c0504d
+SEPARATOR_SIZE=6
+
+HEADER_SPACING_BEFORE=7
+HEADER_SPACING_AFTER=10
+BODY_SPACING_BEFORE=1
+BODY_SPACING_AFTER=2
 ````
 
-* `OUTPUT_PATH` is the root directory where invoices will be saved (can be relative or absolute).
-* `CONSTANT_LINE_ITEMS` is a JSON array of fixed charges (e.g. subscriptions) included on every invoice.
-* `TABLE_STYLE` must be the exact name of a Word table style (case-sensitive).
-  * To view available styles, open Microsoft Word → create a table → go to the **Table Design** tab → hover over styles.
-* `TITLE_COLOR` must be a 6-digit hex code (no `#` prefix) representing an RGB color (e.g., `c0504d` for a reddish tone).
-
-```
+* `OUTPUT_PATH` is the root directory where invoices will be saved. You can specify either an absolute path (`C:\Invoices`) or a relative one (`output`).
+* `CONSTANT_LINE_ITEMS` is a JSON array of fixed recurring charges to include on every invoice. Each item must have a `description` and `amount`.
+* `TABLE_STYLE` must exactly match a built-in Microsoft Word table style. You can preview available styles in Word by creating a table and hovering over styles under the **Table Design** tab.
+* `TITLE_COLOR` is a 6-digit hex code (no `#`) used for the invoice title text color.
+* `TITLE_FONT_SIZE` sets the font size (in points) for the main title.
+* `BODY_FONT_SIZE` controls font size for paragraph and body text.
+* `HEADING_FONT_SIZES` is a JSON dictionary that maps heading levels (1–4) to specific font sizes.
+* `SEPARATOR_COLOR` sets the color of the horizontal rule under headings/titles.
+* `SEPARATOR_SIZE` is the thickness of that horizontal line.
+* `HEADER_SPACING_BEFORE` and `HEADER_SPACING_AFTER` control spacing (in points) above and below titles/headings.
+* `BODY_SPACING_BEFORE` and `BODY_SPACING_AFTER` do the same for paragraphs and body text.
 
 ---
 
