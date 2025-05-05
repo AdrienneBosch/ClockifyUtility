@@ -1,4 +1,5 @@
 ﻿import os
+import json
 import requests
 from dotenv import load_dotenv
 from exceptions import ConfigError, ApiError
@@ -74,6 +75,16 @@ def get_config(env_file: str):
 
     config["USER_ID"] = user_id
     config["WORKSPACE_ID"] = workspace_id
+
+    config["CURRENCY_SYMBOL"] = os.getenv("CURRENCY_SYMBOL", "$")
+    config["TABLE_STYLE"] = os.getenv("TABLE_STYLE", "Medium Shading 1 Accent 2")
+    config["TITLE_COLOR"] = os.getenv("TITLE_COLOR", "c0504d")
+
+    try:
+        line_items_raw = os.getenv("CONSTANT_LINE_ITEMS", "[]")
+        config["CONSTANT_LINE_ITEMS"] = json.loads(line_items_raw)
+    except json.JSONDecodeError:
+        raise ConfigError("Invalid JSON in CONSTANT_LINE_ITEMS")
 
     return config
 
