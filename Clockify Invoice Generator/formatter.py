@@ -3,64 +3,85 @@ from docx.enum.text import WD_PARAGRAPH_ALIGNMENT
 from docx.oxml import OxmlElement
 from docx.oxml.ns import qn
 
-TITLE_FONT_SIZE = 26
-TITLE_COLOR = RGBColor(0xC0, 0x50, 0x4D)
-HEADING_FONT_SIZE = 18
-HEADING_LEVEL_SIZES = {1: 20, 2: 18, 3: 16, 4: 14}
-BODY_FONT_SIZE = 12
-SEPARATOR_COLOR = "c0504d"
-SEPARATOR_SIZE_TITLE = 8
-SEPARATOR_SIZE_HEADING = 6
+DEFAULT_TITLE_FONT_SIZE = 24
+DEFAULT_HEADING_SIZES = {1: 18, 2: 16, 3: 14, 4: 12}
+DEFAULT_BODY_FONT_SIZE = 11
+DEFAULT_TITLE_COLOR_HEX = "c0504d"
 DEFAULT_SEPARATOR_COLOR = "666666"
 DEFAULT_SEPARATOR_SIZE = 6
+DEFAULT_SPACING_BEFORE = 0
+DEFAULT_SPACING_AFTER = 4
+
+def hex_to_rgb_color(hexstr):
+    hexstr = hexstr.strip().lstrip("#")
+    return RGBColor(int(hexstr[0:2], 16), int(hexstr[2:4], 16), int(hexstr[4:6], 16))
 
 class DocumentFormatter:
-    def __init__(self, doc):
+    def __init__(
+        self,
+        doc,
+        *,
+        title_font_size=DEFAULT_TITLE_FONT_SIZE,
+        title_color=DEFAULT_TITLE_COLOR_HEX,
+        heading_sizes=DEFAULT_HEADING_SIZES,
+        body_font_size=DEFAULT_BODY_FONT_SIZE,
+        separator_color=DEFAULT_SEPARATOR_COLOR,
+        separator_size=DEFAULT_SEPARATOR_SIZE,
+        spacing_before=DEFAULT_SPACING_BEFORE,
+        spacing_after=DEFAULT_SPACING_AFTER
+    ):
         self.doc = doc
+        self.title_font_size = title_font_size
+        self.title_color = hex_to_rgb_color(title_color)
+        self.heading_sizes = heading_sizes
+        self.body_font_size = body_font_size
+        self.separator_color = separator_color
+        self.separator_size = separator_size
+        self.spacing_before = Pt(spacing_before)
+        self.spacing_after = Pt(spacing_after)
 
     def add_title(self, text):
         p = self.doc.add_paragraph()
         run = p.add_run(text)
         run.bold = True
-        run.font.size = Pt(TITLE_FONT_SIZE)
-        run.font.color.rgb = TITLE_COLOR
+        run.font.size = Pt(self.title_font_size)
+        run.font.color.rgb = self.title_color
         p.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
-        p.paragraph_format.space_after = Pt(6)
-        self._add_separator(p, color=SEPARATOR_COLOR, size=SEPARATOR_SIZE_TITLE)
+        p.paragraph_format.space_before = self.spacing_before
+        p.paragraph_format.space_after = self.spacing_after
+        self._add_separator(p)
 
-    def add_heading(self, text):
+    def add_heading(self, text, level=1):
+        size = self.heading_sizes.get(level, self.body_font_size)
         p = self.doc.add_paragraph()
         run = p.add_run(text)
         run.bold = True
-        run.font.size = Pt(HEADING_FONT_SIZE)
+        run.font.size = Pt(size)
         p.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
-        self._add_separator(p, color=SEPARATOR_COLOR, size=SEPARATOR_SIZE_HEADING)
+        p.paragraph_format.space_before = self.spacing_before
+        p.paragraph_format.space_after = self.spacing_after
+        self._add_separator(p)
 
     def add_heading_level(self, level, text):
-        font_size = HEADING_LEVEL_SIZES.get(level, BODY_FONT_SIZE)
-        p = self.doc.add_paragraph()
-        run = p.add_run(text)
-        run.bold = True
-        run.font.size = Pt(font_size)
-        p.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
-        self._add_separator(p, color=SEPARATOR_COLOR, size=SEPARATOR_SIZE_HEADING)
+        self.add_heading(text, level)
 
     def add_body(self, text):
         p = self.doc.add_paragraph(text)
         p.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
+        p.paragraph_format.space_before = self.spacing_before
+        p.paragraph_format.space_after = self.spacing_after
 
     def add_paragraph(self, text):
-        p = self.doc.add_paragraph(text)
-        p.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
+        self.add_body(text)
 
-    def _add_separator(self, paragraph, color=DEFAULT_SEPARATOR_COLOR, size=DEFAULT_SEPARATOR_SIZE):
+    def _add_separator(self, paragraph):
         p = paragraph._p
         pPr = p.get_or_add_pPr()
         pBdr = OxmlElement("w:pBdr")
         bottom = OxmlElement("w:bottom")
         bottom.set(qn("w:val"), "single")
-        bottom.set(qn("w:sz"), str(size))
+        bottom.set(qn("w:sz"), str(self.separator_size))
         bottom.set(qn("w:space"), "1")
-        bottom.set(qn("w:color"), color)
+        bottom.set(qn("w:color"), self.separator_color)
         pBdr.append(bottom)
         pPr.append(pBdr)
