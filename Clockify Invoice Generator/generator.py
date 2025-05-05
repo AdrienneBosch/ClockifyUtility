@@ -38,31 +38,24 @@ def generate_invoice_workflow(start, end, output_path, generate_pdf, config):
     table_builder = TableBuilder(doc, config)
 
     formatter.add_title(f"Developer Invoice        {month_year}")
-    doc.add_paragraph()
 
     formatter.add_heading_level(2, "Contact Information")
     formatter.add_body(from_name)
     formatter.add_body(f"Email: {email}")
     formatter.add_body(f"Phone: {phone}")
-    doc.add_paragraph()
 
     formatter.add_heading_level(2, "Banking Details")
     for key, val in bank.items():
         p = doc.add_paragraph()
         p.add_run(f"{key}: ").bold = True
         p.add_run(val)
-    doc.add_paragraph()
 
     formatter.add_heading_level(2, "Address")
     for line in address_lines:
         formatter.add_body(line)
-    doc.add_paragraph()
 
     formatter.add_heading_level(2, "Billing Details")
-    doc.add_paragraph()
-
     table_builder.create_billing_table(summary, rate)
-    doc.add_paragraph()
 
     if output_path:
         base_path = output_path
