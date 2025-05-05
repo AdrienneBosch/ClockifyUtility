@@ -80,6 +80,9 @@ def get_config(env_file: str):
     config["TABLE_STYLE"] = os.getenv("TABLE_STYLE", "Medium Shading 1 Accent 2")
     config["TITLE_COLOR"] = os.getenv("TITLE_COLOR", "c0504d")
 
+    output_path = os.getenv("OUTPUT_PATH", "output").strip()
+    config["OUTPUT_PATH"] = os.path.abspath(output_path)
+
     try:
         line_items_raw = os.getenv("CONSTANT_LINE_ITEMS", "[]")
         config["CONSTANT_LINE_ITEMS"] = json.loads(line_items_raw)

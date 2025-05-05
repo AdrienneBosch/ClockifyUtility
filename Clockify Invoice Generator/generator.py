@@ -67,8 +67,9 @@ def generate_invoice_workflow(start, end, output_path, generate_pdf, config):
     if output_path:
         base_path = output_path
     else:
+        output_root = config.get("OUTPUT_PATH", os.path.abspath("output"))
         now = datetime.now()
-        base_dir = os.path.join("output", str(now.year), now.strftime("%B"))
+        base_dir = os.path.join(output_root, str(now.year), now.strftime("%B"))
         ensure_directory(base_dir)
         base_path = os.path.join(base_dir, f"{from_name} Invoice ({month_year}).docx")
 
