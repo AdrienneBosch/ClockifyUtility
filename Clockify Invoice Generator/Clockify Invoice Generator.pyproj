@@ -27,6 +27,7 @@
     <Compile Include="Clockify_Invoice_Generator.py" />
     <Compile Include="config.py" />
     <Compile Include="formatter.py" />
+    <Compile Include="generator.py" />
     <Compile Include="table_builder.py" />
   </ItemGroup>
   <ItemGroup>
