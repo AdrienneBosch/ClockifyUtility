@@ -3,48 +3,24 @@ from docx.enum.text import WD_PARAGRAPH_ALIGNMENT
 from docx.oxml import OxmlElement
 from docx.oxml.ns import qn
 
-DEFAULT_TITLE_FONT_SIZE = 24
-DEFAULT_HEADING_SIZES = {1: 18, 2: 16, 3: 14, 4: 12}
-DEFAULT_BODY_FONT_SIZE = 11
-DEFAULT_TITLE_COLOR_HEX = "c0504d"
-DEFAULT_SEPARATOR_COLOR = "c0504d"
-DEFAULT_SEPARATOR_SIZE = 6
-DEFAULT_HEADER_SPACING_BEFORE = 7
-DEFAULT_HEADER_SPACING_AFTER = 10
-DEFAULT_BODY_SPACING_BEFORE = 1
-DEFAULT_BODY_SPACING_AFTER = 2
-
 def hex_to_rgb_color(hexstr):
     hexstr = hexstr.strip().lstrip("#")
     return RGBColor(int(hexstr[0:2], 16), int(hexstr[2:4], 16), int(hexstr[4:6], 16))
 
 class DocumentFormatter:
-    def __init__(
-        self,
-        doc,
-        *,
-        title_font_size=DEFAULT_TITLE_FONT_SIZE,
-        title_color=DEFAULT_TITLE_COLOR_HEX,
-        heading_sizes=DEFAULT_HEADING_SIZES,
-        body_font_size=DEFAULT_BODY_FONT_SIZE,
-        separator_color=DEFAULT_SEPARATOR_COLOR,
-        separator_size=DEFAULT_SEPARATOR_SIZE,
-        header_spacing_before=DEFAULT_HEADER_SPACING_BEFORE,
-        header_spacing_after=DEFAULT_HEADER_SPACING_AFTER,
-        body_spacing_before=DEFAULT_BODY_SPACING_BEFORE,
-        body_spacing_after=DEFAULT_BODY_SPACING_AFTER
-    ):
+    def __init__(self, doc, config):
         self.doc = doc
-        self.title_font_size = title_font_size
-        self.title_color = hex_to_rgb_color(title_color)
-        self.heading_sizes = heading_sizes
-        self.body_font_size = body_font_size
-        self.separator_color = separator_color
-        self.separator_size = separator_size
-        self.header_spacing_before = Pt(header_spacing_before)
-        self.header_spacing_after = Pt(header_spacing_after)
-        self.body_spacing_before = Pt(body_spacing_before)
-        self.body_spacing_after = Pt(body_spacing_after)
+        self.title_font_size = int(config["TITLE_FONT_SIZE"])
+        self.title_color = hex_to_rgb_color(config["TITLE_COLOR"])
+        self.heading_sizes = config["HEADING_FONT_SIZES"]
+        self.body_font_size = int(config["BODY_FONT_SIZE"])
+        self.separator_color = config["SEPARATOR_COLOR"]
+        self.separator_size = int(config["SEPARATOR_SIZE"])
+        self.header_spacing_before = Pt(int(config["HEADER_SPACING_BEFORE"]))
+        self.header_spacing_after = Pt(int(config["HEADER_SPACING_AFTER"]))
+        self.body_spacing_before = Pt(int(config["BODY_SPACING_BEFORE"]))
+        self.body_spacing_after = Pt(int(config["BODY_SPACING_AFTER"]))
+
 
     def add_title(self, text):
         p = self.doc.add_paragraph()

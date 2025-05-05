@@ -34,7 +34,7 @@ def generate_invoice_workflow(start, end, output_path, generate_pdf, config):
     month_year = get_month_year(start)
     doc = Document()
 
-    formatter = DocumentFormatter(doc)
+    formatter = DocumentFormatter(doc, config)
     table_builder = TableBuilder(doc, config)
 
     formatter.add_title(f"Developer Invoice        {month_year}")
