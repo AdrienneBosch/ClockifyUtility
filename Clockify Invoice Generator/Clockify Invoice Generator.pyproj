@@ -24,6 +24,7 @@
   <ItemGroup>
     <Compile Include="cli.py" />
     <Compile Include="Clockify_Invoice_Generator.py" />
+    <Compile Include="config.py" />
   </ItemGroup>
   <ItemGroup>
     <InterpreterReference Include="Global|VisualStudio|work_env" />
