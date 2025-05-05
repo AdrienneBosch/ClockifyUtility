@@ -23,6 +23,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="cli.py" />
+    <Compile Include="clockify.py" />
     <Compile Include="Clockify_Invoice_Generator.py" />
     <Compile Include="config.py" />
     <Compile Include="formatter.py" />
