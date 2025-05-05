@@ -40,9 +40,21 @@ def generate_invoice_workflow(start, end, output_path, generate_pdf, config):
     formatter.add_title(f"Developer Invoice        {month_year}")
 
     formatter.add_heading_level(2, "Contact Information")
-    formatter.add_body(from_name)
-    formatter.add_body(f"Email: {email}")
-    formatter.add_body(f"Phone: {phone}")
+
+    p = doc.add_paragraph()
+    p.add_run("Name: ").bold = True
+    p.add_run(from_name)
+
+    if email:
+        p = doc.add_paragraph()
+        p.add_run("Email: ").bold = True
+        p.add_run(email)
+
+    if phone:
+        p = doc.add_paragraph()
+        p.add_run("Phone: ").bold = True
+        p.add_run(phone)
+
 
     formatter.add_heading_level(2, "Banking Details")
     for key, val in bank.items():
