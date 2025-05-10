@@ -3,6 +3,7 @@ from datetime import datetime
 from docx import Document
 from docx2pdf import convert
 from formatter import DocumentFormatter
+from docx.shared import Inches
 from table_builder import TableBuilder
 from utils import ensure_directory, clear_existing_file, get_month_year
 from logger import get_logger
@@ -34,7 +35,6 @@ def generate_invoice_workflow(start,
 
     client_name = config.get("CLIENT_NAME")
     client_email = config.get("CLIENT_EMAIL_ADDRESS")
-    client_text_number = config.get("CLIENT_TEXT_NUMBER")
     client_number = config.get("CLIENT_NUMBER")
     client_address_lines = [
         config.get("CLIENT_ADDRESS_1"),
@@ -54,66 +54,52 @@ def generate_invoice_workflow(start,
 
     formatter.add_title(f"Developer Invoice        {month_year}")
 
-    table = doc.add_table(rows=1, cols=2)
-    table.autofit = True
+    header_table = doc.add_table(rows=1, cols=2)
+    header_table.autofit = False
+    header_table.columns[0].width = Inches(3.6)
+    header_table.columns[1].width = Inches(2.4)
 
-    left_cell = table.cell(0, 0).paragraphs[0]
-    run = left_cell.add_run("Name: ")
-    run.bold = True
+    left_cell = header_table.cell(0, 0).paragraphs[0]
+    left_cell.add_run("Name: ").bold = True
     left_cell.add_run(from_name)
-
     if email:
-        left_cell.add_run("\n")
-        run = left_cell.add_run("Email: ")
-        run.bold = True
+        left_cell.add_run("\nEmail: ").bold = True
         left_cell.add_run(email)
-
     if phone:
-        left_cell.add_run("\n")
-        run = left_cell.add_run("Phone: ")
-        run.bold = True
+        left_cell.add_run("\nPhone: ").bold = True
         left_cell.add_run(phone)
 
-    right_cell = table.cell(0, 1).paragraphs[0]
+    right_cell = header_table.cell(0, 1).paragraphs[0]
     for line in filter(None, company_address_lines):
         right_cell.add_run(line).add_break()
 
     formatter.add_heading_level(2, "Banking Details")
     p = doc.add_paragraph()
-
     for idx, (key, val) in enumerate(bank.items()):
-        if idx > 0:
+        if idx:
             p.add_run("\n")
-        run = p.add_run(f"{key}: ")
-        run.bold = True
+        p.add_run(f"{key}: ").bold = True
         p.add_run(val)
 
     if client_name:
         formatter.add_heading_level(2, "Bill To")
+        bill_table = doc.add_table(rows=1, cols=2)
+        bill_table.autofit = False
+        bill_table.columns[0].width = Inches(3.6)
+        bill_table.columns[1].width = Inches(2.4)
 
-        formatter.add_heading_level(3, "Contact Information")
-        p = doc.add_paragraph()
-        p.add_run(client_name)
-
+        left = bill_table.cell(0, 0).paragraphs[0]
+        left.add_run(client_name)
         if client_email:
-            p = doc.add_paragraph()
-            p.add_run(f"Email: {client_email}")
-
-        phone_parts = []
-        if client_text_number:
-            phone_parts.append(f"Text: {client_text_number}")
+            left.add_run("\nEmail: ").bold = True
+            left.add_run(client_email)
         if client_number:
-            phone_parts.append(f"Phone: {client_number}")
+            left.add_run("\nPhone: ").bold = True
+            left.add_run(client_number)
 
-        if phone_parts:
-            p = doc.add_paragraph()
-            p.add_run(" | ".join(phone_parts))
-
-        address_text = "\n".join(filter(None, client_address_lines))
-        if address_text:
-            formatter.add_heading_level(3, "Address")
-            p = doc.add_paragraph()
-            p.add_run(address_text)
+        right = bill_table.cell(0, 1).paragraphs[0]
+        for line in filter(None, client_address_lines):
+            right.add_run(line).add_break()
 
     formatter.add_heading_level(2, "Billing Details")
     table_builder.create_billing_table(summary, rate)
@@ -132,10 +118,7 @@ def generate_invoice_workflow(start,
 
     clear_existing_file(base_path)
     doc.save(base_path)
-    logger.info(f"Saved invoice: {base_path}")
-
     if generate_pdf:
         pdf_path = base_path.replace(".docx", ".pdf")
         clear_existing_file(pdf_path)
         convert(base_path)
-        logger.info(f"Saved PDF: {pdf_path}")
