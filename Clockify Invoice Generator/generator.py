@@ -89,7 +89,8 @@ def generate_invoice_workflow(start,
         bill_table.columns[1].width = Inches(2.4)
 
         left = bill_table.cell(0, 0).paragraphs[0]
-        left.add_run(client_name)
+        run = left.add_run(client_name)
+        run.bold = True
         if client_email:
             left.add_run("\nEmail: ").bold = True
             left.add_run(client_email)
