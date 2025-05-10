@@ -118,7 +118,10 @@ def generate_invoice_workflow(start,
 
     clear_existing_file(base_path)
     doc.save(base_path)
+    logger.info(f"Invoice saved to {base_path}")
+
     if generate_pdf:
         pdf_path = base_path.replace(".docx", ".pdf")
         clear_existing_file(pdf_path)
         convert(base_path)
+        logger.info(f"PDF saved to {pdf_path}")
