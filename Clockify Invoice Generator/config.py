@@ -76,6 +76,14 @@ def get_config(env_file: str):
     config["USER_ID"] = user_id
     config["WORKSPACE_ID"] = workspace_id
 
+    config["CLIENT_NAME"] = os.environ["CLIENT_NAME"]
+    config["CLIENT_ADDRESS_1"] = os.environ["CLIENT_ADDRESS_1"]
+    config["CLIENT_ADDRESS_2"] = os.environ["CLIENT_ADDRESS_2"]
+    config["CLIENT_ADDRESS_3"] = os.environ["CLIENT_ADDRESS_3"]
+    config["CLIENT_EMAIL_ADDRESS"] = os.environ["CLIENT_EMAIL_ADDRESS"]
+    config["CLIENT_TEXT_NUMBER"] = os.environ["CLIENT_TEXT_NUMBER"]
+    config["CLIENT_NUMBER"] = os.environ["CLIENT_NUMBER"]
+
     config["CURRENCY_SYMBOL"] = os.getenv("CURRENCY_SYMBOL", "$")
     config["TABLE_STYLE"] = os.getenv("TABLE_STYLE", "Medium Shading 1 Accent 2")
     config["TITLE_COLOR"] = os.getenv("TITLE_COLOR", "c0504d")
