@@ -38,31 +38,38 @@ def generate_invoice_workflow(start, end, output_path, generate_pdf, config):
     table_builder = TableBuilder(doc, config)
 
     formatter.add_title(f"Developer Invoice        {month_year}")
-
+    
     formatter.add_heading_level(2, "Contact Information")
-
     p = doc.add_paragraph()
-    p.add_run("Name: ").bold = True
+
+    run = p.add_run("Name: ")
+    run.bold = True
     p.add_run(from_name)
 
     if email:
-        p = doc.add_paragraph()
-        p.add_run("Email: ").bold = True
+        p.add_run("\n")
+        run = p.add_run("Email: ")
+        run.bold = True
         p.add_run(email)
 
     if phone:
-        p = doc.add_paragraph()
-        p.add_run("Phone: ").bold = True
+        p.add_run("\n")
+        run = p.add_run("Phone: ")
+        run.bold = True
         p.add_run(phone)
 
-
     formatter.add_heading_level(2, "Banking Details")
-    for key, val in bank.items():
-        p = doc.add_paragraph()
-        p.add_run(f"{key}: ").bold = True
+    p = doc.add_paragraph()
+
+    for idx, (key, val) in enumerate(bank.items()):
+        if idx > 0:
+            p.add_run("\n")
+        run = p.add_run(f"{key}: ")
+        run.bold = True
         p.add_run(val)
 
     formatter.add_heading_level(2, "Address")
+
     for line in address_lines:
         formatter.add_body(line)
 
