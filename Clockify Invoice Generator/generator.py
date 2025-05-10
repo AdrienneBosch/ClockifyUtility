@@ -11,6 +11,7 @@ logger = get_logger()
 
 def generate_invoice_workflow(start, end, output_path, generate_pdf, config):
     from_name = config["FROM_NAME"]
+    client_name = config.get("CLIENT_NAME")
     address_lines = [
         config["COMPANY_ADDRESS_LINE1"],
         config["COMPANY_ADDRESS_LINE2"],
@@ -72,6 +73,48 @@ def generate_invoice_workflow(start, end, output_path, generate_pdf, config):
 
     for line in address_lines:
         formatter.add_body(line)
+    
+    if client_name:
+        formatter.add_heading_level(2, "Bill To")
+
+        formatter.add_heading_level(3, "Contact Information")
+
+        p = doc.add_paragraph()
+        p.add_run(client_name)
+
+        client_email = config.get("CLIENT_EMAIL_ADDRESS")
+        client_text_number = config.get("CLIENT_TEXT_NUMBER")
+        client_number = config.get("CLIENT_NUMBER")
+
+        if client_email:
+            p = doc.add_paragraph()
+            p.add_run(f"Email: {client_email}")
+
+        phone_parts = []
+        if client_text_number:
+            phone_parts.append(f"Text: {client_text_number}")
+        if client_number:
+            phone_parts.append(f"Phone: {client_number}")
+
+        if phone_parts:
+            p = doc.add_paragraph()
+            p.add_run(" | ".join(phone_parts))
+
+        client_address_1 = config.get("CLIENT_ADDRESS_1")
+        client_address_2 = config.get("CLIENT_ADDRESS_2")
+        client_address_3 = config.get("CLIENT_ADDRESS_3")
+
+        address_parts = [
+            client_address_1,
+            client_address_2,
+            client_address_3
+        ]
+
+        address_text = "\n".join(filter(None, address_parts))
+        if address_text:
+            formatter.add_heading_level(3, "Address")
+            p = doc.add_paragraph()
+            p.add_run(address_text)
 
     formatter.add_heading_level(2, "Billing Details")
     table_builder.create_billing_table(summary, rate)
