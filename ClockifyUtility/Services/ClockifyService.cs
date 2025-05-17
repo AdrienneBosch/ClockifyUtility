@@ -50,6 +50,8 @@ namespace ClockifyUtility.Services
                 }
                 foreach (var item in arr)
                 {
+                    // Log the full entry for debugging
+                    log?.Invoke($"[ClockifyService] ENTRY RAW: {item}");
                     var projectId = item["projectId"]?.ToString() ?? string.Empty;
                     string? project = null;
                     if (item["project"] != null && item["project"]["name"] != null)
@@ -61,6 +63,15 @@ namespace ClockifyUtility.Services
                     var startStr = timeInterval?["start"]?.ToString();
                     var endStr = timeInterval?["end"]?.ToString();
                     var duration = timeInterval?["duration"]?.ToString();
+
+                    if (string.IsNullOrEmpty(duration))
+                    {
+                        log?.Invoke($"[ClockifyService] WARNING: duration missing for entry: {item}");
+                    }
+                    else
+                    {
+                        log?.Invoke($"[ClockifyService] duration for entry: {duration}");
+                    }
 
                     double hours = 0;
                     if (!string.IsNullOrEmpty(duration) && duration.StartsWith("PT"))
@@ -75,14 +86,22 @@ namespace ClockifyUtility.Services
                             log?.Invoke($"[ClockifyService] Failed to parse duration '{duration}': {ex.Message}");
                         }
                     }
+                    else if (!string.IsNullOrEmpty(duration))
+                    {
+                        log?.Invoke($"[ClockifyService] Unrecognized duration format: {duration}");
+                    }
+
+                    DateTime s, e;
+                    var parsedStart = DateTime.TryParse(startStr, out s) ? s : start;
+                    var parsedEnd = DateTime.TryParse(endStr, out e) ? e : end;
 
                     entries.Add(new TimeEntryModel
                     {
                         ProjectId = projectId,
                         ProjectName = project, // will be resolved in InvoiceService if null/empty
                         Description = description,
-                        Start = DateTime.TryParse(startStr, out var s) ? s : start,
-                        End = DateTime.TryParse(endStr, out var e) ? e : end,
+                        Start = parsedStart,
+                        End = parsedEnd,
                         Hours = hours
                     });
                 }
