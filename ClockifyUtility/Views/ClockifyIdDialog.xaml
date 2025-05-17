@@ -14,9 +14,13 @@
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="{Binding Name}" Width="180"/>
-                        <TextBox Text="{Binding Id}" Width="200" IsReadOnly="True" Margin="10,0,10,0"/>
-                        <Button Content="Copy" Width="60" CommandParameter="{Binding Id}" Click="CopyWorkspaceId_Click"/>
+                        <TextBlock Width="350">
+                            <Run Text="{Binding Name}"/>
+                            <Run Text=" ("/>
+                            <Run Text="{Binding Id}"/>
+                            <Run Text=")"/>
+                        </TextBlock>
+                        <Button Content="Copy ID" Width="60" CommandParameter="{Binding Id}" Click="CopyWorkspaceId_Click"/>
                     </StackPanel>
                 </DataTemplate>
             </ListBox.ItemTemplate>
