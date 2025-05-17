@@ -1,38 +1,35 @@
-﻿using System.Configuration;
-using System.Data;
-using System.Windows;
+﻿using System.Windows;
 
-namespace ClockifyUtility;
+using ClockifyUtility.Services;
+using ClockifyUtility.ViewModels;
 
 /// <summary>
 /// Interaction logic for App.xaml
 /// </summary>
 using Microsoft.Extensions.DependencyInjection;
-using ClockifyUtility.Services;
-using ClockifyUtility.ViewModels;
 
+namespace ClockifyUtility;
 public partial class App : Application
 {
-    public static ServiceProvider ServiceProvider { get; private set; }
+	public static ServiceProvider? ServiceProvider { get; private set; }
 
-    protected override void OnStartup(StartupEventArgs e)
-    {
-        var services = new ServiceCollection();
-        services.AddSingleton<IClockifyService, ClockifyService>();
-        services.AddSingleton<IFileService, FileService>();
-        services.AddSingleton<IConfigService, ConfigService>();
-        services.AddSingleton<ProjectService>(sp =>
-            new ProjectService(sp.GetRequiredService<IConfigService>().LoadConfig().ClockifyApiKey));
-        services.AddSingleton<IInvoiceService>(sp =>
-            new InvoiceService(
-                sp.GetRequiredService<IClockifyService>(),
-                sp.GetRequiredService<IFileService>(),
-                sp.GetRequiredService<ProjectService>()
-            )
-        );
-        services.AddSingleton<MainViewModel>();
-        ServiceProvider = services.BuildServiceProvider();
-        base.OnStartup(e);
-    }
+	protected override void OnStartup ( StartupEventArgs e )
+	{
+		ServiceCollection services = new();
+		_ = services.AddSingleton<IClockifyService, ClockifyService> ( );
+		_ = services.AddSingleton<IFileService, FileService> ( );
+		_ = services.AddSingleton<IConfigService, ConfigService> ( );
+		_ = services.AddSingleton<ProjectService> ( sp =>
+			new ProjectService ( sp.GetRequiredService<IConfigService> ( ).LoadConfig ( ).ClockifyApiKey ) );
+		_ = services.AddSingleton<IInvoiceService> ( sp =>
+			new InvoiceService (
+				sp.GetRequiredService<IClockifyService> ( ),
+				sp.GetRequiredService<IFileService> ( ),
+				sp.GetRequiredService<ProjectService> ( )
+			)
+		);
+		_ = services.AddSingleton<MainViewModel> ( );
+		ServiceProvider = services.BuildServiceProvider ( );
+		base.OnStartup ( e );
+	}
 }
-

@@ -1,10 +1,8 @@
-using System.Collections.Generic;
-
 namespace ClockifyUtility.Models
 {
-    public class ConstantLineItem
-    {
-        public string Description { get; set; }
-        public double Amount { get; set; }
-    }
+	public class ConstantLineItem
+	{
+		public double Amount { get; set; }
+		public required string Description { get; set; }
+	}
 }

@@ -1,8 +1,8 @@
 namespace ClockifyUtility.Models
 {
-    public class WorkspaceInfo
-    {
-        public string Name { get; set; }
-        public string Id { get; set; }
-    }
+	public class WorkspaceInfo
+	{
+		public required string Id { get; set; }
+		public required string Name { get; set; }
+	}
 }
