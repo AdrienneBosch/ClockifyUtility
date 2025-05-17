@@ -34,6 +34,10 @@ namespace ClockifyUtility.ViewModels
             catch (Exception ex)
             {
                 Status = $"Error: {ex.Message}";
+                System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                {
+                    System.Windows.MessageBox.Show($"Error generating invoice:\n{ex.Message}", "Error", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
+                });
             }
         }
     }
@@ -42,14 +46,14 @@ namespace ClockifyUtility.ViewModels
     public class RelayCommand : ICommand
     {
         private readonly Func<Task> _execute;
-        private readonly Func<bool> _canExecute;
-        public event EventHandler CanExecuteChanged;
-        public RelayCommand(Func<Task> execute, Func<bool> canExecute = null)
+        private readonly Func<bool>? _canExecute;
+        public event EventHandler? CanExecuteChanged;
+        public RelayCommand(Func<Task> execute, Func<bool>? canExecute = null)
         {
             _execute = execute;
             _canExecute = canExecute;
         }
-        public bool CanExecute(object parameter) => _canExecute == null || _canExecute();
-        public async void Execute(object parameter) => await _execute();
+        public bool CanExecute(object? parameter) => _canExecute == null || _canExecute();
+        public async void Execute(object? parameter) => await _execute();
     }
 }
