@@ -18,11 +18,10 @@ namespace ClockifyUtility.Services
             _fileService = fileService;
         }
 
-        public async Task<string> GenerateInvoiceAsync(DateTime start, DateTime end, ConfigModel config)
+        public async Task<string> GenerateInvoiceAsync(DateTime start, DateTime end, ConfigModel config, Action<string>? log = null)
         {
-            var entries = await _clockifyService.FetchTimeEntriesAsync(start, end, config);
-            // Logging: how many entries fetched
-            System.Diagnostics.Debug.WriteLine($"[InvoiceService] Fetched {entries.Count} time entries from Clockify.");
+            var entries = await _clockifyService.FetchTimeEntriesAsync(start, end, config, log);
+            log?.Invoke($"[InvoiceService] Fetched {entries.Count} time entries from Clockify.");
 
             // Summarize by project
             var projectGroups = entries

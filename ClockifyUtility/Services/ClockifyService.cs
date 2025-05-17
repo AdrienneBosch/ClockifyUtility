@@ -9,7 +9,7 @@ namespace ClockifyUtility.Services
 {
     public class ClockifyService : IClockifyService
     {
-        public async Task<List<TimeEntryModel>> FetchTimeEntriesAsync(DateTime start, DateTime end, ConfigModel config)
+        public async Task<List<TimeEntryModel>> FetchTimeEntriesAsync(DateTime start, DateTime end, ConfigModel config, Action<string>? log = null)
         {
             var entries = new List<TimeEntryModel>();
             using var client = new HttpClient();
@@ -20,9 +20,11 @@ namespace ClockifyUtility.Services
             string endIso = end.ToString("yyyy-MM-ddTHH:mm:ssZ");
             string url = $"https://api.clockify.me/api/v1/workspaces/{config.WorkspaceId}/user/{config.UserId}/time-entries?start={startIso}&end={endIso}";
 
+            log?.Invoke($"[Clockify] Requesting: {url}");
             try
             {
                 var resp = await client.GetStringAsync(url);
+                log?.Invoke($"[Clockify] Response: {resp.Substring(0, Math.Min(resp.Length, 500))}{(resp.Length > 500 ? "..." : "")}");
                 var arr = Newtonsoft.Json.Linq.JArray.Parse(resp);
 
                 foreach (var item in arr)
@@ -44,7 +46,7 @@ namespace ClockifyUtility.Services
                         }
                         catch (Exception ex)
                         {
-                            System.Diagnostics.Debug.WriteLine($"[ClockifyService] Failed to parse duration '{duration}': {ex.Message}");
+                            log?.Invoke($"[ClockifyService] Failed to parse duration '{duration}': {ex.Message}");
                         }
                     }
 
@@ -57,10 +59,11 @@ namespace ClockifyUtility.Services
                         Hours = hours
                     });
                 }
+                log?.Invoke($"[Clockify] Parsed {entries.Count} time entries.");
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"[ClockifyService] Error fetching or parsing time entries: {ex.Message}\nURL: {url}");
+                log?.Invoke($"[ClockifyService] Error fetching or parsing time entries: {ex.Message}\nURL: {url}");
             }
             return entries;
         }

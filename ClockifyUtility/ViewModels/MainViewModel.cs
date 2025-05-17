@@ -51,8 +51,8 @@ namespace ClockifyUtility.ViewModels
                 var end = start.AddMonths(1).AddDays(-1);
                 AppendLog($"Invoice period: {start:yyyy-MM-dd} to {end:yyyy-MM-dd}");
 
-                // Logging for InvoiceService will show time entry count
-                var filePath = await _invoiceService.GenerateInvoiceAsync(start, end, config);
+                // Pass AppendLog to InvoiceService for deep logging
+                var filePath = await _invoiceService.GenerateInvoiceAsync(start, end, config, AppendLog);
                 Status = $"Invoice generated: {filePath}";
                 AppendLog($"Invoice generated at: {filePath}");
             }

@@ -7,12 +7,12 @@ namespace ClockifyUtility.Services
 {
     public interface IClockifyService
     {
-        Task<List<TimeEntryModel>> FetchTimeEntriesAsync(DateTime start, DateTime end, ConfigModel config);
+        Task<List<TimeEntryModel>> FetchTimeEntriesAsync(DateTime start, DateTime end, ConfigModel config, Action<string>? log = null);
     }
 
     public interface IInvoiceService
     {
-        Task<string> GenerateInvoiceAsync(DateTime start, DateTime end, ConfigModel config);
+        Task<string> GenerateInvoiceAsync(DateTime start, DateTime end, ConfigModel config, Action<string>? log = null);
     }
 
     public interface IConfigService
