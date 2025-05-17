@@ -25,5 +25,6 @@ namespace ClockifyUtility.Models
         public string CurrencySymbol { get; set; } = "$";
         public double HourlyRate { get; set; }
         public string OutputPath { get; set; } = "output";
+        public List<ConstantLineItem> ConstantLineItems { get; set; } = new();
     }
 }
