@@ -12,10 +12,12 @@ namespace ClockifyUtility.Services
     {
         private readonly IClockifyService _clockifyService;
         private readonly IFileService _fileService;
-        public InvoiceService(IClockifyService clockifyService, IFileService fileService)
+        private readonly ProjectService _projectService;
+        public InvoiceService(IClockifyService clockifyService, IFileService fileService, ProjectService projectService)
         {
             _clockifyService = clockifyService;
             _fileService = fileService;
+            _projectService = projectService;
         }
 
         public async Task<string> GenerateInvoiceAsync(DateTime start, DateTime end, ConfigModel config, Action<string>? log = null)
@@ -23,7 +25,24 @@ namespace ClockifyUtility.Services
             var entries = await _clockifyService.FetchTimeEntriesAsync(start, end, config, log);
             log?.Invoke($"[InvoiceService] Fetched {entries.Count} time entries from Clockify.");
 
-            // Summarize by project
+            // Fetch all projects for the workspace
+            var projects = await _projectService.GetProjectsAsync(config.WorkspaceId);
+            var projectMap = projects.ToDictionary(p => p.Id, p => p.Name);
+
+            // Map projectId to project name for each entry
+            foreach (var entry in entries)
+            {
+                if (!string.IsNullOrEmpty(entry.ProjectId) && projectMap.TryGetValue(entry.ProjectId, out var name))
+                {
+                    entry.ProjectName = name;
+                }
+                else if (string.IsNullOrEmpty(entry.ProjectName))
+                {
+                    entry.ProjectName = "No Project";
+                }
+            }
+
+            // Summarize by resolved project name
             var projectGroups = entries
                 .GroupBy(e => e.ProjectName)
                 .Select(g => new

@@ -29,6 +29,7 @@ namespace ClockifyUtility.Services
 
                 foreach (var item in arr)
                 {
+                    var projectId = item["projectId"]?.ToString() ?? string.Empty;
                     var project = item["project"]?["name"]?.ToString() ?? "No Project";
                     var description = item["description"]?.ToString() ?? "";
                     var timeInterval = item["timeInterval"];
@@ -52,6 +53,7 @@ namespace ClockifyUtility.Services
 
                     entries.Add(new TimeEntryModel
                     {
+                        ProjectId = projectId,
                         ProjectName = project,
                         Description = description,
                         Start = DateTime.TryParse(startStr, out var s) ? s : start,

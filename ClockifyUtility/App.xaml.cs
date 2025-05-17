@@ -21,7 +21,15 @@ public partial class App : Application
         services.AddSingleton<IClockifyService, ClockifyService>();
         services.AddSingleton<IFileService, FileService>();
         services.AddSingleton<IConfigService, ConfigService>();
-        services.AddSingleton<IInvoiceService, InvoiceService>();
+        services.AddSingleton<ProjectService>(sp =>
+            new ProjectService(sp.GetRequiredService<IConfigService>().LoadConfig().ClockifyApiKey));
+        services.AddSingleton<IInvoiceService>(sp =>
+            new InvoiceService(
+                sp.GetRequiredService<IClockifyService>(),
+                sp.GetRequiredService<IFileService>(),
+                sp.GetRequiredService<ProjectService>()
+            )
+        );
         services.AddSingleton<MainViewModel>();
         ServiceProvider = services.BuildServiceProvider();
         base.OnStartup(e);
