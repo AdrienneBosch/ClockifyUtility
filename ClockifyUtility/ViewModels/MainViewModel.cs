@@ -36,6 +36,7 @@ namespace ClockifyUtility.ViewModels
         private void AppendLog(string message)
         {
             Log += $"[{DateTime.Now:HH:mm:ss}] {message}\n";
+            System.Diagnostics.Debug.WriteLine($"[LOG] {message}");
         }
 
         private async Task GenerateInvoiceAsync()
@@ -49,6 +50,8 @@ namespace ClockifyUtility.ViewModels
                 var start = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
                 var end = start.AddMonths(1).AddDays(-1);
                 AppendLog($"Invoice period: {start:yyyy-MM-dd} to {end:yyyy-MM-dd}");
+
+                // Logging for InvoiceService will show time entry count
                 var filePath = await _invoiceService.GenerateInvoiceAsync(start, end, config);
                 Status = $"Invoice generated: {filePath}";
                 AppendLog($"Invoice generated at: {filePath}");

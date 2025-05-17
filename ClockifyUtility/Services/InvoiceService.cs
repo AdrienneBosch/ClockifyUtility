@@ -21,6 +21,9 @@ namespace ClockifyUtility.Services
         public async Task<string> GenerateInvoiceAsync(DateTime start, DateTime end, ConfigModel config)
         {
             var entries = await _clockifyService.FetchTimeEntriesAsync(start, end, config);
+            // Logging: how many entries fetched
+            System.Diagnostics.Debug.WriteLine($"[InvoiceService] Fetched {entries.Count} time entries from Clockify.");
+
             // Summarize by project
             var projectGroups = entries
                 .GroupBy(e => e.ProjectName)

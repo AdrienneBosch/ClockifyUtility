@@ -20,37 +20,47 @@ namespace ClockifyUtility.Services
             string endIso = end.ToString("yyyy-MM-ddTHH:mm:ssZ");
             string url = $"https://api.clockify.me/api/v1/workspaces/{config.WorkspaceId}/user/{config.UserId}/time-entries?start={startIso}&end={endIso}";
 
-            var resp = await client.GetStringAsync(url);
-            var arr = Newtonsoft.Json.Linq.JArray.Parse(resp);
-
-            foreach (var item in arr)
+            try
             {
-                var project = item["project"]?["name"]?.ToString() ?? "No Project";
-                var description = item["description"]?.ToString() ?? "";
-                var timeInterval = item["timeInterval"];
-                var startStr = timeInterval?["start"]?.ToString();
-                var endStr = timeInterval?["end"]?.ToString();
-                var duration = timeInterval?["duration"]?.ToString();
+                var resp = await client.GetStringAsync(url);
+                var arr = Newtonsoft.Json.Linq.JArray.Parse(resp);
 
-                double hours = 0;
-                if (!string.IsNullOrEmpty(duration) && duration.StartsWith("PT"))
+                foreach (var item in arr)
                 {
-                    try
+                    var project = item["project"]?["name"]?.ToString() ?? "No Project";
+                    var description = item["description"]?.ToString() ?? "";
+                    var timeInterval = item["timeInterval"];
+                    var startStr = timeInterval?["start"]?.ToString();
+                    var endStr = timeInterval?["end"]?.ToString();
+                    var duration = timeInterval?["duration"]?.ToString();
+
+                    double hours = 0;
+                    if (!string.IsNullOrEmpty(duration) && duration.StartsWith("PT"))
                     {
-                        var ts = System.Xml.XmlConvert.ToTimeSpan(duration);
-                        hours = ts.TotalHours;
+                        try
+                        {
+                            var ts = System.Xml.XmlConvert.ToTimeSpan(duration);
+                            hours = ts.TotalHours;
+                        }
+                        catch (Exception ex)
+                        {
+                            System.Diagnostics.Debug.WriteLine($"[ClockifyService] Failed to parse duration '{duration}': {ex.Message}");
+                        }
                     }
-                    catch { }
-                }
 
-                entries.Add(new TimeEntryModel
-                {
-                    ProjectName = project,
-                    Description = description,
-                    Start = DateTime.TryParse(startStr, out var s) ? s : start,
-                    End = DateTime.TryParse(endStr, out var e) ? e : end,
-                    Hours = hours
-                });
+                    entries.Add(new TimeEntryModel
+                    {
+                        ProjectName = project,
+                        Description = description,
+                        Start = DateTime.TryParse(startStr, out var s) ? s : start,
+                        End = DateTime.TryParse(endStr, out var e) ? e : end,
+                        Hours = hours
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[ClockifyService] Error fetching or parsing time entries: {ex.Message}\nURL: {url}");
             }
             return entries;
         }
