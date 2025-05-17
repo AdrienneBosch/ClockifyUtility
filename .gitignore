@@ -24,3 +24,4 @@
 # C# artifacts
 /ClockifyUtility/bin/
 /ClockifyUtility/obj/
+/ClockifyUtility/appsettings.json
