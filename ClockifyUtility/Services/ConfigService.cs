@@ -15,6 +15,12 @@ namespace ClockifyUtility.Services
             var configuration = builder.Build();
             var configModel = new ConfigModel();
             configuration.GetSection("Clockify").Bind(configModel);
+
+            // If UserId or WorkspaceId is missing, throw a custom exception
+            if (string.IsNullOrWhiteSpace(configModel.UserId) || string.IsNullOrWhiteSpace(configModel.WorkspaceId))
+            {
+                throw new MissingClockifyIdException(configModel.ClockifyApiKey);
+            }
             return configModel;
         }
     }

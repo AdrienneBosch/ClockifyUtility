@@ -53,6 +53,12 @@ namespace ClockifyUtility.ViewModels
                 Status = $"Invoice generated: {filePath}";
                 AppendLog($"Invoice generated at: {filePath}");
             }
+            catch (Services.MissingClockifyIdException ex)
+            {
+                Status = "Missing Clockify UserId or WorkspaceId.";
+                AppendLog("Missing Clockify UserId or WorkspaceId. Querying Clockify API...");
+                await ShowClockifyIdDialogAsync(ex.ApiKey);
+            }
             catch (Exception ex)
             {
                 Status = $"Error: {ex.Message}";
@@ -60,6 +66,30 @@ namespace ClockifyUtility.ViewModels
                 System.Windows.Application.Current.Dispatcher.Invoke(() =>
                 {
                     System.Windows.MessageBox.Show($"Error generating invoice:\n{ex.Message}", "Error", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
+                });
+            }
+        }
+
+        private async Task ShowClockifyIdDialogAsync(string apiKey)
+        {
+            try
+            {
+                var apiService = new Services.ClockifyApiService(apiKey);
+                var userId = await apiService.GetUserIdAsync();
+                var workspaces = await apiService.GetWorkspacesAsync();
+                System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                {
+                    var dialog = new Views.ClockifyIdDialog(userId, workspaces);
+                    dialog.ShowDialog();
+                });
+                AppendLog("Displayed Clockify ID dialog.");
+            }
+            catch (Exception ex)
+            {
+                AppendLog($"Error fetching Clockify IDs: {ex.Message}");
+                System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                {
+                    System.Windows.MessageBox.Show($"Error fetching Clockify IDs:\n{ex.Message}", "Error", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
                 });
             }
         }
