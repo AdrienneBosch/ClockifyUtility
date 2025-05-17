@@ -41,14 +41,13 @@ namespace ClockifyUtility.Services
                 }
             }
 
-            // Summarize by resolved project name
+            // Summarize by resolved project name, using duration for hours, rounding only at the end
             var projectGroups = entries
                 .GroupBy(e => e.ProjectName)
                 .Select(g => new
                 {
                     Project = g.Key,
-                    Hours = g.Sum(e => e.Hours),
-                    Descriptions = string.Join(", ", g.Select(e => e.Description).Where(d => !string.IsNullOrWhiteSpace(d)).Distinct())
+                    Hours = g.Sum(e => e.Hours)
                 })
                 .ToList();
 
@@ -81,7 +80,7 @@ namespace ClockifyUtility.Services
             foreach (var group in projectGroups)
             {
                 double amount = group.Hours * config.HourlyRate;
-                sb.AppendLine($"<tr><td>{group.Project}<div class='desc'>{group.Descriptions}</div></td><td class='right'>{group.Hours:F2}</td><td class='right'>{config.CurrencySymbol}{config.HourlyRate:F2}</td><td class='right'>{config.CurrencySymbol}{amount:F2}</td></tr>");
+                sb.AppendLine($"<tr><td>{group.Project}</td><td class='right'>{group.Hours:F2}</td><td class='right'>{config.CurrencySymbol}{config.HourlyRate:F2}</td><td class='right'>{config.CurrencySymbol}{amount:F2}</td></tr>");
                 totalAmountTable += amount;
                 totalHoursTable += group.Hours;
             }
