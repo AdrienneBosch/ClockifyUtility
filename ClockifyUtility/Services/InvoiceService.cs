@@ -73,16 +73,60 @@ namespace ClockifyUtility.Services
                 + $"--text: {style.TextColor};"
                 + $"--table-header-bg: {style.TableHeaderBg};"
                 + $"--table-border: {style.TableBorder};"
+                + $"--soft-heading-bg: {style.SoftHeadingBg};"
+                + $"--soft-alt-row-bg: {style.SoftAltRowBg};"
                 + "}}\n"
-                + "body { background: var(--background); color: var(--text); font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 2em; }\n"
-                + "h1, h2 { color: var(--primary); }\n"
-                + "table { width: 100%; border-collapse: collapse; margin-bottom: 2em; }\n"
-                + "th, td { border: 1px solid var(--table-border); padding: 10px 8px; }\n"
-                + "th { background: var(--table-header-bg); color: var(--primary); }\n"
-                + "tr:nth-child(even) { background: #f9fbfd; }\n"
+                + "body { background: var(--background); color: var(--text); font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 2em; min-height: 100vh; }\n"
+                + ".invoice-header { background: var(--soft-heading-bg); border-radius: 10px; padding: 1.5em 2em 1em 2em; margin-bottom: 2em; box-shadow: 0 2px 8px rgba(44,62,80,0.07); }\n"
+                + ".invoice-title-row { display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; margin-bottom: 1em; }\n"
+                + ".invoice-title { font-size: 2em; color: var(--primary); font-weight: 600; }\n"
+                + ".invoice-meta { font-size: 1.1em; color: var(--secondary); text-align: right; }\n"
+                + ".parties-row { display: flex; justify-content: space-between; gap: 2em; flex-wrap: wrap; }\n"
+                + ".party { width: 48%; min-width: 220px; }\n"
+                + ".party h3 { margin: 0 0 0.3em 0; color: var(--primary); font-size: 1.1em; }\n"
+                + ".party p { margin: 0.1em 0; }\n"
+                + "h2 { color: var(--secondary); font-size: 1.3em; margin-top: 2em; margin-bottom: 0.7em; }\n"
+                + "table { width: 100%; border-collapse: collapse; margin-bottom: 2em; box-shadow: 0 2px 8px rgba(44,62,80,0.07); background: #fff; }\n"
+                + "th, td { border: 1px solid var(--table-border); padding: 12px 10px; font-size: 1em; }\n"
+                + "th { background: var(--table-header-bg); color: var(--primary); letter-spacing: 0.03em; }\n"
+                + "tr:nth-child(even) { background: var(--soft-alt-row-bg); }\n"
+                + "tr:hover { background: var(--accent); color: #fff; transition: background 0.2s, color 0.2s; }\n"
                 + ".right { text-align: right; }\n"
-                + ".desc { font-size: 0.95em; color: #555; }"
+                + ".desc { font-size: 0.97em; color: var(--secondary); }\n"
+                + ".amount-due { background: var(--primary); color: #fff; padding: 1em 2em; border-radius: 8px; display: inline-block; font-size: 1.3em; margin-top: 1.5em; }\n"
+                + "@media (max-width: 900px) { .parties-row { flex-direction: column; } .party { width: 100%; } .invoice-title-row { flex-direction: column; align-items: flex-start; } .invoice-meta { text-align: left; margin-top: 0.5em; } }\n"
+                + "@media (max-width: 700px) { .invoice-header { padding: 1em 0.5em; } .invoice-title { font-size: 1.2em; } table, th, td { font-size: 0.95em; } }"
                 + "</style></head><body>");
+
+            // Header section with invoice number and dates
+            sb.AppendLine("<div class='invoice-header'>");
+            sb.AppendLine("  <div class='invoice-title-row'>");
+            sb.AppendLine("    <div class='invoice-title'>Developer Invoice</div>");
+            sb.AppendLine("    <div class='invoice-meta'>");
+            if (!string.IsNullOrWhiteSpace(config.InvoiceNumber))
+                sb.AppendLine($"<div><b>Invoice #:</b> {config.InvoiceNumber}</div>");
+            sb.AppendLine($"<div><b>Date:</b> {DateTime.Now:yyyy-MM-dd}</div>");
+            sb.AppendLine($"<div><b>Period:</b> {monthYear}</div>");
+            sb.AppendLine("    </div>");
+            sb.AppendLine("  </div>");
+            sb.AppendLine("  <div class='parties-row'>");
+            sb.AppendLine("    <div class='party'>");
+            sb.AppendLine("      <h3>From:</h3>");
+            sb.AppendLine($"      <p>{config.FromName}</p>");
+            sb.AppendLine($"      <p>{config.CompanyAddressLine1}<br>{config.CompanyAddressLine2}<br>{config.CompanyAddressLine3}</p>");
+            sb.AppendLine($"      <p>Email: {config.ContactEmail}<br>Phone: {config.ContactPhone}</p>");
+            sb.AppendLine("    </div>");
+            sb.AppendLine("    <div class='party'>");
+            sb.AppendLine("      <h3>Bill To:</h3>");
+            sb.AppendLine($"      <p>{config.ClientName}</p>");
+            sb.AppendLine($"      <p>{config.ClientAddress1}<br>{config.ClientAddress2}<br>{config.ClientAddress3}</p>");
+            sb.AppendLine($"      <p>Email: {config.ClientEmailAddress}<br>Phone: {config.ClientNumber}</p>");
+            sb.AppendLine("    </div>");
+            sb.AppendLine("  </div>");
+            sb.AppendLine("</div>");
+
+            sb.AppendLine("<h2>Work Summary</h2>");
+            sb.AppendLine("<table><tr><th>Project</th><th class='right'>Hours</th><th class='right'>Rate</th><th class='right'>Amount</th></tr>");
             sb.AppendLine($"<h1>Developer Invoice - {monthYear}</h1>");
             sb.AppendLine($"<h2>From: {config.FromName}</h2>");
             sb.AppendLine($"<p>{config.CompanyAddressLine1}<br>{config.CompanyAddressLine2}<br>{config.CompanyAddressLine3}</p>");

@@ -28,6 +28,7 @@ namespace ClockifyUtility.Models
         public List<ConstantLineItem> ConstantLineItems { get; set; } = new();
 
         // Styling properties for invoice
+        public string? InvoiceNumber { get; set; }
         public InvoiceStyleConfig InvoiceStyle { get; set; } = new InvoiceStyleConfig();
     }
 
@@ -40,5 +41,7 @@ namespace ClockifyUtility.Models
         public string TextColor { get; set; } = "#222222";
         public string TableHeaderBg { get; set; } = "#EAF1FB";
         public string TableBorder { get; set; } = "#BFC9D1";
+        public string SoftHeadingBg { get; set; } = "#e3f0fa";
+        public string SoftAltRowBg { get; set; } = "#f6fbff";
     }
 }
