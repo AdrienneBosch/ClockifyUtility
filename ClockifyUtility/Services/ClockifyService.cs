@@ -62,33 +62,43 @@ namespace ClockifyUtility.Services
                     var timeInterval = item["timeInterval"];
                     var startStr = timeInterval?["start"]?.ToString();
                     var endStr = timeInterval?["end"]?.ToString();
-                    var duration = timeInterval?["duration"]?.ToString();
+                    var durationToken = timeInterval?["duration"];
 
-                    if (string.IsNullOrEmpty(duration))
+                    double hours = 0;
+                    if (durationToken == null || durationToken.Type == Newtonsoft.Json.Linq.JTokenType.Null)
                     {
                         log?.Invoke($"[ClockifyService] WARNING: duration missing for entry: {item}");
                     }
+                    else if (durationToken.Type == Newtonsoft.Json.Linq.JTokenType.Integer || durationToken.Type == Newtonsoft.Json.Linq.JTokenType.Float)
+                    {
+                        double seconds = durationToken.ToObject<double>();
+                        hours = seconds / 3600.0;
+                        log?.Invoke($"[ClockifyService] duration (seconds) for entry: {seconds} (hours: {hours})");
+                    }
+                    else if (durationToken.Type == Newtonsoft.Json.Linq.JTokenType.String)
+                    {
+                        var durationStr = durationToken.ToObject<string>();
+                        if (!string.IsNullOrEmpty(durationStr) && durationStr.StartsWith("PT"))
+                        {
+                            try
+                            {
+                                var ts = System.Xml.XmlConvert.ToTimeSpan(durationStr);
+                                hours = ts.TotalHours;
+                                log?.Invoke($"[ClockifyService] duration (ISO8601) for entry: {durationStr} (hours: {hours})");
+                            }
+                            catch (Exception ex)
+                            {
+                                log?.Invoke($"[ClockifyService] Failed to parse duration '{durationStr}': {ex.Message}");
+                            }
+                        }
+                        else
+                        {
+                            log?.Invoke($"[ClockifyService] Unrecognized duration string format: {durationStr}");
+                        }
+                    }
                     else
                     {
-                        log?.Invoke($"[ClockifyService] duration for entry: {duration}");
-                    }
-
-                    double hours = 0;
-                    if (!string.IsNullOrEmpty(duration) && duration.StartsWith("PT"))
-                    {
-                        try
-                        {
-                            var ts = System.Xml.XmlConvert.ToTimeSpan(duration);
-                            hours = ts.TotalHours;
-                        }
-                        catch (Exception ex)
-                        {
-                            log?.Invoke($"[ClockifyService] Failed to parse duration '{duration}': {ex.Message}");
-                        }
-                    }
-                    else if (!string.IsNullOrEmpty(duration))
-                    {
-                        log?.Invoke($"[ClockifyService] Unrecognized duration format: {duration}");
+                        log?.Invoke($"[ClockifyService] Unrecognized duration token type: {durationToken.Type}");
                     }
 
                     DateTime s, e;
