@@ -23,15 +23,18 @@ namespace ClockifyUtility.Services
             return user["id"]?.ToString() ?? string.Empty;
         }
 
-        public async Task<List<(string Name, string Id)>> GetWorkspacesAsync()
+        public async Task<List<Models.WorkspaceInfo>> GetWorkspacesAsync()
         {
             using var client = new HttpClient();
             client.DefaultRequestHeaders.Add("X-Api-Key", _apiKey);
             var resp = await client.GetStringAsync("https://api.clockify.me/api/v1/workspaces");
             var workspaces = JArray.Parse(resp);
-            var result = new List<(string, string)>();
+            var result = new List<Models.WorkspaceInfo>();
             foreach (var ws in workspaces)
-                result.Add((ws["name"]?.ToString() ?? "", ws["id"]?.ToString() ?? ""));
+                result.Add(new Models.WorkspaceInfo {
+                    Name = ws["name"]?.ToString() ?? string.Empty,
+                    Id = ws["id"]?.ToString() ?? string.Empty
+                });
             return result;
         }
     }

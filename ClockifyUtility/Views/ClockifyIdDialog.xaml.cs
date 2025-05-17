@@ -6,7 +6,7 @@ namespace ClockifyUtility.Views
 {
     public partial class ClockifyIdDialog : Window
     {
-        public ClockifyIdDialog(string userId, List<(string Name, string Id)> workspaces)
+        public ClockifyIdDialog(string userId, List<Models.WorkspaceInfo> workspaces)
         {
             InitializeComponent();
             UserIdBox.Text = userId;
