@@ -62,9 +62,27 @@ namespace ClockifyUtility.Services
 
         private string BuildHtmlInvoice(List<dynamic> projectGroups, ConfigModel config, string monthYear, double totalHours, double totalAmount)
         {
+            var style = config.InvoiceStyle ?? new ClockifyUtility.Models.InvoiceStyleConfig();
             var sb = new StringBuilder();
-            sb.AppendLine("<html><head><title>Invoice</title>"
-                + "<style>body{font-family:sans-serif;} table{border-collapse:collapse;} th,td{border:1px solid #888;padding:6px;} th{background:#f0f0f0;} .right{text-align:right;} .desc{font-size:0.95em;color:#555;}</style></head><body>");
+            sb.AppendLine($"<html><head><title>Invoice</title>"
+                + "<style>:root {{"
+                + $"--primary: {style.PrimaryColor};"
+                + $"--secondary: {style.SecondaryColor};"
+                + $"--accent: {style.AccentColor};"
+                + $"--background: {style.BackgroundColor};"
+                + $"--text: {style.TextColor};"
+                + $"--table-header-bg: {style.TableHeaderBg};"
+                + $"--table-border: {style.TableBorder};"
+                + "}}\n"
+                + "body { background: var(--background); color: var(--text); font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 2em; }\n"
+                + "h1, h2 { color: var(--primary); }\n"
+                + "table { width: 100%; border-collapse: collapse; margin-bottom: 2em; }\n"
+                + "th, td { border: 1px solid var(--table-border); padding: 10px 8px; }\n"
+                + "th { background: var(--table-header-bg); color: var(--primary); }\n"
+                + "tr:nth-child(even) { background: #f9fbfd; }\n"
+                + ".right { text-align: right; }\n"
+                + ".desc { font-size: 0.95em; color: #555; }"
+                + "</style></head><body>");
             sb.AppendLine($"<h1>Developer Invoice - {monthYear}</h1>");
             sb.AppendLine($"<h2>From: {config.FromName}</h2>");
             sb.AppendLine($"<p>{config.CompanyAddressLine1}<br>{config.CompanyAddressLine2}<br>{config.CompanyAddressLine3}</p>");
