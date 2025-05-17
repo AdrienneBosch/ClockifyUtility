@@ -15,22 +15,47 @@ namespace ClockifyUtility.Services
             using var client = new HttpClient();
             client.DefaultRequestHeaders.Add("X-Api-Key", config.ClockifyApiKey);
 
-            // ISO 8601 format for Clockify API
-            string startIso = start.ToString("yyyy-MM-ddTHH:mm:ssZ");
-            string endIso = end.ToString("yyyy-MM-ddTHH:mm:ssZ");
-            string url = $"https://api.clockify.me/api/v1/workspaces/{config.WorkspaceId}/user/{config.UserId}/time-entries?start={startIso}&end={endIso}";
-
-            log?.Invoke($"[Clockify] Requesting: {url}");
+            // Use the detailed report endpoint
+            string url = $"https://reports.api.clockify.me/v1/workspaces/{config.WorkspaceId}/reports/detailed";
+            var body = new {
+                dateRangeStart = start.ToString("yyyy-MM-dd'T'HH:mm:ss'Z'"),
+                dateRangeEnd = end.ToString("yyyy-MM-dd'T'HH:mm:ss'Z'"),
+                exportType = "JSON",
+                users = new { ids = new[] { config.UserId } },
+                detailedFilter = new { page = 1, pageSize = 1000 }
+            };
+            var jsonBody = Newtonsoft.Json.JsonConvert.SerializeObject(body);
+            var request = new HttpRequestMessage(HttpMethod.Post, url)
+            {
+                Content = new StringContent(jsonBody, System.Text.Encoding.UTF8, "application/json")
+            };
+            request.Headers.Add("X-Api-Key", config.ClockifyApiKey);
             try
             {
-                var resp = await client.GetStringAsync(url);
-                log?.Invoke($"[Clockify] Response: {resp.Substring(0, Math.Min(resp.Length, 500))}{(resp.Length > 500 ? "..." : "")}");
-                var arr = Newtonsoft.Json.Linq.JArray.Parse(resp);
-
+                log?.Invoke($"[Clockify] Requesting: {url} with body: {jsonBody}");
+                var resp = await client.SendAsync(request);
+                var respStr = await resp.Content.ReadAsStringAsync();
+                log?.Invoke($"[Clockify] Response: {respStr.Substring(0, Math.Min(respStr.Length, 500))}{(respStr.Length > 500 ? "..." : "")}");
+                if (!resp.IsSuccessStatusCode)
+                {
+                    log?.Invoke($"[ClockifyService] Error: {resp.StatusCode} {respStr}");
+                    return entries;
+                }
+                var obj = Newtonsoft.Json.Linq.JObject.Parse(respStr);
+                var arr = obj["timeentries"] as Newtonsoft.Json.Linq.JArray;
+                if (arr == null)
+                {
+                    log?.Invoke("[ClockifyService] No timeentries found in response.");
+                    return entries;
+                }
                 foreach (var item in arr)
                 {
                     var projectId = item["projectId"]?.ToString() ?? string.Empty;
-                    var project = item["project"]?["name"]?.ToString() ?? "No Project";
+                    string? project = null;
+                    if (item["project"] != null && item["project"]["name"] != null)
+                    {
+                        project = item["project"]["name"]?.ToString();
+                    }
                     var description = item["description"]?.ToString() ?? "";
                     var timeInterval = item["timeInterval"];
                     var startStr = timeInterval?["start"]?.ToString();
@@ -54,7 +79,7 @@ namespace ClockifyUtility.Services
                     entries.Add(new TimeEntryModel
                     {
                         ProjectId = projectId,
-                        ProjectName = project,
+                        ProjectName = project, // will be resolved in InvoiceService if null/empty
                         Description = description,
                         Start = DateTime.TryParse(startStr, out var s) ? s : start,
                         End = DateTime.TryParse(endStr, out var e) ? e : end,

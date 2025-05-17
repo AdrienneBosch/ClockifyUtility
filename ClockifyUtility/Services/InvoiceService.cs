@@ -25,18 +25,17 @@ namespace ClockifyUtility.Services
             var entries = await _clockifyService.FetchTimeEntriesAsync(start, end, config, log);
             log?.Invoke($"[InvoiceService] Fetched {entries.Count} time entries from Clockify.");
 
-            // Fetch all projects for the workspace
-            var projects = await _projectService.GetProjectsAsync(config.WorkspaceId);
-            var projectMap = projects.ToDictionary(p => p.Id, p => p.Name);
-
-            // Map projectId to project name for each entry
-            foreach (var entry in entries)
+            // Use per-project API lookup with cache, log all project IDs and queries
+            var projectNameCache = new ProjectNameCache(config.ClockifyApiKey, config.WorkspaceId);
+            for (int i = 0; i < entries.Count; i++)
             {
-                if (!string.IsNullOrEmpty(entry.ProjectId) && projectMap.TryGetValue(entry.ProjectId, out var name))
+                var entry = entries[i];
+                log?.Invoke($"[InvoiceService] TimeEntry {i}: projectId={entry.ProjectId}");
+                if (string.IsNullOrEmpty(entry.ProjectName))
                 {
-                    entry.ProjectName = name;
+                    entry.ProjectName = await projectNameCache.GetProjectNameAsync(entry.ProjectId, log);
                 }
-                else if (string.IsNullOrEmpty(entry.ProjectName))
+                if (string.IsNullOrEmpty(entry.ProjectName))
                 {
                     entry.ProjectName = "No Project";
                 }
