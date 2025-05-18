@@ -37,9 +37,11 @@
                           HorizontalContentAlignment="Left"
                           ItemsSource="{Binding DisplayInvoiceConfigs}"
                           SelectedItem="{Binding SelectedInvoiceConfig, Mode=TwoWay}" />
-                <Button Width="28" Height="28" Margin="6,1,0,1" Padding="0" Command="{Binding SetDefaultInvoiceCommand}"
+                <Button Style="{StaticResource MonthSelectorButtonStyle}"
+                        Width="18" Height="18" Margin="6,6,0,6" Padding="0"
+                        Command="{Binding SetDefaultInvoiceCommand}"
                         ToolTip="Set as default" AutomationProperties.Name="Set as default" VerticalAlignment="Center">
-                    <TextBlock FontSize="18"
+                    <TextBlock FontSize="12"
                                VerticalAlignment="Center"
                                HorizontalAlignment="Center"
                                Text="{Binding StarIconUnicode}"
