@@ -221,7 +221,10 @@ namespace ClockifyUtility.Services
 				Serilog.Log.Debug("[InvoiceService] TimeEntry {Index}: projectId=REDACTED", i);
 			   if ( string.IsNullOrEmpty ( entry.ProjectName ) )
 			   {
-				   entry.ProjectName = await projectNameCache.GetProjectNameAsync ( entry.ProjectId );
+				   if (!string.IsNullOrEmpty(entry.ProjectId))
+				   {
+					   entry.ProjectName = await projectNameCache.GetProjectNameAsync(entry.ProjectId);
+				   }
 			   }
 				if ( string.IsNullOrEmpty ( entry.ProjectName ) )
 				{

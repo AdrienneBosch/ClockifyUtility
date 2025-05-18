@@ -1,3 +1,10 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
+using Serilog;
+using System.Windows;
 using System.Windows.Input;
 using ClockifyUtility.Services;
 
@@ -13,7 +20,7 @@ namespace ClockifyUtility.ViewModels
 	{
 		private readonly IConfigService _configService;
 		private readonly IInvoiceService _invoiceService;
-
+		
 		private string? _selectedInvoiceConfig = null;
 		private List<string> _availableInvoiceConfigs = new();
 		private string? _defaultInvoiceConfig = null;
@@ -45,11 +52,14 @@ namespace ClockifyUtility.ViewModels
 			   _defaultInvoiceConfig = settings?.DefaultInvoice ?? string.Empty;
 			   invoiceConfigDir = settings?.InvoiceConfigDirectory;
 		   }
-		   var configDir = invoiceConfigDir ?? System.IO.Path.Combine(exeDir, "invoice-generator");
-		   if (System.IO.Directory.Exists(configDir))
+		   if (!string.IsNullOrWhiteSpace(invoiceConfigDir) && System.IO.Directory.Exists(invoiceConfigDir))
 		   {
-			   var files = System.IO.Directory.GetFiles(configDir, "*.json");
+			   var files = System.IO.Directory.GetFiles(invoiceConfigDir, "*.json");
 			   _availableInvoiceConfigs = files.Select(f => System.IO.Path.GetFileName(f)).ToList();
+		   }
+		   else
+		   {
+			   _availableInvoiceConfigs = new List<string>();
 		   }
 		   _availableInvoiceConfigs.Insert(0, "All");
 		   _selectedInvoiceConfig = _defaultInvoiceConfig ?? "All";
@@ -59,20 +69,20 @@ namespace ClockifyUtility.ViewModels
 		public List<string> AvailableInvoiceConfigs
 		{
 			get => _availableInvoiceConfigs;
-			set { _availableInvoiceConfigs = value; OnPropertyChanged(nameof(AvailableInvoiceConfigs)); }
+		   set { _availableInvoiceConfigs = value; OnPropertyChanged(nameof(AvailableInvoiceConfigs)); }
 		}
 
 
 		public string SelectedInvoiceConfig
 		{
 			get => _selectedInvoiceConfig ?? string.Empty;
-			set { _selectedInvoiceConfig = value; OnPropertyChanged(nameof(SelectedInvoiceConfig)); }
+		   set { _selectedInvoiceConfig = value; OnPropertyChanged(nameof(SelectedInvoiceConfig)); }
 		}
 
 		public string DefaultInvoiceConfig
 		{
 			get => _defaultInvoiceConfig ?? string.Empty;
-			set { _defaultInvoiceConfig = value; OnPropertyChanged(nameof(DefaultInvoiceConfig)); }
+		   set { _defaultInvoiceConfig = value; OnPropertyChanged(nameof(DefaultInvoiceConfig)); }
 		}
 
 		private bool SetDefaultInvoice()
@@ -104,31 +114,31 @@ namespace ClockifyUtility.ViewModels
 		public string Status
 		{
 			get => _status;
-			set { _status = value; OnPropertyChanged ( nameof ( Status ) ); }
+		   set { _status = value; OnPropertyChanged(nameof(Status)); }
 		}
 
 
 
 		private async Task GenerateInvoiceAsync ( )
 		{
-			try
-			{
-				Status = "Generating invoice...";
-				Serilog.Log.Information("Starting invoice generation.");
-				DateTime start = new(DateTime.Now.Year, DateTime.Now.Month, 1);
-				DateTime end = start.AddMonths(1).AddDays(-1);
-				Serilog.Log.Information("Invoice period: {Start} to {End}", start.ToString("yyyy-MM-dd"), end.ToString("yyyy-MM-dd"));
+		   try
+		   {
+			   Status = "Generating invoice...";
+			   Log.Information("Starting invoice generation.");
+			   DateTime start = new(DateTime.Now.Year, DateTime.Now.Month, 1);
+			   DateTime end = start.AddMonths(1).AddDays(-1);
+			   Log.Information("Invoice period: {Start} to {End}", start.ToString("yyyy-MM-dd"), end.ToString("yyyy-MM-dd"));
 
-				// Determine which configs to use
-				List<string> configsToGenerate = new();
-				if (SelectedInvoiceConfig == "All")
-				{
-					configsToGenerate = AvailableInvoiceConfigs.Where(f => f != "All").ToList();
-				}
-				else
-				{
-					configsToGenerate.Add(SelectedInvoiceConfig);
-				}
+			   // Determine which configs to use
+			   List<string> configsToGenerate = new();
+			   if (SelectedInvoiceConfig == "All")
+			   {
+				   configsToGenerate = AvailableInvoiceConfigs.Where(f => f != "All").ToList();
+			   }
+			   else
+			   {
+				   configsToGenerate.Add(SelectedInvoiceConfig);
+			   }
 
 			   var exeDir = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
 			   if (string.IsNullOrEmpty(exeDir))
@@ -143,39 +153,41 @@ namespace ClockifyUtility.ViewModels
 				   var settings = Newtonsoft.Json.JsonConvert.DeserializeObject<AppSettings>(appSettingsJson);
 				   invoiceConfigDir = settings?.InvoiceConfigDirectory;
 			   }
-			   var configDir = invoiceConfigDir ?? System.IO.Path.Combine(exeDir, "invoice-generator");
-			   foreach (var configFile in configsToGenerate)
+			   if (!string.IsNullOrWhiteSpace(invoiceConfigDir) && System.IO.Directory.Exists(invoiceConfigDir))
 			   {
-				   var fullPath = System.IO.Path.Combine(configDir, configFile);
-				   if (!System.IO.File.Exists(fullPath)) continue;
-				   var json = System.IO.File.ReadAllText(fullPath);
-				   var config = Newtonsoft.Json.JsonConvert.DeserializeObject<Models.InvoiceConfig>(json);
-				   if (config == null)
+				   foreach (var configFile in configsToGenerate)
 				   {
-					   Serilog.Log.Warning("Config file {ConfigFile} could not be deserialized and will be skipped.", configFile);
-					   continue;
+					   var fullPath = System.IO.Path.Combine(invoiceConfigDir, configFile);
+					   if (!System.IO.File.Exists(fullPath)) continue;
+					   var json = System.IO.File.ReadAllText(fullPath);
+					   var config = Newtonsoft.Json.JsonConvert.DeserializeObject<Models.InvoiceConfig>(json);
+					   if (config == null)
+					   {
+						   Log.Warning("Config file {ConfigFile} could not be deserialized and will be skipped.", configFile);
+						   continue;
+					   }
+					   // TODO: Validate config if needed
+					   string filePath = await _invoiceService.GenerateInvoiceAsync(start, end, config);
+					   Status = $"Invoice generated: {filePath}";
+					   Log.Information("Invoice generated at: {FilePath}", filePath);
 				   }
-				   // TODO: Validate config if needed
-				   string filePath = await _invoiceService.GenerateInvoiceAsync(start, end, config);
-				   Status = $"Invoice generated: {filePath}";
-				   Serilog.Log.Information("Invoice generated at: {FilePath}", filePath);
-				}
-			}
-			catch ( Services.MissingClockifyIdException ex )
-			{
-				Status = "Missing Clockify UserId or WorkspaceId.";
-				Serilog.Log.Warning("Missing Clockify UserId or WorkspaceId. Querying Clockify API...");
-				await ShowClockifyIdDialogAsync ( ex.ApiKey );
-			}
-			catch ( Exception ex )
-			{
-				Status = $"Error: {ex.Message}";
-				Serilog.Log.Error(ex, "Error generating invoice");
-				System.Windows.Application.Current.Dispatcher.Invoke ( ( ) =>
-				{
-					_ = System.Windows.MessageBox.Show ( $"Error generating invoice:\n{ex.Message}", "Error", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error );
-				} );
-			}
+			   }
+		   }
+		   catch (Services.MissingClockifyIdException ex)
+		   {
+			   Status = "Missing Clockify UserId or WorkspaceId.";
+			   Log.Warning("Missing Clockify UserId or WorkspaceId. Querying Clockify API...");
+			   await ShowClockifyIdDialogAsync(ex.ApiKey);
+		   }
+		   catch (Exception ex)
+		   {
+			   Status = $"Error: {ex.Message}";
+			   Log.Error(ex, "Error generating invoice");
+			   Application.Current.Dispatcher.Invoke(() =>
+			   {
+				   _ = MessageBox.Show($"Error generating invoice:\n{ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+			   });
+		   }
 		}
 
 		private async Task ShowClockifyIdDialogAsync ( string apiKey )

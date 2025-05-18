@@ -27,8 +27,18 @@ public partial class App : Application
 		   var settings = Newtonsoft.Json.JsonConvert.DeserializeObject<ClockifyUtility.ViewModels.AppSettings>(json);
 		   invoiceConfigDir = settings?.InvoiceConfigDirectory;
 	   }
-	   string configDir = invoiceConfigDir ?? System.IO.Path.Combine(exeDir, "invoice-generator");
-	   var results = ClockifyUtility.Services.InvoiceConfigLoader.LoadAllConfigs(configDir);
+	   if (string.IsNullOrWhiteSpace(invoiceConfigDir) || !System.IO.Directory.Exists(invoiceConfigDir))
+	   {
+		   System.Windows.MessageBox.Show(
+			   $"Invoice config directory is not set or does not exist: {invoiceConfigDir}",
+			   "Invoice Config Directory Error",
+			   MessageBoxButton.OK,
+			   MessageBoxImage.Error
+		   );
+		   System.Windows.Application.Current.Shutdown();
+		   return;
+	   }
+	   var results = ClockifyUtility.Services.InvoiceConfigLoader.LoadAllConfigs(invoiceConfigDir);
 		var errorMsgs = new System.Text.StringBuilder();
 		foreach (var result in results)
 		{
