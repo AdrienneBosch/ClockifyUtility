@@ -177,91 +177,92 @@ namespace ClockifyUtility.ViewModels
 
 
 
-		private async Task GenerateInvoiceAsync ( )
+		private async Task GenerateInvoiceAsync()
 		{
-		   try
-		   {
-			   Status = "Generating invoice...";
-			   Log.Information("Starting invoice generation.");
-			   DateTime start = new(DateTime.Now.Year, DateTime.Now.Month, 1);
-			   DateTime end = start.AddMonths(1).AddDays(-1);
-			   Log.Information("Invoice period: {Start} to {End}", start.ToString("yyyy-MM-dd"), end.ToString("yyyy-MM-dd"));
+			try
+			{
+				Status = "Generating invoice...";
+				Log.Information("Starting invoice generation.");
+				DateTime start = new(DateTime.Now.Year, DateTime.Now.Month, 1);
+				DateTime end = start.AddMonths(1).AddDays(-1);
+				Log.Information("Invoice period: {Start} to {End}", start.ToString("yyyy-MM-dd"), end.ToString("yyyy-MM-dd"));
 
-			   // Determine which configs to use
-			   List<string> configsToGenerate = new();
-			   if (SelectedInvoiceConfig == "All")
-			   {
-			   configsToGenerate = _availableInvoiceConfigs.Where(f => f != "All").ToList();
-			   }
-			   else
-			   {
-				   configsToGenerate.Add(SelectedInvoiceConfig);
-			   }
-
-			   var exeDir = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
-			   if (string.IsNullOrEmpty(exeDir))
-			   {
-				   throw new InvalidOperationException("Could not determine executable directory.");
-			   }
-			   var appSettingsPath = System.IO.Path.Combine(exeDir, "appsettings.json");
-			   string? invoiceConfigDir = null;
-			   if (System.IO.File.Exists(appSettingsPath))
-			   {
-				   var appSettingsJson = System.IO.File.ReadAllText(appSettingsPath);
-				   var settings = Newtonsoft.Json.JsonConvert.DeserializeObject<AppSettings>(appSettingsJson);
-				   invoiceConfigDir = settings?.InvoiceConfigDirectory;
-			   }
-			   if (!string.IsNullOrWhiteSpace(invoiceConfigDir) && System.IO.Directory.Exists(invoiceConfigDir))
-			   {
-				var skippedConfigs = new List<string>();
-				foreach (var configFile in configsToGenerate)
+				// Always use the internal config name for logic
+				string selectedConfigName = _selectedInvoiceConfig ?? "All";
+				List<string> configsToGenerate = new();
+				if (selectedConfigName == "All")
 				{
-					var fullPath = System.IO.Path.Combine(invoiceConfigDir, configFile);
-					if (!System.IO.File.Exists(fullPath)) continue;
-					var json = System.IO.File.ReadAllText(fullPath);
-					var config = Newtonsoft.Json.JsonConvert.DeserializeObject<InvoiceConfig>(json);
-					if (config == null)
-					{
-						Log.Warning("Config file {ConfigFile} could not be deserialized and will be skipped.", configFile);
-						skippedConfigs.Add(configFile + " (invalid JSON)");
-						continue;
-					}
-					var errors = InvoiceConfigValidator.Validate(config);
-					if (errors.Count > 0)
-					{
-						Log.Warning("Config file {ConfigFile} is invalid and will be skipped: {Errors}", configFile, string.Join("; ", errors));
-						skippedConfigs.Add(configFile + ": " + string.Join(", ", errors));
-						continue;
-					}
-					string clientName = config.Clockify?.ClientName ?? "Unknown Client";
-					Status = $"Generating invoice for {clientName}...";
-					await _invoiceService.GenerateInvoiceAsync(start, end, config);
-				}
-				if (skippedConfigs.Count > 0)
-				{
-					Status = $"Invoice(s) saved successfully. Skipped: {skippedConfigs.Count} config(s):\n" + string.Join("\n", skippedConfigs);
+					configsToGenerate = _availableInvoiceConfigs.Where(f => f != "All").ToList();
 				}
 				else
 				{
-					Status = "Invoice(s) saved successfully";
+					configsToGenerate.Add(selectedConfigName);
 				}
-			   }
-		   }
-		   catch (Services.MissingClockifyIdException ex)
-		   {
-			   Status = "Missing Clockify UserId or WorkspaceId.";
-			   Log.Warning("Missing Clockify UserId or WorkspaceId. Querying Clockify API...");
-			   await ShowClockifyIdDialogAsync(ex.ApiKey);
-		   }
-		   catch (Exception ex)
-		   {
-			   Status = $"Error: {ex.Message}";
-			   Log.Error(ex, "Error generating invoice");
-			   Application.Current.Dispatcher.Invoke(() =>
-			   {
-				   _ = MessageBox.Show($"Error generating invoice:\n{ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-			   });
-		   }
+
+				var exeDir = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+				if (string.IsNullOrEmpty(exeDir))
+				{
+					throw new InvalidOperationException("Could not determine executable directory.");
+				}
+				var appSettingsPath = System.IO.Path.Combine(exeDir, "appsettings.json");
+				string? invoiceConfigDir = null;
+				if (System.IO.File.Exists(appSettingsPath))
+				{
+					var appSettingsJson = System.IO.File.ReadAllText(appSettingsPath);
+					var settings = Newtonsoft.Json.JsonConvert.DeserializeObject<AppSettings>(appSettingsJson);
+					invoiceConfigDir = settings?.InvoiceConfigDirectory;
+				}
+				if (!string.IsNullOrWhiteSpace(invoiceConfigDir) && System.IO.Directory.Exists(invoiceConfigDir))
+				{
+					var skippedConfigs = new List<string>();
+					foreach (var configFile in configsToGenerate)
+					{
+						var fullPath = System.IO.Path.Combine(invoiceConfigDir, configFile);
+						if (!System.IO.File.Exists(fullPath)) continue;
+						var json = System.IO.File.ReadAllText(fullPath);
+						var config = Newtonsoft.Json.JsonConvert.DeserializeObject<InvoiceConfig>(json);
+						if (config == null)
+						{
+							Log.Warning("Config file {ConfigFile} could not be deserialized and will be skipped.", configFile);
+							skippedConfigs.Add(configFile + " (invalid JSON)");
+							continue;
+						}
+						var errors = InvoiceConfigValidator.Validate(config);
+						if (errors.Count > 0)
+						{
+							Log.Warning("Config file {ConfigFile} is invalid and will be skipped: {Errors}", configFile, string.Join("; ", errors));
+							skippedConfigs.Add(configFile + ": " + string.Join(", ", errors));
+							continue;
+						}
+						string clientName = config.Clockify?.ClientName ?? "Unknown Client";
+						Status = $"Generating invoice for {clientName}...";
+						await _invoiceService.GenerateInvoiceAsync(start, end, config);
+					}
+					if (skippedConfigs.Count > 0)
+					{
+						Status = $"Invoice(s) saved successfully. Skipped: {skippedConfigs.Count} config(s):\n" + string.Join("\n", skippedConfigs);
+					}
+					else
+					{
+						Status = "Invoice(s) saved successfully";
+					}
+				}
+			}
+			catch (Services.MissingClockifyIdException ex)
+			{
+				Status = "Missing Clockify UserId or WorkspaceId.";
+				Log.Warning("Missing Clockify UserId or WorkspaceId. Querying Clockify API...");
+				await ShowClockifyIdDialogAsync(ex.ApiKey);
+			}
+			catch (Exception ex)
+			{
+				Status = $"Error: {ex.Message}";
+				Log.Error(ex, "Error generating invoice");
+				Application.Current.Dispatcher.Invoke(() =>
+				{
+					_ = MessageBox.Show($"Error generating invoice:\n{ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+				});
+			}
 		}
 
 		private async Task ShowClockifyIdDialogAsync ( string apiKey )
