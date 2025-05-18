@@ -92,13 +92,30 @@ namespace ClockifyUtility.ViewModels
 			DisplayInvoiceConfigs = _availableInvoiceConfigs
 				.Select(cfg => cfg == (_defaultInvoiceConfig ?? "") ? $"{cfg} (Default)" : cfg)
 				.ToList();
+
+			// After updating the display list, ensure the selected item matches the display string
+			var current = _selectedInvoiceConfig ?? string.Empty;
+			// Find the display string for the current selection
+			var match = DisplayInvoiceConfigs.FirstOrDefault(d => d.Replace(" (Default)", "") == current);
+			if (!string.IsNullOrEmpty(match))
+			{
+				// This will update the ComboBox selection in the UI
+				_selectedInvoiceConfig = match.Replace(" (Default)", "");
+				OnPropertyChanged(nameof(SelectedInvoiceConfig));
+			}
 		}
 
 
 
 		public string SelectedInvoiceConfig
 		{
-			get => _selectedInvoiceConfig ?? string.Empty;
+			get
+			{
+				// Return the display string for the selected config (with Default marker if needed)
+				var current = _selectedInvoiceConfig ?? string.Empty;
+				var match = DisplayInvoiceConfigs.FirstOrDefault(d => d.Replace(" (Default)", "") == current);
+				return match ?? current;
+			}
 			set
 			{
 				// Remove (Default) marker if present
@@ -132,6 +149,13 @@ namespace ClockifyUtility.ViewModels
 				System.IO.File.WriteAllText(appSettingsPath, Newtonsoft.Json.JsonConvert.SerializeObject(settings, Newtonsoft.Json.Formatting.Indented));
 				DefaultInvoiceConfig = cleanValue ?? string.Empty;
 				UpdateDisplayInvoiceConfigs();
+				// After updating display configs, set selection to the new display string
+				var match = DisplayInvoiceConfigs.FirstOrDefault(d => d.Replace(" (Default)", "") == cleanValue);
+				if (!string.IsNullOrEmpty(match))
+				{
+					_selectedInvoiceConfig = cleanValue;
+					OnPropertyChanged(nameof(SelectedInvoiceConfig));
+				}
 				Status = $"Default invoice updated to: {cleanValue}";
 				return true;
 			}
