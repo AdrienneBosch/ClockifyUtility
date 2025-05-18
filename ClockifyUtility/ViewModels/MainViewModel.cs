@@ -1,13 +1,23 @@
 using System.Windows.Input;
-
 using ClockifyUtility.Services;
 
 namespace ClockifyUtility.ViewModels
 {
+	// Helper class for appsettings.json
+   public class AppSettings
+   {
+	   public string? DefaultInvoice { get; set; }
+	   public string? InvoiceConfigDirectory { get; set; }
+   }
 	public class MainViewModel : System.ComponentModel.INotifyPropertyChanged
 	{
 		private readonly IConfigService _configService;
 		private readonly IInvoiceService _invoiceService;
+
+		private string? _selectedInvoiceConfig = null;
+		private List<string> _availableInvoiceConfigs = new();
+		private string? _defaultInvoiceConfig = null;
+		public ICommand SetDefaultInvoiceCommand { get; }
 
 		private string _status = string.Empty;
 
@@ -16,6 +26,73 @@ namespace ClockifyUtility.ViewModels
 			_invoiceService = invoiceService;
 			_configService = configService;
 			GenerateInvoiceCommand = new RelayCommand ( GenerateInvoiceAsync );
+
+			// Load available configs from invoice-generator folder
+
+
+		   // Load default from appsettings.json
+		   var exeDir = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+		   if (string.IsNullOrEmpty(exeDir))
+		   {
+			   throw new InvalidOperationException("Could not determine executable directory.");
+		   }
+		   var appSettingsPath = System.IO.Path.Combine(exeDir, "appsettings.json");
+		   string? invoiceConfigDir = null;
+		   if (System.IO.File.Exists(appSettingsPath))
+		   {
+			   var json = System.IO.File.ReadAllText(appSettingsPath);
+			   var settings = Newtonsoft.Json.JsonConvert.DeserializeObject<AppSettings>(json);
+			   _defaultInvoiceConfig = settings?.DefaultInvoice ?? string.Empty;
+			   invoiceConfigDir = settings?.InvoiceConfigDirectory;
+		   }
+		   var configDir = invoiceConfigDir ?? System.IO.Path.Combine(exeDir, "invoice-generator");
+		   if (System.IO.Directory.Exists(configDir))
+		   {
+			   var files = System.IO.Directory.GetFiles(configDir, "*.json");
+			   _availableInvoiceConfigs = files.Select(f => System.IO.Path.GetFileName(f)).ToList();
+		   }
+		   _availableInvoiceConfigs.Insert(0, "All");
+		   _selectedInvoiceConfig = _defaultInvoiceConfig ?? "All";
+
+			SetDefaultInvoiceCommand = new RelayCommand(async () => { SetDefaultInvoice(); await Task.CompletedTask; }, () => SelectedInvoiceConfig != null && SelectedInvoiceConfig != "All");
+		}
+		public List<string> AvailableInvoiceConfigs
+		{
+			get => _availableInvoiceConfigs;
+			set { _availableInvoiceConfigs = value; OnPropertyChanged(nameof(AvailableInvoiceConfigs)); }
+		}
+
+
+		public string SelectedInvoiceConfig
+		{
+			get => _selectedInvoiceConfig ?? string.Empty;
+			set { _selectedInvoiceConfig = value; OnPropertyChanged(nameof(SelectedInvoiceConfig)); }
+		}
+
+		public string DefaultInvoiceConfig
+		{
+			get => _defaultInvoiceConfig ?? string.Empty;
+			set { _defaultInvoiceConfig = value; OnPropertyChanged(nameof(DefaultInvoiceConfig)); }
+		}
+
+		private bool SetDefaultInvoice()
+		{
+		   var exeDir = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+		   if (string.IsNullOrEmpty(exeDir))
+		   {
+			   throw new InvalidOperationException("Could not determine executable directory.");
+		   }
+		   var appSettingsPath = System.IO.Path.Combine(exeDir, "appsettings.json");
+		   if (System.IO.File.Exists(appSettingsPath))
+		   {
+			   var json = System.IO.File.ReadAllText(appSettingsPath);
+			   var settings = Newtonsoft.Json.JsonConvert.DeserializeObject<AppSettings>(json) ?? new AppSettings();
+			   settings.DefaultInvoice = SelectedInvoiceConfig;
+			   System.IO.File.WriteAllText(appSettingsPath, Newtonsoft.Json.JsonConvert.SerializeObject(settings, Newtonsoft.Json.Formatting.Indented));
+			   DefaultInvoiceConfig = SelectedInvoiceConfig;
+			   return true;
+		   }
+		   return false;
 		}
 
 		public event System.ComponentModel.PropertyChangedEventHandler? PropertyChanged;
@@ -37,32 +114,67 @@ namespace ClockifyUtility.ViewModels
 			try
 			{
 				Status = "Generating invoice...";
-			Serilog.Log.Information("Starting invoice generation.");
-				Models.ConfigModel config = _configService.LoadConfig ( );
-			Serilog.Log.Information("Loaded configuration.");
+				Serilog.Log.Information("Starting invoice generation.");
 				DateTime start = new(DateTime.Now.Year, DateTime.Now.Month, 1);
-			DateTime end = start.AddMonths(1).AddDays(-1);
-			Serilog.Log.Information("Invoice period: {Start} to {End}", start.ToString("yyyy-MM-dd"), end.ToString("yyyy-MM-dd"));
+				DateTime end = start.AddMonths(1).AddDays(-1);
+				Serilog.Log.Information("Invoice period: {Start} to {End}", start.ToString("yyyy-MM-dd"), end.ToString("yyyy-MM-dd"));
 
-				// Generate invoice
-				string filePath = await _invoiceService.GenerateInvoiceAsync(start, end, config);
-			Status = $"Invoice generated: {filePath}";
-			Serilog.Log.Information("Invoice generated at: {FilePath}", filePath);
+				// Determine which configs to use
+				List<string> configsToGenerate = new();
+				if (SelectedInvoiceConfig == "All")
+				{
+					configsToGenerate = AvailableInvoiceConfigs.Where(f => f != "All").ToList();
+				}
+				else
+				{
+					configsToGenerate.Add(SelectedInvoiceConfig);
+				}
+
+			   var exeDir = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+			   if (string.IsNullOrEmpty(exeDir))
+			   {
+				   throw new InvalidOperationException("Could not determine executable directory.");
+			   }
+			   var appSettingsPath = System.IO.Path.Combine(exeDir, "appsettings.json");
+			   string? invoiceConfigDir = null;
+			   if (System.IO.File.Exists(appSettingsPath))
+			   {
+				   var appSettingsJson = System.IO.File.ReadAllText(appSettingsPath);
+				   var settings = Newtonsoft.Json.JsonConvert.DeserializeObject<AppSettings>(appSettingsJson);
+				   invoiceConfigDir = settings?.InvoiceConfigDirectory;
+			   }
+			   var configDir = invoiceConfigDir ?? System.IO.Path.Combine(exeDir, "invoice-generator");
+			   foreach (var configFile in configsToGenerate)
+			   {
+				   var fullPath = System.IO.Path.Combine(configDir, configFile);
+				   if (!System.IO.File.Exists(fullPath)) continue;
+				   var json = System.IO.File.ReadAllText(fullPath);
+				   var config = Newtonsoft.Json.JsonConvert.DeserializeObject<Models.InvoiceConfig>(json);
+				   if (config == null)
+				   {
+					   Serilog.Log.Warning("Config file {ConfigFile} could not be deserialized and will be skipped.", configFile);
+					   continue;
+				   }
+				   // TODO: Validate config if needed
+				   string filePath = await _invoiceService.GenerateInvoiceAsync(start, end, config);
+				   Status = $"Invoice generated: {filePath}";
+				   Serilog.Log.Information("Invoice generated at: {FilePath}", filePath);
+				}
 			}
 			catch ( Services.MissingClockifyIdException ex )
 			{
-			Status = "Missing Clockify UserId or WorkspaceId.";
-			Serilog.Log.Warning("Missing Clockify UserId or WorkspaceId. Querying Clockify API...");
-			await ShowClockifyIdDialogAsync ( ex.ApiKey );
+				Status = "Missing Clockify UserId or WorkspaceId.";
+				Serilog.Log.Warning("Missing Clockify UserId or WorkspaceId. Querying Clockify API...");
+				await ShowClockifyIdDialogAsync ( ex.ApiKey );
 			}
 			catch ( Exception ex )
 			{
-			Status = $"Error: {ex.Message}";
-			Serilog.Log.Error(ex, "Error generating invoice");
-			System.Windows.Application.Current.Dispatcher.Invoke ( ( ) =>
-			{
-				_ = System.Windows.MessageBox.Show ( $"Error generating invoice:\n{ex.Message}", "Error", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error );
-			} );
+				Status = $"Error: {ex.Message}";
+				Serilog.Log.Error(ex, "Error generating invoice");
+				System.Windows.Application.Current.Dispatcher.Invoke ( ( ) =>
+				{
+					_ = System.Windows.MessageBox.Show ( $"Error generating invoice:\n{ex.Message}", "Error", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error );
+				} );
 			}
 		}
 

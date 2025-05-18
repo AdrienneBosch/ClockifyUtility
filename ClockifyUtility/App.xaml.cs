@@ -17,6 +17,40 @@ public partial class App : Application
 
 	protected override void OnStartup ( StartupEventArgs e )
 	{
+		// Step 4: Load and validate all invoice configs at startup
+	   string exeDir = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) ?? string.Empty;
+	   string appSettingsPath = System.IO.Path.Combine(exeDir, "appsettings.json");
+	   string? invoiceConfigDir = null;
+	   if (System.IO.File.Exists(appSettingsPath))
+	   {
+		   var json = System.IO.File.ReadAllText(appSettingsPath);
+		   var settings = Newtonsoft.Json.JsonConvert.DeserializeObject<ClockifyUtility.ViewModels.AppSettings>(json);
+		   invoiceConfigDir = settings?.InvoiceConfigDirectory;
+	   }
+	   string configDir = invoiceConfigDir ?? System.IO.Path.Combine(exeDir, "invoice-generator");
+	   var results = ClockifyUtility.Services.InvoiceConfigLoader.LoadAllConfigs(configDir);
+		var errorMsgs = new System.Text.StringBuilder();
+		foreach (var result in results)
+		{
+			if (result.Errors != null && result.Errors.Count > 0)
+			{
+				errorMsgs.AppendLine($"File: {System.IO.Path.GetFileName(result.FilePath)}");
+				foreach (var err in result.Errors)
+					errorMsgs.AppendLine($"  - {err}");
+				errorMsgs.AppendLine();
+			}
+		}
+		if (errorMsgs.Length > 0)
+		{
+			System.Windows.MessageBox.Show(
+				$"Some invoice configuration files are invalid:\n\n{errorMsgs}",
+				"Invoice Config Validation Error",
+				MessageBoxButton.OK,
+				MessageBoxImage.Error
+			);
+			System.Windows.Application.Current.Shutdown();
+			return;
+		}
 		if ( !_serilogInitialized )
 		{
 			Log.Logger = new LoggerConfiguration ( )
@@ -36,7 +70,13 @@ public partial class App : Application
 		_ = services.AddSingleton<IFileService, FileService> ( );
 		_ = services.AddSingleton<IConfigService, ConfigService> ( );
 		_ = services.AddSingleton<ProjectService> ( sp =>
-			new ProjectService ( sp.GetRequiredService<IConfigService> ( ).LoadConfig ( ).ClockifyApiKey ) );
+		{
+			var config = sp.GetRequiredService<IConfigService>().LoadConfig();
+			var apiKey = config.ClockifyApiKey;
+			if (string.IsNullOrWhiteSpace(apiKey))
+				throw new InvalidOperationException("ClockifyApiKey is missing in appsettings.json (Clockify section)");
+			return new ProjectService(apiKey);
+		});
 		_ = services.AddSingleton<IInvoiceService> ( sp =>
 			new InvoiceService (
 				sp.GetRequiredService<IClockifyService> ( ),
