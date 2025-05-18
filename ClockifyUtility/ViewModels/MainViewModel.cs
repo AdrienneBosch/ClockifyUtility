@@ -17,7 +17,7 @@ namespace ClockifyUtility.ViewModels
 	   public string? DefaultInvoice { get; set; }
 	   public string? InvoiceConfigDirectory { get; set; }
    }
-	public class MainViewModel : System.ComponentModel.INotifyPropertyChanged
+   public class MainViewModel : System.ComponentModel.INotifyPropertyChanged
 	{
 		// --- Month Navigation State ---
 		private DateTime _selectedMonth = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
@@ -207,10 +207,10 @@ namespace ClockifyUtility.ViewModels
 			try
 			{
 				Status = "Generating invoice...";
-				Log.Information("Starting invoice generation.");
-				DateTime start = SelectedMonth;
-				DateTime end = SelectedMonth.AddMonths(1).AddDays(-1);
-				Log.Information("Invoice period: {Start} to {End}", start.ToString("yyyy-MM-dd"), end.ToString("yyyy-MM-dd"));
+			   Serilog.Log.Information("Starting invoice generation.");
+			   DateTime start = SelectedMonth;
+			   DateTime end = SelectedMonth.AddMonths(1).AddDays(-1);
+			   Serilog.Log.Information("Invoice period: {Start} to {End}", start.ToString("yyyy-MM-dd"), end.ToString("yyyy-MM-dd"));
 
 				// Always use the internal config name for logic
 				string selectedConfigName = _selectedInvoiceConfig ?? "All";
@@ -248,14 +248,14 @@ namespace ClockifyUtility.ViewModels
 						var config = Newtonsoft.Json.JsonConvert.DeserializeObject<InvoiceConfig>(json);
 						if (config == null)
 						{
-							Log.Warning("Config file {ConfigFile} could not be deserialized and will be skipped.", configFile);
+			   Serilog.Log.Warning("Config file {ConfigFile} could not be deserialized and will be skipped.", configFile);
 							skippedConfigs.Add(configFile + " (invalid JSON)");
 							continue;
 						}
 						var errors = InvoiceConfigValidator.Validate(config);
 						if (errors.Count > 0)
 						{
-							Log.Warning("Config file {ConfigFile} is invalid and will be skipped: {Errors}", configFile, string.Join("; ", errors));
+			   Serilog.Log.Warning("Config file {ConfigFile} is invalid and will be skipped: {Errors}", configFile, string.Join("; ", errors));
 							skippedConfigs.Add(configFile + ": " + string.Join(", ", errors));
 							continue;
 						}
@@ -276,13 +276,13 @@ namespace ClockifyUtility.ViewModels
 			catch (Services.MissingClockifyIdException ex)
 			{
 				Status = "Missing Clockify UserId or WorkspaceId.";
-				Log.Warning("Missing Clockify UserId or WorkspaceId. Querying Clockify API...");
+			   Serilog.Log.Warning("Missing Clockify UserId or WorkspaceId. Querying Clockify API...");
 				await ShowClockifyIdDialogAsync(ex.ApiKey);
 			}
 			catch (Exception ex)
 			{
 				Status = $"Error: {ex.Message}";
-				Log.Error(ex, "Error generating invoice");
+			   Serilog.Log.Error(ex, "Error generating invoice");
 				Application.Current.Dispatcher.Invoke(() =>
 				{
 					_ = MessageBox.Show($"Error generating invoice:\n{ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);

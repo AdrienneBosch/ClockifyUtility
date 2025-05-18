@@ -261,13 +261,22 @@ namespace ClockifyUtility.Services
 				projectEntryHours[entry.ProjectName!] += entry.Hours;
 			}
 
+
 			// Log summary of fetched entries per project
 			Serilog.Log.Information("[InvoiceService] Time entry summary by project:");
+			double sumAllProjectHours = 0;
 			foreach (var kvp in projectEntryCount)
 			{
 				Serilog.Log.Information($"[InvoiceService] Project: {kvp.Key}, Entries: {kvp.Value}, Hours: {projectEntryHours[kvp.Key]:F2}");
+				sumAllProjectHours += projectEntryHours[kvp.Key];
 			}
+			Serilog.Log.Information($"[InvoiceService] SUM of all project hours: {sumAllProjectHours:F2}");
 
+			// Also log the sum of all entry hours (should match sumAllProjectHours)
+			double sumAllEntryHours = cleanEntries.Sum(e => e.Hours);
+			Serilog.Log.Information($"[InvoiceService] SUM of all entry hours: {sumAllEntryHours:F2}");
+
+			// Log the grouped project hours as used in the invoice
 			var projectGroups = cleanEntries
 				.GroupBy(e => e.ProjectName)
 				.Select(g => new
@@ -276,6 +285,8 @@ namespace ClockifyUtility.Services
 					Hours = g.Sum(e => e.Hours)
 				})
 				.ToList();
+			double sumGroupedProjectHours = projectGroups.Sum(g => g.Hours);
+			Serilog.Log.Information($"[InvoiceService] SUM of grouped project hours (used in invoice): {sumGroupedProjectHours:F2}");
 
 		   double totalHours = projectGroups.Sum(g => g.Hours);
 		   double totalAmount = totalHours * config.Clockify.HourlyRate;

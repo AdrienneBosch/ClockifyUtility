@@ -61,19 +61,25 @@ public partial class App : Application
 			System.Windows.Application.Current.Shutdown();
 			return;
 		}
-		if ( !_serilogInitialized )
-		{
-			Log.Logger = new LoggerConfiguration ( )
-				.MinimumLevel.Information ( )
-				.WriteTo.File (
-					path: "logs/clockify-utility-.log",
-					rollingInterval: RollingInterval.Day,
-					retainedFileCountLimit: 7,
-					outputTemplate: "[{Timestamp:yyyy-MM-dd HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}"
-				)
-				.CreateLogger ( );
-			_serilogInitialized = true;
-		}
+	   if (!_serilogInitialized)
+	   {
+		   // Ensure logs directory exists
+		   var logDir = System.IO.Path.Combine(System.IO.Directory.GetCurrentDirectory(), "logs");
+		   if (!System.IO.Directory.Exists(logDir))
+		   {
+			   System.IO.Directory.CreateDirectory(logDir);
+		   }
+		   Log.Logger = new LoggerConfiguration()
+			   .MinimumLevel.Information()
+			   .WriteTo.File(
+				   path: "logs/clockify-utility-.log",
+				   rollingInterval: RollingInterval.Day,
+				   retainedFileCountLimit: 7,
+				   outputTemplate: "[{Timestamp:yyyy-MM-dd HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}"
+			   )
+			   .CreateLogger();
+		   _serilogInitialized = true;
+	   }
 
 		ServiceCollection services = new();
 		_ = services.AddSingleton<IClockifyService, ClockifyService> ( );
