@@ -16,13 +16,13 @@
             </StackPanel>
 
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,10">
-                <Button Width="28" Height="28" Margin="0,1,6,1" Padding="0" Command="{Binding SetDefaultInvoiceCommand}"
-                        ToolTip="Set as default" AutomationProperties.Name="Set as default" VerticalAlignment="Center">
-                    <TextBlock FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center">★</TextBlock>
-                </Button>
                 <ComboBox Width="300" Height="30" Margin="0,0,10,0" Padding="2,0,2,0"
                           ItemsSource="{Binding DisplayInvoiceConfigs}"
                           SelectedItem="{Binding SelectedInvoiceConfig, Mode=TwoWay}" />
+                <Button Width="28" Height="28" Margin="6,1,0,1" Padding="0" Command="{Binding SetDefaultInvoiceCommand}"
+                        ToolTip="Set as default" AutomationProperties.Name="Set as default" VerticalAlignment="Center">
+                    <TextBlock FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center">★</TextBlock>
+                </Button>
             </StackPanel>
             <Button Width="220" Height="30" Command="{Binding GenerateInvoiceCommand}"
                     Content="{Binding GenerateButtonText}"
