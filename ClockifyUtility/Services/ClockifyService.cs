@@ -14,50 +14,62 @@ namespace ClockifyUtility.Services
 
 			// Use the detailed report endpoint
 			string url = $"https://reports.api.clockify.me/v1/workspaces/{config.Clockify.WorkspaceId}/reports/detailed";
-			var body = new
+			int page = 1;
+			while (true)
 			{
-				dateRangeStart = start.ToString("yyyy-MM-dd'T'HH:mm:ss'Z'"),
-				dateRangeEnd = end.ToString("yyyy-MM-dd'T'HH:mm:ss'Z'"),
-				exportType = "JSON",
-				users = new { ids = new[] { config.Clockify.UserId } },
-				detailedFilter = new { page = 1, pageSize = 1000 }
-			};
-			string jsonBody = Newtonsoft.Json.JsonConvert.SerializeObject(body);
-			HttpRequestMessage request = new(HttpMethod.Post, url)
-			{
-				Content = new StringContent(jsonBody, System.Text.Encoding.UTF8, "application/json")
-			};
-			request.Headers.Add ( "X-Api-Key", config.Clockify.ClockifyApiKey );
-			try
-			{
-				Serilog.Log.Information("[Clockify] Requesting time entries for workspace {WorkspaceId} and user {UserId}.", config.Clockify.WorkspaceId, config.Clockify.UserId);
-				HttpResponseMessage resp = await client.SendAsync(request);
-				string respStr = await resp.Content.ReadAsStringAsync();
-				if ( !resp.IsSuccessStatusCode )
+				Serilog.Log.Information($"[Clockify] Fetching page {page}...");
+			   var body = new
+			   {
+				   dateRangeStart = start.ToString("yyyy-MM-dd'T'HH:mm:ss'Z'"),
+				   dateRangeEnd = end.ToString("yyyy-MM-dd'T'HH:mm:ss'Z'"),
+				   exportType = "JSON",
+				   users = new { ids = new[] { config.Clockify.UserId } },
+				   detailedFilter = new { page = page, pageSize = 50 }
+			   };
+				string debugBody = Newtonsoft.Json.JsonConvert.SerializeObject(body, Newtonsoft.Json.Formatting.Indented);
+				Serilog.Log.Information($"[Clockify] Request body for page {page}: {debugBody}");
+				string jsonBody = Newtonsoft.Json.JsonConvert.SerializeObject(body);
+				HttpRequestMessage request = new(HttpMethod.Post, url)
 				{
-					Serilog.Log.Error("[ClockifyService] Error: {StatusCode}", resp.StatusCode);
-					return entries;
-				}
-				Newtonsoft.Json.Linq.JObject obj = Newtonsoft.Json.Linq.JObject.Parse ( respStr );
-				if ( obj [ "timeentries" ] is not Newtonsoft.Json.Linq.JArray arr )
+					Content = new StringContent(jsonBody, System.Text.Encoding.UTF8, "application/json")
+				};
+				request.Headers.Add ( "X-Api-Key", config.Clockify.ClockifyApiKey );
+				try
 				{
-					Serilog.Log.Warning("[ClockifyService] No timeentries found in response.");
-					return entries;
-				}
-				foreach ( Newtonsoft.Json.Linq.JToken item in arr )
-				{
-					string projectId = item["projectId"]?.ToString() ?? string.Empty;
-					string? project = null;
-					var projectToken = item["project"];
-					if (projectToken != null && projectToken["name"] != null)
+					Serilog.Log.Information($"[Clockify] Requesting time entries for workspace {{WorkspaceId}} and user {{UserId}}. Page: {{Page}}", config.Clockify.WorkspaceId, config.Clockify.UserId, page);
+					HttpResponseMessage resp = await client.SendAsync(request);
+					string respStr = await resp.Content.ReadAsStringAsync();
+					if ( !resp.IsSuccessStatusCode )
 					{
-						project = projectToken["name"]?.ToString();
+						Serilog.Log.Error("[ClockifyService] Error: {StatusCode}", resp.StatusCode);
+						break;
 					}
-					string description = item["description"]?.ToString() ?? "";
-					Newtonsoft.Json.Linq.JToken? timeInterval = item [ "timeInterval" ];
-					string? startStr = timeInterval? [ "start" ]?.ToString ( );
-					string? endStr = timeInterval? [ "end" ]?.ToString ( );
-					Newtonsoft.Json.Linq.JToken? durationToken = timeInterval? [ "duration" ];
+					Newtonsoft.Json.Linq.JObject obj = Newtonsoft.Json.Linq.JObject.Parse ( respStr );
+					Serilog.Log.Information($"[Clockify] Raw response for page {page}: {respStr.Substring(0, Math.Min(respStr.Length, 1000))}");
+					if ( obj [ "timeentries" ] is not Newtonsoft.Json.Linq.JArray arr )
+					{
+						Serilog.Log.Warning("[ClockifyService] No timeentries found in response.");
+						break;
+					}
+				Serilog.Log.Information($"[Clockify] Page {page} returned {arr.Count} entries.");
+				if (arr.Count == 0)
+				{
+					break;
+				}
+					foreach ( Newtonsoft.Json.Linq.JToken item in arr )
+					{
+						string projectId = item["projectId"]?.ToString() ?? string.Empty;
+						string? project = null;
+						var projectToken = item["project"];
+						if (projectToken != null && projectToken["name"] != null)
+						{
+							project = projectToken["name"]?.ToString();
+						}
+						string description = item["description"]?.ToString() ?? "";
+						Newtonsoft.Json.Linq.JToken? timeInterval = item [ "timeInterval" ];
+						string? startStr = timeInterval? [ "start" ]?.ToString ( );
+						string? endStr = timeInterval? [ "end" ]?.ToString ( );
+						Newtonsoft.Json.Linq.JToken? durationToken = timeInterval? [ "duration" ];
 
 					double hours = 0;
 					if ( durationToken == null || durationToken.Type == Newtonsoft.Json.Linq.JTokenType.Null )
@@ -96,8 +108,12 @@ namespace ClockifyUtility.Services
 						Serilog.Log.Warning("[ClockifyService] Unrecognized duration token type: {TokenType}", durationToken.Type);
 					}
 
-					DateTime parsedStart = DateTime.TryParse(startStr, out DateTime s) ? s : start;
-					DateTime parsedEnd = DateTime.TryParse(endStr, out DateTime e) ? e : end;
+					DateTime parsedStart = !string.IsNullOrEmpty(startStr)
+						? DateTime.Parse(startStr, null, System.Globalization.DateTimeStyles.AdjustToUniversal | System.Globalization.DateTimeStyles.AssumeUniversal)
+						: start;
+					DateTime parsedEnd = !string.IsNullOrEmpty(endStr)
+						? DateTime.Parse(endStr, null, System.Globalization.DateTimeStyles.AdjustToUniversal | System.Globalization.DateTimeStyles.AssumeUniversal)
+						: end;
 
 					entries.Add ( new TimeEntryModel
 					{
@@ -108,13 +124,16 @@ namespace ClockifyUtility.Services
 						End = parsedEnd,
 						Hours = hours
 					} );
+					}
 				}
-				Serilog.Log.Information("[Clockify] Parsed {Count} time entries.", entries.Count);
+				catch ( Exception ex )
+				{
+					Serilog.Log.Error(ex, "[ClockifyService] Error fetching or parsing time entries.");
+					break;
+				}
+				page++;
 			}
-			catch ( Exception ex )
-			{
-				Serilog.Log.Error(ex, "[ClockifyService] Error fetching or parsing time entries.");
-			}
+			Serilog.Log.Information($"[Clockify] Pagination complete. Total entries fetched: {entries.Count}");
 			return entries;
 		}
 	}
