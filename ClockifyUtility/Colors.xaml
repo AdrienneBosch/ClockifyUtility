@@ -1,0 +1,37 @@
+<!-- Colors.xaml: Central color palette for the application -->
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!-- Primary and Secondary Colors -->
+    <Color x:Key="PrimaryColor">#FF1976D2</Color> <!-- Blue -->
+    <Color x:Key="PrimaryVariantColor">#FF1565C0</Color>
+    <Color x:Key="SecondaryColor">#FF43A047</Color> <!-- Light Green -->
+    <Color x:Key="SecondaryVariantColor">#FF388E3C</Color>
+
+    <!-- Backgrounds and Surfaces -->
+    <Color x:Key="BackgroundColor">#FFF5F5F5</Color>
+    <Color x:Key="SurfaceColor">#FFFFFFFF</Color>
+
+    <!-- Error and Highlight -->
+    <Color x:Key="ErrorColor">#FFD32F2F</Color>
+    <Color x:Key="HighlightColor">#FFB3E5FC</Color> <!-- Light Blue -->
+
+    <!-- On Colors (text/icons on colored backgrounds) -->
+    <Color x:Key="OnPrimaryColor">#FFFFFFFF</Color>
+    <Color x:Key="OnSecondaryColor">#FFFFFFFF</Color>
+    <Color x:Key="OnBackgroundColor">#FF000000</Color>
+    <Color x:Key="OnSurfaceColor">#FF000000</Color>
+
+    <!-- Brushes -->
+    <SolidColorBrush x:Key="PrimaryBrush" Color="{StaticResource PrimaryColor}"/>
+    <SolidColorBrush x:Key="PrimaryVariantBrush" Color="{StaticResource PrimaryVariantColor}"/>
+    <SolidColorBrush x:Key="SecondaryBrush" Color="{StaticResource SecondaryColor}"/>
+    <SolidColorBrush x:Key="SecondaryVariantBrush" Color="{StaticResource SecondaryVariantColor}"/>
+    <SolidColorBrush x:Key="BackgroundBrush" Color="{StaticResource BackgroundColor}"/>
+    <SolidColorBrush x:Key="SurfaceBrush" Color="{StaticResource SurfaceColor}"/>
+    <SolidColorBrush x:Key="ErrorBrush" Color="{StaticResource ErrorColor}"/>
+    <SolidColorBrush x:Key="HighlightBrush" Color="{StaticResource HighlightColor}"/>
+    <SolidColorBrush x:Key="OnPrimaryBrush" Color="{StaticResource OnPrimaryColor}"/>
+    <SolidColorBrush x:Key="OnSecondaryBrush" Color="{StaticResource OnSecondaryColor}"/>
+    <SolidColorBrush x:Key="OnBackgroundBrush" Color="{StaticResource OnBackgroundColor}"/>
+    <SolidColorBrush x:Key="OnSurfaceBrush" Color="{StaticResource OnSurfaceColor}"/>
+</ResourceDictionary>

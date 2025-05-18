@@ -4,20 +4,89 @@
              xmlns:local="clr-namespace:ClockifyUtility"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-        <!-- Register Font Awesome Regular and Solid fonts -->
-        <FontFamily x:Key="FontAwesomeRegular">/Fonts/Font Awesome 6 Free-Regular-400.otf#Font Awesome 6 Free Regular</FontFamily>
-        <FontFamily x:Key="FontAwesomeSolid">/Fonts/Font Awesome 6 Free-Solid-900.otf#Font Awesome 6 Free Solid</FontFamily>
-        <!-- Light blue button style for month selectors -->
-        <Style x:Key="MonthSelectorButtonStyle" TargetType="Button">
-            <Setter Property="Background" Value="#D0E8FF"/>
-            <Setter Property="BorderBrush" Value="#A0C8E0"/>
-            <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="Foreground" Value="#1A3A5A"/>
-            <Setter Property="FontFamily" Value="{StaticResource FontAwesomeRegular}"/>
-            <Setter Property="FontSize" Value="22"/>
-            <Setter Property="Width" Value="40"/>
-            <Setter Property="Height" Value="30"/>
-            <Setter Property="Margin" Value="0"/>
-        </Style>
+        <ResourceDictionary>
+            <!-- Merge the color palette -->
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Colors.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <!-- Register Font Awesome Regular and Solid fonts -->
+            <FontFamily x:Key="FontAwesomeRegular">/Fonts/Font Awesome 6 Free-Regular-400.otf#Font Awesome 6 Free Regular</FontFamily>
+            <FontFamily x:Key="FontAwesomeSolid">/Fonts/Font Awesome 6 Free-Solid-900.otf#Font Awesome 6 Free Solid</FontFamily>
+
+            <!-- Button Styles -->
+            <Style x:Key="MonthSelectorButtonStyle" TargetType="Button">
+                <Setter Property="Background" Value="{StaticResource PrimaryBrush}"/>
+                <Setter Property="BorderBrush" Value="{StaticResource PrimaryVariantBrush}"/>
+                <Setter Property="BorderThickness" Value="1"/>
+                <Setter Property="Foreground" Value="{StaticResource OnPrimaryBrush}"/>
+                <Setter Property="FontFamily" Value="{StaticResource FontAwesomeRegular}"/>
+                <Setter Property="FontSize" Value="22"/>
+                <Setter Property="Width" Value="40"/>
+                <Setter Property="Height" Value="30"/>
+                <Setter Property="Margin" Value="0"/>
+            </Style>
+
+            <!-- General Button Style -->
+            <Style TargetType="Button" x:Key="PrimaryButtonStyle">
+                <Setter Property="Background" Value="{StaticResource PrimaryBrush}"/>
+                <Setter Property="Foreground" Value="{StaticResource OnPrimaryBrush}"/>
+                <Setter Property="BorderBrush" Value="{StaticResource PrimaryVariantBrush}"/>
+                <Setter Property="BorderThickness" Value="1"/>
+                <Setter Property="Padding" Value="6,2"/>
+                <Setter Property="FontSize" Value="14"/>
+                <Setter Property="Margin" Value="4"/>
+            </Style>
+            <Style TargetType="Button" x:Key="SecondaryButtonStyle">
+                <Setter Property="Background" Value="{StaticResource SecondaryBrush}"/>
+                <Setter Property="Foreground" Value="{StaticResource OnSecondaryBrush}"/>
+                <Setter Property="BorderBrush" Value="{StaticResource SecondaryVariantBrush}"/>
+                <Setter Property="BorderThickness" Value="1"/>
+                <Setter Property="Padding" Value="6,2"/>
+                <Setter Property="FontSize" Value="14"/>
+                <Setter Property="Margin" Value="4"/>
+            </Style>
+
+            <!-- TextBlock Style -->
+            <Style TargetType="TextBlock" x:Key="SectionHeaderTextBlockStyle">
+                <Setter Property="Foreground" Value="{StaticResource PrimaryBrush}"/>
+                <Setter Property="FontWeight" Value="Bold"/>
+                <Setter Property="FontSize" Value="18"/>
+            </Style>
+            <Style TargetType="TextBlock" x:Key="BodyTextBlockStyle">
+                <Setter Property="Foreground" Value="{StaticResource OnBackgroundBrush}"/>
+                <Setter Property="FontSize" Value="14"/>
+            </Style>
+
+            <!-- Window Background -->
+            <Style TargetType="Window">
+                <Setter Property="Background" Value="{StaticResource BackgroundBrush}"/>
+            </Style>
+            <!-- Panel/Section Background -->
+            <Style TargetType="StackPanel">
+                <Setter Property="Background" Value="{StaticResource SurfaceBrush}"/>
+            </Style>
+            <Style TargetType="Grid">
+                <Setter Property="Background" Value="{StaticResource SurfaceBrush}"/>
+            </Style>
+            <!-- TextBox Style -->
+            <Style TargetType="TextBox">
+                <Setter Property="Background" Value="{StaticResource SurfaceBrush}"/>
+                <Setter Property="Foreground" Value="{StaticResource OnSurfaceBrush}"/>
+                <Setter Property="BorderBrush" Value="{StaticResource PrimaryVariantBrush}"/>
+            </Style>
+            <!-- ListBox Style -->
+            <Style TargetType="ListBox">
+                <Setter Property="Background" Value="{StaticResource SurfaceBrush}"/>
+                <Setter Property="Foreground" Value="{StaticResource OnSurfaceBrush}"/>
+                <Setter Property="BorderBrush" Value="{StaticResource PrimaryVariantBrush}"/>
+            </Style>
+            <!-- ComboBox Style -->
+            <Style TargetType="ComboBox">
+                <Setter Property="Background" Value="{StaticResource SurfaceBrush}"/>
+                <Setter Property="Foreground" Value="{StaticResource OnSurfaceBrush}"/>
+                <Setter Property="BorderBrush" Value="{StaticResource PrimaryVariantBrush}"/>
+            </Style>
+        </ResourceDictionary>
     </Application.Resources>
 </Application>

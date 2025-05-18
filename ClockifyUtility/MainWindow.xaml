@@ -18,7 +18,7 @@
                         Command="{Binding PreviousMonthCommand}"
                         ToolTip="Previous month"
                         AutomationProperties.Name="Previous month" />
-                <TextBlock x:Name="lblCurrentMonth" Text="{Binding CurrentMonthLabel}" FontSize="16" VerticalAlignment="Center" Width="120" TextAlignment="Center" />
+                <TextBlock x:Name="lblCurrentMonth" Text="{Binding CurrentMonthLabel}" Style="{StaticResource SectionHeaderTextBlockStyle}" VerticalAlignment="Center" Width="120" TextAlignment="Center" />
                 <!-- FontAwesome calendar-plus: Unicode F271 -->
                 <Button x:Name="btnNextMonth"
                         Style="{StaticResource MonthSelectorButtonStyle}"
@@ -51,8 +51,7 @@
             <Button Width="220" Height="30" Command="{Binding GenerateInvoiceCommand}"
                     Content="{Binding GenerateButtonText}"
                     IsEnabled="{Binding IsGenerateButtonEnabled}"
-                    FontSize="12"
-                    Padding="0"
+                    Style="{StaticResource PrimaryButtonStyle}"
                     HorizontalContentAlignment="Center"
                     VerticalContentAlignment="Center"
                     />
