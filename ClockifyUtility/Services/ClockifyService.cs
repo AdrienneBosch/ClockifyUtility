@@ -6,20 +6,20 @@ namespace ClockifyUtility.Services
 {
 	public class ClockifyService : IClockifyService
 	{
-		public async Task<List<TimeEntryModel>> FetchTimeEntriesAsync ( DateTime start, DateTime end, ConfigModel config )
+		public async Task<List<TimeEntryModel>> FetchTimeEntriesAsync ( DateTime start, DateTime end, InvoiceConfig config )
 		{
 			List<TimeEntryModel> entries = [];
 			using HttpClient client = new();
-			client.DefaultRequestHeaders.Add ( "X-Api-Key", config.ClockifyApiKey );
+			client.DefaultRequestHeaders.Add ( "X-Api-Key", config.Clockify.ClockifyApiKey );
 
 			// Use the detailed report endpoint
-			string url = $"https://reports.api.clockify.me/v1/workspaces/{config.WorkspaceId}/reports/detailed";
+			string url = $"https://reports.api.clockify.me/v1/workspaces/{config.Clockify.WorkspaceId}/reports/detailed";
 			var body = new
 			{
 				dateRangeStart = start.ToString("yyyy-MM-dd'T'HH:mm:ss'Z'"),
 				dateRangeEnd = end.ToString("yyyy-MM-dd'T'HH:mm:ss'Z'"),
 				exportType = "JSON",
-				users = new { ids = new[] { config.UserId } },
+				users = new { ids = new[] { config.Clockify.UserId } },
 				detailedFilter = new { page = 1, pageSize = 1000 }
 			};
 			string jsonBody = Newtonsoft.Json.JsonConvert.SerializeObject(body);
@@ -27,10 +27,10 @@ namespace ClockifyUtility.Services
 			{
 				Content = new StringContent(jsonBody, System.Text.Encoding.UTF8, "application/json")
 			};
-			request.Headers.Add ( "X-Api-Key", config.ClockifyApiKey );
+			request.Headers.Add ( "X-Api-Key", config.Clockify.ClockifyApiKey );
 			try
 			{
-				Serilog.Log.Information("[Clockify] Requesting time entries for workspace {WorkspaceId} and user {UserId}.", config.WorkspaceId, config.UserId);
+				Serilog.Log.Information("[Clockify] Requesting time entries for workspace {WorkspaceId} and user {UserId}.", config.Clockify.WorkspaceId, config.Clockify.UserId);
 				HttpResponseMessage resp = await client.SendAsync(request);
 				string respStr = await resp.Content.ReadAsStringAsync();
 				if ( !resp.IsSuccessStatusCode )
@@ -48,9 +48,10 @@ namespace ClockifyUtility.Services
 				{
 					string projectId = item["projectId"]?.ToString() ?? string.Empty;
 					string? project = null;
-					if ( item [ "project" ] != null && item [ "project" ] [ "name" ] != null )
+					var projectToken = item["project"];
+					if (projectToken != null && projectToken["name"] != null)
 					{
-						project = item [ "project" ] [ "name" ]?.ToString ( );
+						project = projectToken["name"]?.ToString();
 					}
 					string description = item["description"]?.ToString() ?? "";
 					Newtonsoft.Json.Linq.JToken? timeInterval = item [ "timeInterval" ];

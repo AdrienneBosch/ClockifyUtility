@@ -17,6 +17,50 @@ public partial class App : Application
 
 	protected override void OnStartup ( StartupEventArgs e )
 	{
+		// Step 4: Load and validate all invoice configs at startup
+	   string exeDir = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) ?? string.Empty;
+	   string appSettingsPath = System.IO.Path.Combine(exeDir, "appsettings.json");
+	   string? invoiceConfigDir = null;
+	   if (System.IO.File.Exists(appSettingsPath))
+	   {
+		   var json = System.IO.File.ReadAllText(appSettingsPath);
+		   var settings = Newtonsoft.Json.JsonConvert.DeserializeObject<ClockifyUtility.ViewModels.AppSettings>(json);
+		   invoiceConfigDir = settings?.InvoiceConfigDirectory;
+	   }
+	   if (string.IsNullOrWhiteSpace(invoiceConfigDir) || !System.IO.Directory.Exists(invoiceConfigDir))
+	   {
+		   System.Windows.MessageBox.Show(
+			   $"Invoice config directory is not set or does not exist: {invoiceConfigDir}",
+			   "Invoice Config Directory Error",
+			   MessageBoxButton.OK,
+			   MessageBoxImage.Error
+		   );
+		   System.Windows.Application.Current.Shutdown();
+		   return;
+	   }
+	   var results = ClockifyUtility.Services.InvoiceConfigLoader.LoadAllConfigs(invoiceConfigDir);
+		var errorMsgs = new System.Text.StringBuilder();
+		foreach (var result in results)
+		{
+			if (result.Errors != null && result.Errors.Count > 0)
+			{
+				errorMsgs.AppendLine($"File: {System.IO.Path.GetFileName(result.FilePath)}");
+				foreach (var err in result.Errors)
+					errorMsgs.AppendLine($"  - {err}");
+				errorMsgs.AppendLine();
+			}
+		}
+		if (errorMsgs.Length > 0)
+		{
+			System.Windows.MessageBox.Show(
+				$"Some invoice configuration files are invalid:\n\n{errorMsgs}",
+				"Invoice Config Validation Error",
+				MessageBoxButton.OK,
+				MessageBoxImage.Error
+			);
+			System.Windows.Application.Current.Shutdown();
+			return;
+		}
 		if ( !_serilogInitialized )
 		{
 			Log.Logger = new LoggerConfiguration ( )
@@ -35,8 +79,24 @@ public partial class App : Application
 		_ = services.AddSingleton<IClockifyService, ClockifyService> ( );
 		_ = services.AddSingleton<IFileService, FileService> ( );
 		_ = services.AddSingleton<IConfigService, ConfigService> ( );
-		_ = services.AddSingleton<ProjectService> ( sp =>
-			new ProjectService ( sp.GetRequiredService<IConfigService> ( ).LoadConfig ( ).ClockifyApiKey ) );
+		// Defer ProjectService config loading to avoid startup crash if config is invalid
+		_ = services.AddSingleton<ProjectService>(sp =>
+		{
+			var configService = sp.GetRequiredService<IConfigService>();
+			string? apiKey = null;
+			try
+			{
+				var config = configService.LoadConfig();
+				apiKey = config.ClockifyApiKey;
+			}
+			catch (Exception ex)
+			{
+				// Log and allow ProjectService to be created with a dummy key; will fail later if used
+				Serilog.Log.Warning(ex, "ProjectService: Could not load config at startup. Will require valid config at use time.");
+				apiKey = string.Empty;
+			}
+			return new ProjectService(apiKey ?? string.Empty);
+		});
 		_ = services.AddSingleton<IInvoiceService> ( sp =>
 			new InvoiceService (
 				sp.GetRequiredService<IClockifyService> ( ),
