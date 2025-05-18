@@ -208,9 +208,10 @@ namespace ClockifyUtility.ViewModels
 			{
 				Status = "Generating invoice...";
 			   Serilog.Log.Information("Starting invoice generation.");
-			   DateTime start = SelectedMonth;
-			   DateTime end = SelectedMonth.AddMonths(1).AddDays(-1);
-			   Serilog.Log.Information("Invoice period: {Start} to {End}", start.ToString("yyyy-MM-dd"), end.ToString("yyyy-MM-dd"));
+			   // Construct start and end as UTC for the full month
+			   DateTime start = new DateTime(SelectedMonth.Year, SelectedMonth.Month, 1, 0, 0, 0, DateTimeKind.Utc);
+			   DateTime end = new DateTime(SelectedMonth.Year, SelectedMonth.Month, DateTime.DaysInMonth(SelectedMonth.Year, SelectedMonth.Month), 23, 59, 59, DateTimeKind.Utc);
+			   Serilog.Log.Information("Invoice period (UTC): {Start} to {End}", start.ToString("yyyy-MM-ddTHH:mm:ssZ"), end.ToString("yyyy-MM-ddTHH:mm:ssZ"));
 
 				// Always use the internal config name for logic
 				string selectedConfigName = _selectedInvoiceConfig ?? "All";
