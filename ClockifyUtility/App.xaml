@@ -21,9 +21,9 @@
                 <Setter Property="BorderThickness" Value="1"/>
                 <Setter Property="Foreground" Value="White"/>
                 <Setter Property="FontFamily" Value="{StaticResource FontAwesomeRegular}"/>
-                <Setter Property="FontSize" Value="22"/>
-                <Setter Property="Width" Value="40"/>
-                <Setter Property="Height" Value="30"/>
+                <Setter Property="FontSize" Value="19"/>
+                <Setter Property="Width" Value="34"/>
+                <Setter Property="Height" Value="26"/>
                 <Setter Property="Margin" Value="0"/>
             </Style>
 
