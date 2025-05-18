@@ -76,7 +76,7 @@ namespace ClockifyUtility.ViewModels
 		   else
 			   _selectedInvoiceConfig = "All";
 
-			SetDefaultInvoiceCommand = new RelayCommand(async () => { SetDefaultInvoice(); await Task.CompletedTask; }, () => SelectedInvoiceConfig != null && SelectedInvoiceConfig != "All");
+			SetDefaultInvoiceCommand = new RelayCommand(async () => { SetDefaultInvoice(); await Task.CompletedTask; }, () => true);
 		}
 
 		// Display list with (Default) marker
@@ -132,8 +132,10 @@ namespace ClockifyUtility.ViewModels
 				System.IO.File.WriteAllText(appSettingsPath, Newtonsoft.Json.JsonConvert.SerializeObject(settings, Newtonsoft.Json.Formatting.Indented));
 				DefaultInvoiceConfig = cleanValue ?? string.Empty;
 				UpdateDisplayInvoiceConfigs();
+				Status = $"Default invoice updated to: {cleanValue}";
 				return true;
 			}
+			Status = "Failed to update default invoice (appsettings.json not found).";
 			return false;
 		}
 
