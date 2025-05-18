@@ -5,19 +5,21 @@
 /// </summary>
 using ClockifyUtility.ViewModels;
 
-namespace ClockifyUtility;
-public partial class MainWindow : Window
+namespace ClockifyUtility
 {
-	public MainWindow ( )
+	public partial class MainWindow : Window
 	{
-	   InitializeComponent();
+		public MainWindow()
+		{
+			InitializeComponent();
 
-		// Use DI to resolve MainViewModel
-	   MainViewModel? viewModel = App.ServiceProvider?.GetService(typeof(MainViewModel)) as MainViewModel;
-	   if (viewModel == null)
-	   {
-		   throw new InvalidOperationException("MainViewModel could not be resolved from the service provider.");
-	   }
-		DataContext = viewModel;
+			// Use DI to resolve MainViewModel
+			MainViewModel? viewModel = App.ServiceProvider?.GetService(typeof(MainViewModel)) as MainViewModel;
+			if (viewModel == null)
+			{
+				throw new InvalidOperationException("MainViewModel could not be resolved from the service provider.");
+			}
+			DataContext = viewModel;
+		}
 	}
 }

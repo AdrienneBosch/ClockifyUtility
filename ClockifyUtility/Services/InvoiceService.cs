@@ -214,25 +214,61 @@ namespace ClockifyUtility.Services
 		   List<TimeEntryModel> entries = await _clockifyService.FetchTimeEntriesAsync ( start, end, config );
 			Serilog.Log.Information("[InvoiceService] Fetched {Count} time entries from Clockify.", entries.Count);
 
-		   ProjectNameCache projectNameCache = new(config.Clockify.ClockifyApiKey, config.Clockify.WorkspaceId);
-			for ( int i = 0; i < entries.Count; i++ )
+
+			ProjectNameCache projectNameCache = new(config.Clockify.ClockifyApiKey, config.Clockify.WorkspaceId);
+			var seenEntryHashes = new HashSet<string>();
+			var cleanEntries = new List<TimeEntryModel>();
+			var projectEntryCount = new Dictionary<string, int>();
+			var projectEntryHours = new Dictionary<string, double>();
+			for (int i = 0; i < entries.Count; i++)
 			{
 				TimeEntryModel entry = entries[i];
-				Serilog.Log.Debug("[InvoiceService] TimeEntry {Index}: projectId=REDACTED", i);
-			   if ( string.IsNullOrEmpty ( entry.ProjectName ) )
-			   {
-				   if (!string.IsNullOrEmpty(entry.ProjectId))
-				   {
-					   entry.ProjectName = await projectNameCache.GetProjectNameAsync(entry.ProjectId);
-				   }
-			   }
-				if ( string.IsNullOrEmpty ( entry.ProjectName ) )
+				// Compose a hash to detect duplicates (by start, end, projectId, description, hours)
+				string entryHash = $"{entry.Start:o}|{entry.End:o}|{entry.ProjectId}|{entry.Description}|{entry.Hours}";
+				if (seenEntryHashes.Contains(entryHash))
 				{
-					entry.ProjectName = "No Project";
+					Serilog.Log.Warning($"[InvoiceService] Duplicate time entry detected at index {i} (hash: {entryHash})");
+					continue;
 				}
+				seenEntryHashes.Add(entryHash);
+
+				// Ensure ProjectName is set and unique per projectId
+				if (string.IsNullOrWhiteSpace(entry.ProjectName))
+				{
+					if (!string.IsNullOrEmpty(entry.ProjectId))
+					{
+						entry.ProjectName = await projectNameCache.GetProjectNameAsync(entry.ProjectId);
+						if (string.IsNullOrWhiteSpace(entry.ProjectName))
+						{
+							entry.ProjectName = $"Unknown Project: {entry.ProjectId}";
+							Serilog.Log.Warning($"[InvoiceService] Could not resolve project name for projectId={entry.ProjectId} at index {i}");
+						}
+					}
+					else
+					{
+						entry.ProjectName = "No Project";
+						Serilog.Log.Warning($"[InvoiceService] Time entry at index {i} has no projectId and no project name.");
+					}
+				}
+				cleanEntries.Add(entry);
+				// Track per-project entry count and hours for diagnostics
+				if (!projectEntryCount.ContainsKey(entry.ProjectName!))
+				{
+					projectEntryCount[entry.ProjectName!] = 0;
+					projectEntryHours[entry.ProjectName!] = 0;
+				}
+				projectEntryCount[entry.ProjectName!]++;
+				projectEntryHours[entry.ProjectName!] += entry.Hours;
 			}
 
-			var projectGroups = entries
+			// Log summary of fetched entries per project
+			Serilog.Log.Information("[InvoiceService] Time entry summary by project:");
+			foreach (var kvp in projectEntryCount)
+			{
+				Serilog.Log.Information($"[InvoiceService] Project: {kvp.Key}, Entries: {kvp.Value}, Hours: {projectEntryHours[kvp.Key]:F2}");
+			}
+
+			var projectGroups = cleanEntries
 				.GroupBy(e => e.ProjectName)
 				.Select(g => new
 				{
