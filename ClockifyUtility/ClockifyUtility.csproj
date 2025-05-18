@@ -7,6 +7,12 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Fonts\Font Awesome 6 Brands-Regular-400.otf" />
+    <None Remove="Fonts\Font Awesome 6 Free-Regular-400.otf" />
+    <None Remove="Fonts\Font Awesome 6 Free-Solid-900.otf" />
+  </ItemGroup>
   <ItemGroup>
     <None Update="appsettings.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -22,6 +28,11 @@
     <PackageReference Include="Serilog" Version="4.2.0" />
     <PackageReference Include="Serilog.Extensions.Logging" Version="9.0.1" />
     <PackageReference Include="Serilog.Sinks.File" Version="7.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Fonts\Font Awesome 6 Free-Regular-400.otf" />
+    <Resource Include="Fonts\Font Awesome 6 Free-Solid-900.otf" />
   </ItemGroup>
 
 </Project>
