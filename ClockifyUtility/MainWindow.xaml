@@ -39,7 +39,11 @@
                           SelectedItem="{Binding SelectedInvoiceConfig, Mode=TwoWay}" />
                 <Button Width="28" Height="28" Margin="6,1,0,1" Padding="0" Command="{Binding SetDefaultInvoiceCommand}"
                         ToolTip="Set as default" AutomationProperties.Name="Set as default" VerticalAlignment="Center">
-                    <TextBlock FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center">★</TextBlock>
+                    <TextBlock FontSize="18"
+                               VerticalAlignment="Center"
+                               HorizontalAlignment="Center"
+                               Text="{Binding StarIconUnicode}"
+                               FontFamily="{Binding StarIconFontFamily}"/>
                 </Button>
             </StackPanel>
             <Button Width="220" Height="30" Command="{Binding GenerateInvoiceCommand}"
