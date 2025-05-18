@@ -4,5 +4,19 @@
              xmlns:local="clr-namespace:ClockifyUtility"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
+        <!-- Register Font Awesome Regular font -->
+        <FontFamily x:Key="FontAwesomeRegular">/Fonts/Font Awesome 6 Free-Regular-400.otf#Font Awesome 6 Free Regular</FontFamily>
+        <!-- Light blue button style for month selectors -->
+        <Style x:Key="MonthSelectorButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="#D0E8FF"/>
+            <Setter Property="BorderBrush" Value="#A0C8E0"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Foreground" Value="#1A3A5A"/>
+            <Setter Property="FontFamily" Value="{StaticResource FontAwesomeRegular}"/>
+            <Setter Property="FontSize" Value="22"/>
+            <Setter Property="Width" Value="40"/>
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="Margin" Value="0"/>
+        </Style>
     </Application.Resources>
 </Application>

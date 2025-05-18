@@ -10,9 +10,19 @@
         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
             <!-- Month Navigation Panel -->
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,10">
-                <Button x:Name="btnPreviousMonth" Content="&lt;" Width="40" Height="30" Margin="0,0,10,0" Command="{Binding PreviousMonthCommand}" />
+                <!-- FontAwesome calendar-minus: Unicode F272 -->
+                <Button x:Name="btnPreviousMonth"
+                        Style="{StaticResource MonthSelectorButtonStyle}"
+                        Content="&#xF272;"
+                        Margin="0,0,10,0"
+                        Command="{Binding PreviousMonthCommand}" />
                 <TextBlock x:Name="lblCurrentMonth" Text="{Binding CurrentMonthLabel}" FontSize="16" VerticalAlignment="Center" Width="120" TextAlignment="Center" />
-                <Button x:Name="btnNextMonth" Content="&gt;" Width="40" Height="30" Margin="10,0,0,0" Command="{Binding NextMonthCommand}" />
+                <!-- FontAwesome calendar-plus: Unicode F271 -->
+                <Button x:Name="btnNextMonth"
+                        Style="{StaticResource MonthSelectorButtonStyle}"
+                        Content="&#xF271;"
+                        Margin="10,0,0,0"
+                        Command="{Binding NextMonthCommand}" />
             </StackPanel>
 
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,10">
