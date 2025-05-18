@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:ClockifyUtility"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
-    <Grid>
+    <Grid Background="{StaticResource BackgroundBrush}">
         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
             <!-- Month Navigation Panel -->
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,10">

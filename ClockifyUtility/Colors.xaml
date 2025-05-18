@@ -8,7 +8,7 @@
     <Color x:Key="SecondaryVariantColor">#FF388E3C</Color>
 
     <!-- Backgrounds and Surfaces -->
-    <Color x:Key="BackgroundColor">#FFF5F5F5</Color>
+    <Color x:Key="BackgroundColor">#FF0d162b</Color>
     <Color x:Key="SurfaceColor">#FFFFFFFF</Color>
 
     <!-- Error and Highlight -->
