@@ -16,8 +16,8 @@ namespace ClockifyUtility.Services
 			string url = $"https://reports.api.clockify.me/v1/workspaces/{config.Clockify.WorkspaceId}/reports/detailed";
 			var body = new
 			{
-				dateRangeStart = start.ToString("yyyy-MM-dd'T'HH:mm:ss'Z'"),
-				dateRangeEnd = end.ToString("yyyy-MM-dd'T'HH:mm:ss'Z'"),
+				dateRangeStart = start.ToUniversalTime().ToString("yyyy-MM-dd'T'HH:mm:ss'Z'"),
+				dateRangeEnd = end.ToUniversalTime().ToString("yyyy-MM-dd'T'HH:mm:ss'Z'"),
 				exportType = "JSON",
 				users = new { ids = new[] { config.Clockify.UserId } },
 				detailedFilter = new { page = 1, pageSize = 1000 }
@@ -96,8 +96,12 @@ namespace ClockifyUtility.Services
 						Serilog.Log.Warning("[ClockifyService] Unrecognized duration token type: {TokenType}", durationToken.Type);
 					}
 
-					DateTime parsedStart = DateTime.TryParse(startStr, out DateTime s) ? s : start;
-					DateTime parsedEnd = DateTime.TryParse(endStr, out DateTime e) ? e : end;
+					DateTime parsedStart = !string.IsNullOrEmpty(startStr)
+						? DateTime.Parse(startStr, null, System.Globalization.DateTimeStyles.AdjustToUniversal | System.Globalization.DateTimeStyles.AssumeUniversal)
+						: start;
+					DateTime parsedEnd = !string.IsNullOrEmpty(endStr)
+						? DateTime.Parse(endStr, null, System.Globalization.DateTimeStyles.AdjustToUniversal | System.Globalization.DateTimeStyles.AssumeUniversal)
+						: end;
 
 					entries.Add ( new TimeEntryModel
 					{

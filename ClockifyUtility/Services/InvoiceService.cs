@@ -278,13 +278,14 @@ namespace ClockifyUtility.Services
 
 			// Log the grouped project hours as used in the invoice
 			var projectGroups = cleanEntries
-				.GroupBy(e => e.ProjectName)
-				.Select(g => new
-				{
-					Project = g.Key,
-					Hours = g.Sum(e => e.Hours)
-				})
-				.ToList();
+			   .GroupBy(e => new { e.ProjectId, e.ProjectName })
+			   .Select(g => new
+			   {
+				   ProjectId = g.Key.ProjectId,
+				   Project = g.Key.ProjectName,
+				   Hours = g.Sum(e => e.Hours)
+			   })
+			   .ToList();
 			double sumGroupedProjectHours = projectGroups.Sum(g => g.Hours);
 			Serilog.Log.Information($"[InvoiceService] SUM of grouped project hours (used in invoice): {sumGroupedProjectHours:F2}");
 
