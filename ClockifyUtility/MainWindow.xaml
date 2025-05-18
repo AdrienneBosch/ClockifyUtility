@@ -8,6 +8,13 @@
         Title="MainWindow" Height="450" Width="800">
     <Grid>
         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+            <!-- Month Navigation Panel -->
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,10">
+                <Button x:Name="btnPreviousMonth" Content="&lt;" Width="40" Height="30" Margin="0,0,10,0" Command="{Binding PreviousMonthCommand}" />
+                <TextBlock x:Name="lblCurrentMonth" Text="{Binding CurrentMonthLabel}" FontSize="16" VerticalAlignment="Center" Width="120" TextAlignment="Center" />
+                <Button x:Name="btnNextMonth" Content="&gt;" Width="40" Height="30" Margin="10,0,0,0" Command="{Binding NextMonthCommand}" />
+            </StackPanel>
+
             <ComboBox Width="300" Height="30" Margin="0,0,0,10"
                       ItemsSource="{Binding DisplayInvoiceConfigs}"
                       SelectedItem="{Binding SelectedInvoiceConfig, Mode=TwoWay}"

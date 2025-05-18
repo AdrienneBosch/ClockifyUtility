@@ -19,6 +19,27 @@ namespace ClockifyUtility.ViewModels
    }
 	public class MainViewModel : System.ComponentModel.INotifyPropertyChanged
 	{
+		// --- Month Navigation State ---
+		private DateTime _selectedMonth = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+		public DateTime SelectedMonth
+		{
+			get => _selectedMonth;
+			set
+			{
+				if (_selectedMonth != value)
+				{
+					_selectedMonth = value;
+					OnPropertyChanged(nameof(SelectedMonth));
+					OnPropertyChanged(nameof(CurrentMonthLabel));
+					// Optionally, auto-refresh invoice preview here if implemented
+				}
+			}
+		}
+
+		public string CurrentMonthLabel => SelectedMonth.ToString("MMMM yyyy");
+
+		public ICommand PreviousMonthCommand { get; }
+		public ICommand NextMonthCommand { get; }
 		private readonly IConfigService _configService;
 		private readonly IInvoiceService _invoiceService;
 		
@@ -34,6 +55,10 @@ namespace ClockifyUtility.ViewModels
 			_invoiceService = invoiceService;
 			_configService = configService;
 			GenerateInvoiceCommand = new RelayCommand ( GenerateInvoiceAsync );
+
+			// Month navigation commands
+			PreviousMonthCommand = new RelayCommand(async () => { SelectedMonth = SelectedMonth.AddMonths(-1); await Task.CompletedTask; }, () => true);
+			NextMonthCommand = new RelayCommand(async () => { SelectedMonth = SelectedMonth.AddMonths(1); await Task.CompletedTask; }, () => true);
 
 			// Load available configs from invoice-generator folder
 
@@ -183,8 +208,8 @@ namespace ClockifyUtility.ViewModels
 			{
 				Status = "Generating invoice...";
 				Log.Information("Starting invoice generation.");
-				DateTime start = new(DateTime.Now.Year, DateTime.Now.Month, 1);
-				DateTime end = start.AddMonths(1).AddDays(-1);
+				DateTime start = SelectedMonth;
+				DateTime end = SelectedMonth.AddMonths(1).AddDays(-1);
 				Log.Information("Invoice period: {Start} to {End}", start.ToString("yyyy-MM-dd"), end.ToString("yyyy-MM-dd"));
 
 				// Always use the internal config name for logic
