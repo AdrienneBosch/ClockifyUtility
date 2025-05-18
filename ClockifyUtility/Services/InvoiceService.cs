@@ -47,8 +47,10 @@ namespace ClockifyUtility.Services
 			string borderColor = style.TableBorder ?? "#BFC9D1";
 			string tableHeaderBg = style.TableHeaderBg ?? "#D0E4FA";
 			string accentColor = style.AccentColor ?? "#27AE60";
-			string textColor = style.TextColor ?? "#1A1A1A";
+			string textColor = style.TextColor ?? "#181818";
 			string backgroundColor = style.BackgroundColor ?? "#F4F8FB";
+			string sectionBg = style.SectionBg ?? "#ffffff";
+			string sectionText = style.SectionText ?? "#181818";
 
 
 			StringBuilder sb = new();
@@ -58,11 +60,11 @@ namespace ClockifyUtility.Services
 			);
 
 			_ = sb.AppendLine (
-				"<div style='max-width:730px;margin:0 auto;padding:0 2vw;'>"
+				$"<div style='max-width:730px;margin:0 auto;padding:0 2vw;background:{sectionBg};color:{sectionText};border-radius:10px;box-shadow:0 2px 8px rgba(44,62,80,0.04);'>"
 			);
 
 			_ = sb.AppendLine (
-				$"<div style='background:{headingBg};border-radius:14px;padding:1.8em 2em 1.3em 2em;margin-bottom:2em;box-shadow:0 4px 16px rgba(44,62,80,0.09);'>"
+				$"<div style='background:{headingBg};border-radius:14px;padding:1.8em 2em 1.3em 2em;margin-bottom:2em;box-shadow:0 4px 16px rgba(44,62,80,0.09);color:{textColor};'>"
 			);
 			_ = sb.AppendLine (
 				"  <div style='display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;margin-bottom:1em;'>"
@@ -113,11 +115,11 @@ namespace ClockifyUtility.Services
 			_ = sb.AppendLine ( "</div>" );
 
 			_ = sb.AppendLine (
-				$"<h2 style='color:{amountDueColor};font-size:1.4em;font-weight:700;margin-top:2em;margin-bottom:0.7em;text-align:left;'>Work Summary</h2>"
+				$"<h2 style='color:{amountDueColor};font-size:1.4em;font-weight:700;margin-top:2em;margin-bottom:0.7em;text-align:left;background:#fff;padding:0.5em 1em;border-radius:6px;'>Work Summary</h2>"
 			);
 
 			_ = sb.AppendLine (
-				$"<table style='width:100%;max-width:100%;border-collapse:collapse;margin-bottom:2em;box-shadow:0 4px 16px rgba(44,62,80,0.09);background:#fff;border-radius:9px;overflow:hidden;'>"
+				$"<table style='width:100%;max-width:100%;border-collapse:collapse;margin-bottom:2em;box-shadow:0 4px 16px rgba(44,62,80,0.09);background:{sectionBg};border-radius:9px;overflow:hidden;'>"
 			);
 			_ = sb.AppendLine (
 				$"<tr style='background:{tableHeaderBg};color:{headerColor};letter-spacing:0.03em;'>"

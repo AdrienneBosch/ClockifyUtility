@@ -49,5 +49,9 @@ namespace ClockifyUtility.Models
 		public string TableBorder { get; set; } = "#BFC9D1";
 		public string TableHeaderBg { get; set; } = "#EAF1FB";
 		public string TextColor { get; set; } = "#222222";
+
+		// New for more visual distinctness
+		public string SectionBg { get; set; } = "#ffffff";
+		public string SectionText { get; set; } = "#181818";
 	}
 }
