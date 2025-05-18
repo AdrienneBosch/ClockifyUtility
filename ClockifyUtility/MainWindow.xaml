@@ -10,9 +10,23 @@
         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
             <!-- Month Navigation Panel -->
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,10">
-                <Button x:Name="btnPreviousMonth" Content="&lt;" Width="40" Height="30" Margin="0,0,10,0" Command="{Binding PreviousMonthCommand}" />
+                <!-- FontAwesome calendar-minus: Unicode F272 -->
+                <Button x:Name="btnPreviousMonth"
+                        Style="{StaticResource MonthSelectorButtonStyle}"
+                        Content="&#xF272;"
+                        Margin="0,0,10,0"
+                        Command="{Binding PreviousMonthCommand}"
+                        ToolTip="Previous month"
+                        AutomationProperties.Name="Previous month" />
                 <TextBlock x:Name="lblCurrentMonth" Text="{Binding CurrentMonthLabel}" FontSize="16" VerticalAlignment="Center" Width="120" TextAlignment="Center" />
-                <Button x:Name="btnNextMonth" Content="&gt;" Width="40" Height="30" Margin="10,0,0,0" Command="{Binding NextMonthCommand}" />
+                <!-- FontAwesome calendar-plus: Unicode F271 -->
+                <Button x:Name="btnNextMonth"
+                        Style="{StaticResource MonthSelectorButtonStyle}"
+                        Content="&#xF271;"
+                        Margin="10,0,0,0"
+                        Command="{Binding NextMonthCommand}"
+                        ToolTip="Next month"
+                        AutomationProperties.Name="Next month" />
             </StackPanel>
 
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,10">
@@ -23,9 +37,15 @@
                           HorizontalContentAlignment="Left"
                           ItemsSource="{Binding DisplayInvoiceConfigs}"
                           SelectedItem="{Binding SelectedInvoiceConfig, Mode=TwoWay}" />
-                <Button Width="28" Height="28" Margin="6,1,0,1" Padding="0" Command="{Binding SetDefaultInvoiceCommand}"
+                <Button Style="{StaticResource MonthSelectorButtonStyle}"
+                        Width="18" Height="18" Margin="6,6,0,6" Padding="0"
+                        Command="{Binding SetDefaultInvoiceCommand}"
                         ToolTip="Set as default" AutomationProperties.Name="Set as default" VerticalAlignment="Center">
-                    <TextBlock FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center">★</TextBlock>
+                    <TextBlock FontSize="12"
+                               VerticalAlignment="Center"
+                               HorizontalAlignment="Center"
+                               Text="{Binding StarIconUnicode}"
+                               FontFamily="{Binding StarIconFontFamily}"/>
                 </Button>
             </StackPanel>
             <Button Width="220" Height="30" Command="{Binding GenerateInvoiceCommand}"
