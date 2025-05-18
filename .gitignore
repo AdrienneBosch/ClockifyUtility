@@ -8,3 +8,20 @@
 /Clockify Invoice Generator/__pycache__
 /Clockify Invoice Generator/output/2025/May
 /Clockify Invoice Generator/.venv
+/ClockifyUtility/.vs
+/ClockifyUtility/obj
+/ClockifyUtility/bin
+/.vscode
+/ClockifyUtility/.vscode
+
+# Python artifacts
+/Clockify Invoice Generator/__pycache__/
+/Clockify Invoice Generator/*.pyc
+/Clockify Invoice Generator/.venv
+/Clockify Invoice Generator/env
+/Clockify Invoice Generator/.env
+
+# C# artifacts
+/ClockifyUtility/bin/
+/ClockifyUtility/obj/
+/ClockifyUtility/appsettings.json
