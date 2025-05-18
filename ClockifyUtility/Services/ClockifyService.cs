@@ -26,8 +26,6 @@ namespace ClockifyUtility.Services
 				   users = new { ids = new[] { config.Clockify.UserId } },
 				   detailedFilter = new { page = page, pageSize = 50 }
 			   };
-				string debugBody = Newtonsoft.Json.JsonConvert.SerializeObject(body, Newtonsoft.Json.Formatting.Indented);
-				Serilog.Log.Information($"[Clockify] Request body for page {page}: {debugBody}");
 				string jsonBody = Newtonsoft.Json.JsonConvert.SerializeObject(body);
 				HttpRequestMessage request = new(HttpMethod.Post, url)
 				{
@@ -45,7 +43,6 @@ namespace ClockifyUtility.Services
 						break;
 					}
 					Newtonsoft.Json.Linq.JObject obj = Newtonsoft.Json.Linq.JObject.Parse ( respStr );
-					Serilog.Log.Information($"[Clockify] Raw response for page {page}: {respStr.Substring(0, Math.Min(respStr.Length, 1000))}");
 					if ( obj [ "timeentries" ] is not Newtonsoft.Json.Linq.JArray arr )
 					{
 						Serilog.Log.Warning("[ClockifyService] No timeentries found in response.");

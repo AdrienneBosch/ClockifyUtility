@@ -15,15 +15,28 @@
                 <Button x:Name="btnNextMonth" Content="&gt;" Width="40" Height="30" Margin="10,0,0,0" Command="{Binding NextMonthCommand}" />
             </StackPanel>
 
-            <ComboBox Width="300" Height="30" Margin="0,0,0,10"
-                      ItemsSource="{Binding DisplayInvoiceConfigs}"
-                      SelectedItem="{Binding SelectedInvoiceConfig, Mode=TwoWay}"
-                      />
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                <Button Content="Set as Default" Width="120" Height="30" Margin="0,0,10,0" Command="{Binding SetDefaultInvoiceCommand}" />
-                <Button Content="Generate Invoice" Width="160" Height="30" Command="{Binding GenerateInvoiceCommand}" />
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,10">
+                <ComboBox Width="300" Height="30" Margin="0,0,10,0"
+                          Padding="6,0,2,0"
+                          FontSize="12"
+                          VerticalContentAlignment="Center"
+                          HorizontalContentAlignment="Left"
+                          ItemsSource="{Binding DisplayInvoiceConfigs}"
+                          SelectedItem="{Binding SelectedInvoiceConfig, Mode=TwoWay}" />
+                <Button Width="28" Height="28" Margin="6,1,0,1" Padding="0" Command="{Binding SetDefaultInvoiceCommand}"
+                        ToolTip="Set as default" AutomationProperties.Name="Set as default" VerticalAlignment="Center">
+                    <TextBlock FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center">★</TextBlock>
+                </Button>
             </StackPanel>
-            <TextBlock Text="{Binding Status}" FontSize="16" TextWrapping="Wrap" Width="400" Margin="0,10,0,10" />
+            <Button Width="220" Height="30" Command="{Binding GenerateInvoiceCommand}"
+                    Content="{Binding GenerateButtonText}"
+                    IsEnabled="{Binding IsGenerateButtonEnabled}"
+                    FontSize="12"
+                    Padding="0"
+                    HorizontalContentAlignment="Center"
+                    VerticalContentAlignment="Center"
+                    />
+            <!-- Removed Status label as per requirements -->
         </StackPanel>
     </Grid>
 </Window>
