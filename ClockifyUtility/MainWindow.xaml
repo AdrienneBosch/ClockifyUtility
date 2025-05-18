@@ -15,14 +15,18 @@
                         Style="{StaticResource MonthSelectorButtonStyle}"
                         Content="&#xF272;"
                         Margin="0,0,10,0"
-                        Command="{Binding PreviousMonthCommand}" />
+                        Command="{Binding PreviousMonthCommand}"
+                        ToolTip="Previous month"
+                        AutomationProperties.Name="Previous month" />
                 <TextBlock x:Name="lblCurrentMonth" Text="{Binding CurrentMonthLabel}" FontSize="16" VerticalAlignment="Center" Width="120" TextAlignment="Center" />
                 <!-- FontAwesome calendar-plus: Unicode F271 -->
                 <Button x:Name="btnNextMonth"
                         Style="{StaticResource MonthSelectorButtonStyle}"
                         Content="&#xF271;"
                         Margin="10,0,0,0"
-                        Command="{Binding NextMonthCommand}" />
+                        Command="{Binding NextMonthCommand}"
+                        ToolTip="Next month"
+                        AutomationProperties.Name="Next month" />
             </StackPanel>
 
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,10">
