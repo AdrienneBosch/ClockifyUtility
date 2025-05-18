@@ -31,6 +31,11 @@ namespace ClockifyUtility.Models
 		public string OutputPath { get; set; } = "output";
 		public string? UserId { get; set; }
 		public string? WorkspaceId { get; set; }
+
+		// New font and map mode settings
+		public string? InvoiceFontFamily { get; set; } = "Segoe UI, Arial, sans-serif";
+		public string? InvoiceFontWeight { get; set; } = "400";
+		public bool InvoiceMapMode { get; set; } = false;
 	}
 
 	public class InvoiceStyleConfig

@@ -30,22 +30,31 @@ namespace ClockifyUtility.Services
 			double totalAmount
 		)
 		{
+
 			InvoiceStyleConfig style = config.InvoiceStyle ?? new ClockifyUtility.Models.InvoiceStyleConfig();
 
+			// Font settings
+			string fontFamily = config.InvoiceFontFamily ?? "Segoe UI, Arial, sans-serif";
+			string fontWeight = config.InvoiceFontWeight ?? "500";
+
+			// Map mode: override primary/secondary colors to red if enabled
+			string headerColor = (config.InvoiceMapMode ? "#FF0000" : style.PrimaryColor ?? "#2C3E50");
+			string amountDueColor = (config.InvoiceMapMode ? "#FF0000" : style.SecondaryColor ?? "#2980B9");
+
+			// More descriptive color names
 			string headingBg = style.SoftHeadingBg ?? "#e3f0fa";
 			string altRowBg = style.SoftAltRowBg ?? "#f6fbff";
-			string border = style.TableBorder ?? "#BFC9D1";
-			string headerBg = style.TableHeaderBg ?? "#D0E4FA";
-			string primary = style.PrimaryColor ?? "#2C3E50";
-			string secondary = style.SecondaryColor ?? "#2980B9";
-			_ = style.AccentColor ?? "#27AE60";
-			string text = style.TextColor ?? "#1A1A1A";
-			string background = style.BackgroundColor ?? "#F4F8FB";
+			string borderColor = style.TableBorder ?? "#BFC9D1";
+			string tableHeaderBg = style.TableHeaderBg ?? "#D0E4FA";
+			string accentColor = style.AccentColor ?? "#27AE60";
+			string textColor = style.TextColor ?? "#1A1A1A";
+			string backgroundColor = style.BackgroundColor ?? "#F4F8FB";
+
 
 			StringBuilder sb = new();
 
 			_ = sb.AppendLine (
-				$"<html><body style='background:{background};color:{text};font-family:Segoe UI,Arial,sans-serif;margin:0;padding:2em;min-height:100vh;'>"
+				$"<html><body style='background:{backgroundColor};color:{textColor};font-family:{fontFamily};font-weight:{fontWeight};margin:0;padding:2em;min-height:100vh;'>"
 			);
 
 			_ = sb.AppendLine (
@@ -59,10 +68,10 @@ namespace ClockifyUtility.Services
 				"  <div style='display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;margin-bottom:1em;'>"
 			);
 			_ = sb.AppendLine (
-				$"    <div style='font-size:2.2em;color:{primary};font-weight:700;'>Developer Invoice</div>"
+				$"    <div style='font-size:2.2em;color:{headerColor};font-weight:700;'>Developer Invoice</div>"
 			);
 			_ = sb.AppendLine (
-				$"    <div style='font-size:1.1em;color:{secondary};text-align:right;font-weight:600;'>"
+				$"    <div style='font-size:1.1em;color:{amountDueColor};text-align:right;font-weight:600;'>"
 			);
 			if ( !string.IsNullOrWhiteSpace ( config.InvoiceNumber ) )
 			{
@@ -78,7 +87,7 @@ namespace ClockifyUtility.Services
 			);
 			_ = sb.AppendLine ( "    <div style='width:48%;min-width:220px;'>" );
 			_ = sb.AppendLine (
-				$"      <div style='margin:0 0 0.3em 0;color:{primary};font-size:1.15em;font-weight:700;'>From:</div>"
+				$"      <div style='margin:0 0 0.3em 0;color:{headerColor};font-size:1.15em;font-weight:700;'>From:</div>"
 			);
 			_ = sb.AppendLine ( $"      <p style='margin:0.1em 0;font-size:1em;'>{config.FromName}</p>" );
 			_ = sb.AppendLine (
@@ -90,7 +99,7 @@ namespace ClockifyUtility.Services
 			_ = sb.AppendLine ( "    </div>" );
 			_ = sb.AppendLine ( "    <div style='width:48%;min-width:220px;'>" );
 			_ = sb.AppendLine (
-				$"      <div style='margin:0 0 0.3em 0;color:{primary};font-size:1.15em;font-weight:700;'>Bill To:</div>"
+				$"      <div style='margin:0 0 0.3em 0;color:{headerColor};font-size:1.15em;font-weight:700;'>Bill To:</div>"
 			);
 			_ = sb.AppendLine ( $"      <p style='margin:0.1em 0;font-size:1em;'>{config.ClientName}</p>" );
 			_ = sb.AppendLine (
@@ -104,26 +113,26 @@ namespace ClockifyUtility.Services
 			_ = sb.AppendLine ( "</div>" );
 
 			_ = sb.AppendLine (
-				$"<h2 style='color:{secondary};font-size:1.4em;font-weight:700;margin-top:2em;margin-bottom:0.7em;text-align:left;'>Work Summary</h2>"
+				$"<h2 style='color:{amountDueColor};font-size:1.4em;font-weight:700;margin-top:2em;margin-bottom:0.7em;text-align:left;'>Work Summary</h2>"
 			);
 
 			_ = sb.AppendLine (
 				$"<table style='width:100%;max-width:100%;border-collapse:collapse;margin-bottom:2em;box-shadow:0 4px 16px rgba(44,62,80,0.09);background:#fff;border-radius:9px;overflow:hidden;'>"
 			);
 			_ = sb.AppendLine (
-				$"<tr style='background:{headerBg};color:{primary};letter-spacing:0.03em;'>"
+				$"<tr style='background:{tableHeaderBg};color:{headerColor};letter-spacing:0.03em;'>"
 			);
 			_ = sb.AppendLine (
-				$"<th style='border:1px solid {border};padding:13px 10px;font-size:1em;text-align:left;font-weight:700;'>Project</th>"
+				$"<th style='border:1px solid {borderColor};padding:13px 10px;font-size:1em;text-align:left;font-weight:700;'>Project</th>"
 			);
 			_ = sb.AppendLine (
-				$"<th style='border:1px solid {border};padding:13px 10px;font-size:1em;text-align:right;font-weight:700;'>Hours</th>"
+				$"<th style='border:1px solid {borderColor};padding:13px 10px;font-size:1em;text-align:right;font-weight:700;'>Hours</th>"
 			);
 			_ = sb.AppendLine (
-				$"<th style='border:1px solid {border};padding:13px 10px;font-size:1em;text-align:right;font-weight:700;'>Rate</th>"
+				$"<th style='border:1px solid {borderColor};padding:13px 10px;font-size:1em;text-align:right;font-weight:700;'>Rate</th>"
 			);
 			_ = sb.AppendLine (
-				$"<th style='border:1px solid {border};padding:13px 10px;font-size:1em;text-align:right;font-weight:700;'>Amount</th>"
+				$"<th style='border:1px solid {borderColor};padding:13px 10px;font-size:1em;text-align:right;font-weight:700;'>Amount</th>"
 			);
 			_ = sb.AppendLine ( "</tr>" );
 
@@ -139,10 +148,10 @@ namespace ClockifyUtility.Services
 				double amount = group.Hours * config.HourlyRate;
 				_ = sb.AppendLine (
 					$"<tr style='{rowBg}'>"
-					+ $"<td style='border:1px solid {border};padding:13px 10px;font-size:1em;text-align:left;font-weight:500;color:{text};'>{group.Project}</td>"
-					+ $"<td style='border:1px solid {border};padding:13px 10px;font-size:1em;text-align:right;font-weight:500;color:{text};'>{group.Hours:F2}</td>"
-					+ $"<td style='border:1px solid {border};padding:13px 10px;font-size:1em;text-align:right;font-weight:500;color:{text};'>{config.CurrencySymbol}{config.HourlyRate:F2}</td>"
-					+ $"<td style='border:1px solid {border};padding:13px 10px;font-size:1em;text-align:right;font-weight:500;color:{text};'>{config.CurrencySymbol}{amount:F2}</td>"
+					+ $"<td style='border:1px solid {borderColor};padding:13px 10px;font-size:1em;text-align:left;font-weight:500;color:{textColor};'>{group.Project}</td>"
+					+ $"<td style='border:1px solid {borderColor};padding:13px 10px;font-size:1em;text-align:right;font-weight:500;color:{textColor};'>{group.Hours:F2}</td>"
+					+ $"<td style='border:1px solid {borderColor};padding:13px 10px;font-size:1em;text-align:right;font-weight:500;color:{textColor};'>{config.CurrencySymbol}{config.HourlyRate:F2}</td>"
+					+ $"<td style='border:1px solid {borderColor};padding:13px 10px;font-size:1em;text-align:right;font-weight:500;color:{textColor};'>{config.CurrencySymbol}{amount:F2}</td>"
 					+ "</tr>"
 				);
 				totalAmountTable += amount;
@@ -153,7 +162,7 @@ namespace ClockifyUtility.Services
 			if ( config.ConstantLineItems != null && config.ConstantLineItems.Count > 0 )
 			{
 				_ = sb.AppendLine (
-					$"<tr><td colspan='4' style='background:{headingBg};color:{primary};text-align:left;font-weight:700;border:1px solid {border};padding:13px 10px;'>Other Charges</td></tr>"
+					$"<tr><td colspan='4' style='background:{headingBg};color:{headerColor};text-align:left;font-weight:700;border:1px solid {borderColor};padding:13px 10px;'>Other Charges</td></tr>"
 				);
 				foreach ( ConstantLineItem item in config.ConstantLineItems )
 				{
@@ -162,10 +171,10 @@ namespace ClockifyUtility.Services
 						: "background:#fff;";
 					_ = sb.AppendLine (
 						$"<tr style='{rowBg}'>"
-						+ $"<td style='border:1px solid {border};padding:13px 10px;font-size:1em;text-align:left;font-weight:500;color:{text};'>{item.Description}</td>"
-						+ $"<td style='border:1px solid {border};padding:13px 10px;font-size:1em;text-align:right;'></td>"
-						+ $"<td style='border:1px solid {border};padding:13px 10px;font-size:1em;text-align:right;'></td>"
-						+ $"<td style='border:1px solid {border};padding:13px 10px;font-size:1em;text-align:right;font-weight:500;color:{text};'>{config.CurrencySymbol}{item.Amount:F2}</td>"
+						+ $"<td style='border:1px solid {borderColor};padding:13px 10px;font-size:1em;text-align:left;font-weight:500;color:{textColor};'>{item.Description}</td>"
+						+ $"<td style='border:1px solid {borderColor};padding:13px 10px;font-size:1em;text-align:right;'></td>"
+						+ $"<td style='border:1px solid {borderColor};padding:13px 10px;font-size:1em;text-align:right;'></td>"
+						+ $"<td style='border:1px solid {borderColor};padding:13px 10px;font-size:1em;text-align:right;font-weight:500;color:{textColor};'>{config.CurrencySymbol}{item.Amount:F2}</td>"
 						+ "</tr>"
 					);
 					totalAmountTable += item.Amount;
@@ -175,16 +184,16 @@ namespace ClockifyUtility.Services
 
 			_ = sb.AppendLine (
 				$"<tr>"
-				+ $"<td style='border:1px solid {border};padding:13px 10px;font-size:1em;text-align:left;font-weight:700;background:{headerBg};color:{primary};'>Total</td>"
-				+ $"<td style='border:1px solid {border};padding:13px 10px;font-size:1em;text-align:right;font-weight:700;background:{headerBg};color:{primary};'>{totalHoursTable:F2}</td>"
-				+ $"<td style='border:1px solid {border};padding:13px 10px;font-size:1em;text-align:right;background:{headerBg};'></td>"
-				+ $"<td style='border:1px solid {border};padding:13px 10px;font-size:1em;text-align:right;font-weight:700;background:{headerBg};color:{primary};'>{config.CurrencySymbol}{totalAmountTable:F2}</td>"
+				+ $"<td style='border:1px solid {borderColor};padding:13px 10px;font-size:1em;text-align:left;font-weight:700;background:{tableHeaderBg};color:{headerColor};'>Total</td>"
+				+ $"<td style='border:1px solid {borderColor};padding:13px 10px;font-size:1em;text-align:right;font-weight:700;background:{tableHeaderBg};color:{headerColor};'>{totalHoursTable:F2}</td>"
+				+ $"<td style='border:1px solid {borderColor};padding:13px 10px;font-size:1em;text-align:right;background:{tableHeaderBg};'></td>"
+				+ $"<td style='border:1px solid {borderColor};padding:13px 10px;font-size:1em;text-align:right;font-weight:700;background:{tableHeaderBg};color:{headerColor};'>{config.CurrencySymbol}{totalAmountTable:F2}</td>"
 				+ "</tr>"
 			);
 			_ = sb.AppendLine ( "</table>" );
 
 			_ = sb.AppendLine (
-				$"<div style='background:{headingBg};color:{primary};padding:1.3em 2.2em;border-radius:10px;display:inline-block;font-size:1.4em;margin-top:1.5em;margin-bottom:3em;font-weight:700;box-shadow:0 2px 8px rgba(44,62,80,0.06);'>Amount Due: {config.CurrencySymbol}{totalAmountTable:F2}</div>"
+				$"<div style='background:{headingBg};color:{amountDueColor};padding:1.3em 2.2em;border-radius:10px;display:inline-block;font-size:1.4em;margin-top:1.5em;margin-bottom:3em;font-weight:700;box-shadow:0 2px 8px rgba(44,62,80,0.06);'>Amount Due: {config.CurrencySymbol}{totalAmountTable:F2}</div>"
 			);
 
 			_ = sb.AppendLine ( "</div>" );
