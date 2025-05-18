@@ -12,174 +12,173 @@ using ClockifyUtility.Models;
 namespace ClockifyUtility.ViewModels
 {
 	// Helper class for appsettings.json
-   public class AppSettings
-   {
-	   public string? DefaultInvoice { get; set; }
-	   public string? InvoiceConfigDirectory { get; set; }
-   }
-   public class MainViewModel : System.ComponentModel.INotifyPropertyChanged
+	public class AppSettings
 	{
-		// --- Month Navigation State ---
+		public string? DefaultInvoice { get; set; }
+		public string? InvoiceConfigDirectory { get; set; }
+	}
+
+	public class MainViewModel : System.ComponentModel.INotifyPropertyChanged
+	{
+		// --- Fields ---
 		private DateTime _selectedMonth = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+		private string? _selectedInvoiceConfig = null;
+		private List<string> _availableInvoiceConfigs = new();
+		private string? _defaultInvoiceConfig = null;
+		private string _status = string.Empty;
+		private string _generateButtonText = "Generate Invoice";
+		private bool _isGenerateButtonEnabled = true;
+		private List<string> _displayInvoiceConfigs = new();
+
+		private readonly IConfigService _configService;
+		private readonly IInvoiceService _invoiceService;
+
+		// --- Properties ---
 		public DateTime SelectedMonth
 		{
 			get => _selectedMonth;
 			set
 			{
-				if (_selectedMonth != value)
+				if ( _selectedMonth != value )
 				{
 					_selectedMonth = value;
-					OnPropertyChanged(nameof(SelectedMonth));
-					OnPropertyChanged(nameof(CurrentMonthLabel));
-					// Optionally, auto-refresh invoice preview here if implemented
+					OnPropertyChanged ( nameof ( SelectedMonth ) );
+					OnPropertyChanged ( nameof ( CurrentMonthLabel ) );
 				}
 			}
 		}
 
-		public string CurrentMonthLabel => SelectedMonth.ToString("MMMM yyyy");
+		public string CurrentMonthLabel => SelectedMonth.ToString ( "MMMM yyyy" );
 
 		public ICommand PreviousMonthCommand { get; }
 		public ICommand NextMonthCommand { get; }
-		private readonly IConfigService _configService;
-		private readonly IInvoiceService _invoiceService;
-		
-		private string? _selectedInvoiceConfig = null;
-		private List<string> _availableInvoiceConfigs = new();
-		private string? _defaultInvoiceConfig = null;
 		public ICommand SetDefaultInvoiceCommand { get; }
+		public ICommand GenerateInvoiceCommand { get; }
 
-		private string _status = string.Empty;
-
-		public MainViewModel ( IInvoiceService invoiceService, IConfigService configService )
+		public string GenerateButtonText
 		{
-			_invoiceService = invoiceService;
-			_configService = configService;
-			GenerateInvoiceCommand = new RelayCommand ( GenerateInvoiceAsync );
-
-			// Month navigation commands
-			PreviousMonthCommand = new RelayCommand(async () => { SelectedMonth = SelectedMonth.AddMonths(-1); await Task.CompletedTask; }, () => true);
-			NextMonthCommand = new RelayCommand(async () => { SelectedMonth = SelectedMonth.AddMonths(1); await Task.CompletedTask; }, () => true);
-
-			// Load available configs from invoice-generator folder
-
-
-		   // Load default from appsettings.json
-		   var exeDir = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
-		   if (string.IsNullOrEmpty(exeDir))
-		   {
-			   throw new InvalidOperationException("Could not determine executable directory.");
-		   }
-		   var appSettingsPath = System.IO.Path.Combine(exeDir, "appsettings.json");
-		   string? invoiceConfigDir = null;
-		   if (System.IO.File.Exists(appSettingsPath))
-		   {
-			   var json = System.IO.File.ReadAllText(appSettingsPath);
-			   var settings = Newtonsoft.Json.JsonConvert.DeserializeObject<AppSettings>(json);
-			   _defaultInvoiceConfig = settings?.DefaultInvoice ?? string.Empty;
-			   invoiceConfigDir = settings?.InvoiceConfigDirectory;
-		   }
-
-		   if (!string.IsNullOrWhiteSpace(invoiceConfigDir) && System.IO.Directory.Exists(invoiceConfigDir))
-		   {
-			   var files = System.IO.Directory.GetFiles(invoiceConfigDir, "*.json");
-			   _availableInvoiceConfigs = files.Select(f => System.IO.Path.GetFileName(f)).ToList();
-		   }
-		   else
-		   {
-			   _availableInvoiceConfigs = new List<string>();
-		   }
-		   _availableInvoiceConfigs.Insert(0, "All");
-
-		   // Mark the default in the list for display
-		   UpdateDisplayInvoiceConfigs();
-
-		   // Select the default if set, otherwise "All"
-		   if (!string.IsNullOrEmpty(_defaultInvoiceConfig) && _availableInvoiceConfigs.Contains(_defaultInvoiceConfig))
-			   _selectedInvoiceConfig = _defaultInvoiceConfig;
-		   else if (_defaultInvoiceConfig == "All")
-			   _selectedInvoiceConfig = "All";
-		   else
-			   _selectedInvoiceConfig = "All";
-
-			SetDefaultInvoiceCommand = new RelayCommand(async () => { SetDefaultInvoice(); await Task.CompletedTask; }, () => true);
+			get => _generateButtonText;
+			set { _generateButtonText = value; OnPropertyChanged ( nameof ( GenerateButtonText ) ); }
 		}
 
-		// Display list with (Default) marker
-		private List<string> _displayInvoiceConfigs = new();
+		public bool IsGenerateButtonEnabled
+		{
+			get => _isGenerateButtonEnabled;
+			set { _isGenerateButtonEnabled = value; OnPropertyChanged ( nameof ( IsGenerateButtonEnabled ) ); ( ( RelayCommand ) GenerateInvoiceCommand ).RaiseCanExecuteChanged ( ); }
+		}
+
+		public string Status
+		{
+			get => _status;
+			set { _status = value; OnPropertyChanged ( nameof ( Status ) ); }
+		}
+
 		public List<string> DisplayInvoiceConfigs
 		{
 			get => _displayInvoiceConfigs;
-			set { _displayInvoiceConfigs = value; OnPropertyChanged(nameof(DisplayInvoiceConfigs)); }
+			set { _displayInvoiceConfigs = value; OnPropertyChanged ( nameof ( DisplayInvoiceConfigs ) ); }
 		}
-
-		private void UpdateDisplayInvoiceConfigs()
-		{
-			DisplayInvoiceConfigs = _availableInvoiceConfigs
-				.Select(cfg => cfg == (_defaultInvoiceConfig ?? "") ? $"{cfg} (Default)" : cfg)
-				.ToList();
-
-			// After updating the display list, ensure the selected item matches the display string
-			var current = _selectedInvoiceConfig ?? string.Empty;
-			// Find the display string for the current selection
-			var match = DisplayInvoiceConfigs.FirstOrDefault(d => d.Replace(" (Default)", "") == current);
-			if (!string.IsNullOrEmpty(match))
-			{
-				// This will update the ComboBox selection in the UI
-				_selectedInvoiceConfig = match.Replace(" (Default)", "");
-				OnPropertyChanged(nameof(SelectedInvoiceConfig));
-			}
-		}
-
-
 
 		public string SelectedInvoiceConfig
 		{
 			get
 			{
-				// Return the display string for the selected config (with Default marker if needed)
 				var current = _selectedInvoiceConfig ?? string.Empty;
 				var match = DisplayInvoiceConfigs.FirstOrDefault(d => d.Replace(" (Default)", "") == current);
 				return match ?? current;
 			}
 			set
 			{
-				// Remove (Default) marker if present
 				var cleanValue = value?.Replace(" (Default)", "");
 				_selectedInvoiceConfig = cleanValue;
-				OnPropertyChanged(nameof(SelectedInvoiceConfig));
+				OnPropertyChanged ( nameof ( SelectedInvoiceConfig ) );
 			}
 		}
 
 		public string DefaultInvoiceConfig
 		{
 			get => _defaultInvoiceConfig ?? string.Empty;
-		   set { _defaultInvoiceConfig = value; OnPropertyChanged(nameof(DefaultInvoiceConfig)); }
+			set { _defaultInvoiceConfig = value; OnPropertyChanged ( nameof ( DefaultInvoiceConfig ) ); }
 		}
 
-		private bool SetDefaultInvoice()
+		// --- Constructor ---
+		public MainViewModel ( IInvoiceService invoiceService, IConfigService configService )
+		{
+			_invoiceService = invoiceService;
+			_configService = configService;
+			GenerateInvoiceCommand = new RelayCommand ( GenerateInvoiceAsync, ( ) => IsGenerateButtonEnabled );
+			GenerateButtonText = "Generate Invoice";
+			IsGenerateButtonEnabled = true;
+			PreviousMonthCommand = new RelayCommand ( async ( ) => { SelectedMonth = SelectedMonth.AddMonths ( -1 ); await Task.CompletedTask; }, ( ) => true );
+			NextMonthCommand = new RelayCommand ( async ( ) => { SelectedMonth = SelectedMonth.AddMonths ( 1 ); await Task.CompletedTask; }, ( ) => true );
+			// Load configs
+			var exeDir = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+			if ( string.IsNullOrEmpty ( exeDir ) )
+				throw new InvalidOperationException ( "Could not determine executable directory." );
+			var appSettingsPath = System.IO.Path.Combine(exeDir, "appsettings.json");
+			string? invoiceConfigDir = null;
+			if ( System.IO.File.Exists ( appSettingsPath ) )
+			{
+				var json = System.IO.File.ReadAllText(appSettingsPath);
+				var settings = Newtonsoft.Json.JsonConvert.DeserializeObject<AppSettings>(json);
+				_defaultInvoiceConfig = settings?.DefaultInvoice ?? string.Empty;
+				invoiceConfigDir = settings?.InvoiceConfigDirectory;
+			}
+			if ( !string.IsNullOrWhiteSpace ( invoiceConfigDir ) && System.IO.Directory.Exists ( invoiceConfigDir ) )
+			{
+				var files = System.IO.Directory.GetFiles(invoiceConfigDir, "*.json");
+				_availableInvoiceConfigs = files.Select ( f => System.IO.Path.GetFileName ( f ) ).ToList ( );
+			}
+			else
+			{
+				_availableInvoiceConfigs = new List<string> ( );
+			}
+			_availableInvoiceConfigs.Insert ( 0, "All" );
+			UpdateDisplayInvoiceConfigs ( );
+			if ( !string.IsNullOrEmpty ( _defaultInvoiceConfig ) && _availableInvoiceConfigs.Contains ( _defaultInvoiceConfig ) )
+				_selectedInvoiceConfig = _defaultInvoiceConfig;
+			else if ( _defaultInvoiceConfig == "All" )
+				_selectedInvoiceConfig = "All";
+			else
+				_selectedInvoiceConfig = "All";
+			SetDefaultInvoiceCommand = new RelayCommand ( async ( ) => { SetDefaultInvoice ( ); await Task.CompletedTask; }, ( ) => true );
+		}
+
+		// --- Methods ---
+		private void UpdateDisplayInvoiceConfigs ( )
+		{
+			DisplayInvoiceConfigs = _availableInvoiceConfigs
+				.Select ( cfg => cfg == ( _defaultInvoiceConfig ?? "" ) ? $"{cfg} (Default)" : cfg )
+				.ToList ( );
+			var current = _selectedInvoiceConfig ?? string.Empty;
+			var match = DisplayInvoiceConfigs.FirstOrDefault(d => d.Replace(" (Default)", "") == current);
+			if ( !string.IsNullOrEmpty ( match ) )
+			{
+				_selectedInvoiceConfig = match.Replace ( " (Default)", "" );
+				OnPropertyChanged ( nameof ( SelectedInvoiceConfig ) );
+			}
+		}
+
+		private bool SetDefaultInvoice ( )
 		{
 			var exeDir = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
-			if (string.IsNullOrEmpty(exeDir))
-			{
-				throw new InvalidOperationException("Could not determine executable directory.");
-			}
+			if ( string.IsNullOrEmpty ( exeDir ) )
+				throw new InvalidOperationException ( "Could not determine executable directory." );
 			var appSettingsPath = System.IO.Path.Combine(exeDir, "appsettings.json");
-			if (System.IO.File.Exists(appSettingsPath))
+			if ( System.IO.File.Exists ( appSettingsPath ) )
 			{
 				var json = System.IO.File.ReadAllText(appSettingsPath);
 				var settings = Newtonsoft.Json.JsonConvert.DeserializeObject<AppSettings>(json) ?? new AppSettings();
-				// Remove (Default) marker if present
 				var cleanValue = SelectedInvoiceConfig?.Replace(" (Default)", "");
 				settings.DefaultInvoice = cleanValue;
-				System.IO.File.WriteAllText(appSettingsPath, Newtonsoft.Json.JsonConvert.SerializeObject(settings, Newtonsoft.Json.Formatting.Indented));
+				System.IO.File.WriteAllText ( appSettingsPath, Newtonsoft.Json.JsonConvert.SerializeObject ( settings, Newtonsoft.Json.Formatting.Indented ) );
 				DefaultInvoiceConfig = cleanValue ?? string.Empty;
-				UpdateDisplayInvoiceConfigs();
-				// After updating display configs, set selection to the new display string
+				UpdateDisplayInvoiceConfigs ( );
 				var match = DisplayInvoiceConfigs.FirstOrDefault(d => d.Replace(" (Default)", "") == cleanValue);
-				if (!string.IsNullOrEmpty(match))
+				if ( !string.IsNullOrEmpty ( match ) )
 				{
 					_selectedInvoiceConfig = cleanValue;
-					OnPropertyChanged(nameof(SelectedInvoiceConfig));
+					OnPropertyChanged ( nameof ( SelectedInvoiceConfig ) );
 				}
 				Status = $"Default invoice updated to: {cleanValue}";
 				return true;
@@ -188,106 +187,99 @@ namespace ClockifyUtility.ViewModels
 			return false;
 		}
 
-		public event System.ComponentModel.PropertyChangedEventHandler? PropertyChanged;
-
-		public ICommand GenerateInvoiceCommand { get; }
-
-
-
-		public string Status
-		{
-			get => _status;
-		   set { _status = value; OnPropertyChanged(nameof(Status)); }
-		}
-
-
-
-		private async Task GenerateInvoiceAsync()
+		private async Task GenerateInvoiceAsync ( )
 		{
 			try
 			{
+				IsGenerateButtonEnabled = false;
+				GenerateButtonText = "Generating...";
 				Status = "Generating invoice...";
-			   Serilog.Log.Information("Starting invoice generation.");
-			   // Construct start and end as UTC for the full month
-			   DateTime start = new DateTime(SelectedMonth.Year, SelectedMonth.Month, 1, 0, 0, 0, DateTimeKind.Utc);
-			   DateTime end = new DateTime(SelectedMonth.Year, SelectedMonth.Month, DateTime.DaysInMonth(SelectedMonth.Year, SelectedMonth.Month), 23, 59, 59, DateTimeKind.Utc);
-			   Serilog.Log.Information("Invoice period (UTC): {Start} to {End}", start.ToString("yyyy-MM-ddTHH:mm:ssZ"), end.ToString("yyyy-MM-ddTHH:mm:ssZ"));
-
-				// Always use the internal config name for logic
+				Serilog.Log.Information ( "Starting invoice generation." );
+				DateTime start = new DateTime(SelectedMonth.Year, SelectedMonth.Month, 1, 0, 0, 0, DateTimeKind.Utc);
+				DateTime end = new DateTime(SelectedMonth.Year, SelectedMonth.Month, DateTime.DaysInMonth(SelectedMonth.Year, SelectedMonth.Month), 23, 59, 59, DateTimeKind.Utc);
+				Serilog.Log.Information ( "Invoice period (UTC): {Start} to {End}", start.ToString ( "yyyy-MM-ddTHH:mm:ssZ" ), end.ToString ( "yyyy-MM-ddTHH:mm:ssZ" ) );
 				string selectedConfigName = _selectedInvoiceConfig ?? "All";
 				List<string> configsToGenerate = new();
-				if (selectedConfigName == "All")
+				if ( selectedConfigName == "All" )
 				{
-					configsToGenerate = _availableInvoiceConfigs.Where(f => f != "All").ToList();
+					configsToGenerate = _availableInvoiceConfigs.Where ( f => f != "All" ).ToList ( );
 				}
 				else
 				{
-					configsToGenerate.Add(selectedConfigName);
+					configsToGenerate.Add ( selectedConfigName );
 				}
-
 				var exeDir = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
-				if (string.IsNullOrEmpty(exeDir))
-				{
-					throw new InvalidOperationException("Could not determine executable directory.");
-				}
+				if ( string.IsNullOrEmpty ( exeDir ) )
+					throw new InvalidOperationException ( "Could not determine executable directory." );
 				var appSettingsPath = System.IO.Path.Combine(exeDir, "appsettings.json");
 				string? invoiceConfigDir = null;
-				if (System.IO.File.Exists(appSettingsPath))
+				if ( System.IO.File.Exists ( appSettingsPath ) )
 				{
 					var appSettingsJson = System.IO.File.ReadAllText(appSettingsPath);
 					var settings = Newtonsoft.Json.JsonConvert.DeserializeObject<AppSettings>(appSettingsJson);
 					invoiceConfigDir = settings?.InvoiceConfigDirectory;
 				}
-				if (!string.IsNullOrWhiteSpace(invoiceConfigDir) && System.IO.Directory.Exists(invoiceConfigDir))
+				if ( !string.IsNullOrWhiteSpace ( invoiceConfigDir ) && System.IO.Directory.Exists ( invoiceConfigDir ) )
 				{
 					var skippedConfigs = new List<string>();
-					foreach (var configFile in configsToGenerate)
+					foreach ( var configFile in configsToGenerate )
 					{
 						var fullPath = System.IO.Path.Combine(invoiceConfigDir, configFile);
-						if (!System.IO.File.Exists(fullPath)) continue;
+						if ( !System.IO.File.Exists ( fullPath ) ) continue;
 						var json = System.IO.File.ReadAllText(fullPath);
 						var config = Newtonsoft.Json.JsonConvert.DeserializeObject<InvoiceConfig>(json);
-						if (config == null)
+						if ( config == null )
 						{
-			   Serilog.Log.Warning("Config file {ConfigFile} could not be deserialized and will be skipped.", configFile);
-							skippedConfigs.Add(configFile + " (invalid JSON)");
+							Serilog.Log.Warning ( "Config file {ConfigFile} could not be deserialized and will be skipped.", configFile );
+							skippedConfigs.Add ( configFile + " (invalid JSON)" );
 							continue;
 						}
 						var errors = InvoiceConfigValidator.Validate(config);
-						if (errors.Count > 0)
+						if ( errors.Count > 0 )
 						{
-			   Serilog.Log.Warning("Config file {ConfigFile} is invalid and will be skipped: {Errors}", configFile, string.Join("; ", errors));
-							skippedConfigs.Add(configFile + ": " + string.Join(", ", errors));
+							Serilog.Log.Warning ( "Config file {ConfigFile} is invalid and will be skipped: {Errors}", configFile, string.Join ( "; ", errors ) );
+							skippedConfigs.Add ( configFile + ": " + string.Join ( ", ", errors ) );
 							continue;
 						}
 						string clientName = config.Clockify?.ClientName ?? "Unknown Client";
 						Status = $"Generating invoice for {clientName}...";
-						await _invoiceService.GenerateInvoiceAsync(start, end, config);
+						GenerateButtonText = $"Generating {clientName}...";
+						await _invoiceService.GenerateInvoiceAsync ( start, end, config );
 					}
-					if (skippedConfigs.Count > 0)
+					if ( skippedConfigs.Count > 0 )
 					{
-						Status = $"Invoice(s) saved successfully. Skipped: {skippedConfigs.Count} config(s):\n" + string.Join("\n", skippedConfigs);
+						Status = $"Invoice(s) saved successfully. Skipped: {skippedConfigs.Count} config(s):\n" + string.Join ( "\n", skippedConfigs );
+						GenerateButtonText = "Completed (with Skips)";
 					}
 					else
 					{
 						Status = "Invoice(s) saved successfully";
+						GenerateButtonText = "Completed";
 					}
 				}
 			}
-			catch (Services.MissingClockifyIdException ex)
+			catch ( Services.MissingClockifyIdException ex )
 			{
 				Status = "Missing Clockify UserId or WorkspaceId.";
-			   Serilog.Log.Warning("Missing Clockify UserId or WorkspaceId. Querying Clockify API...");
-				await ShowClockifyIdDialogAsync(ex.ApiKey);
+				GenerateButtonText = "Error";
+				Serilog.Log.Warning ( "Missing Clockify UserId or WorkspaceId. Querying Clockify API..." );
+				await ShowClockifyIdDialogAsync ( ex.ApiKey );
 			}
-			catch (Exception ex)
+			catch ( Exception ex )
 			{
 				Status = $"Error: {ex.Message}";
-			   Serilog.Log.Error(ex, "Error generating invoice");
-				Application.Current.Dispatcher.Invoke(() =>
+				GenerateButtonText = "Error";
+				Serilog.Log.Error ( ex, "Error generating invoice" );
+				Application.Current.Dispatcher.Invoke ( ( ) =>
 				{
-					_ = MessageBox.Show($"Error generating invoice:\n{ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-				});
+					_ = MessageBox.Show ( $"Error generating invoice:\n{ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error );
+				} );
+			}
+			finally
+			{
+				await Task.Delay ( 1200 );
+				GenerateButtonText = "Generate Invoice";
+				IsGenerateButtonEnabled = true;
 			}
 		}
 
@@ -297,17 +289,17 @@ namespace ClockifyUtility.ViewModels
 			{
 				ClockifyApiService apiService = new(apiKey);
 				string userId = await apiService.GetUserIdAsync();
-				List<Models.WorkspaceInfo> workspaces = await apiService.GetWorkspacesAsync ( );
+				List<Models.WorkspaceInfo> workspaces = await apiService.GetWorkspacesAsync();
 				System.Windows.Application.Current.Dispatcher.Invoke ( ( ) =>
 				{
-					Views.ClockifyIdDialog dialog = new ( userId, workspaces );
+					Views.ClockifyIdDialog dialog = new(userId, workspaces);
 					_ = dialog.ShowDialog ( );
 				} );
-				Serilog.Log.Information("Displayed Clockify ID dialog.");
+				Serilog.Log.Information ( "Displayed Clockify ID dialog." );
 			}
 			catch ( Exception ex )
 			{
-				Serilog.Log.Error(ex, "Error fetching Clockify IDs");
+				Serilog.Log.Error ( ex, "Error fetching Clockify IDs" );
 				System.Windows.Application.Current.Dispatcher.Invoke ( ( ) =>
 				{
 					_ = System.Windows.MessageBox.Show ( $"Could not connect to Clockify. Please check your API key and internet connection.\n\nError details:\n{ex.Message}", "Clockify Connection Error", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error );
@@ -315,6 +307,7 @@ namespace ClockifyUtility.ViewModels
 			}
 		}
 
+		public event System.ComponentModel.PropertyChangedEventHandler? PropertyChanged;
 		protected void OnPropertyChanged ( string propertyName )
 		{
 			PropertyChanged?.Invoke ( this, new System.ComponentModel.PropertyChangedEventArgs ( propertyName ) );
@@ -343,6 +336,11 @@ namespace ClockifyUtility.ViewModels
 		public async void Execute ( object? parameter )
 		{
 			await _execute ( );
+		}
+
+		public void RaiseCanExecuteChanged ( )
+		{
+			CanExecuteChanged?.Invoke ( this, EventArgs.Empty );
 		}
 	}
 }
