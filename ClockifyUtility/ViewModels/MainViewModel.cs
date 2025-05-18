@@ -166,9 +166,10 @@ namespace ClockifyUtility.ViewModels
 						   Log.Warning("Config file {ConfigFile} could not be deserialized and will be skipped.", configFile);
 						   continue;
 					   }
-					   // TODO: Validate config if needed
+					   string clientName = config.Clockify?.ClientName ?? "Unknown Client";
+					   Status = $"Generating invoice for {clientName}...";
 					   string filePath = await _invoiceService.GenerateInvoiceAsync(start, end, config);
-					   Status = $"Invoice generated: {filePath}";
+					   Status = $"Invoice generated for {clientName}: {filePath}";
 					   Log.Information("Invoice generated at: {FilePath}", filePath);
 				   }
 			   }

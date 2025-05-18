@@ -253,12 +253,16 @@ namespace ClockifyUtility.Services
 			   totalAmount
 		   );
 
+		   // Sanitize FromName and ClientName for filename
+		   string fromNameSafe = string.Join("_", config.Clockify.FromName.Split(System.IO.Path.GetInvalidFileNameChars())).Replace(" ", "_");
+		   string clientNameSafe = string.Join("_", config.Clockify.ClientName.Split(System.IO.Path.GetInvalidFileNameChars())).Replace(" ", "_");
+		   string fileName = $"Invoice_{fromNameSafe}_{clientNameSafe}_{monthYear.Replace(" ", "_")}.html";
 		   string filePath = System.IO.Path.Combine(
 			   config.Clockify.OutputPath,
-			   $"Invoice_{monthYear.Replace(" ", "_")}.html"
+			   fileName
 		   );
-			await _fileService.SaveHtmlAsync ( html, filePath );
-			return filePath;
+		   await _fileService.SaveHtmlAsync ( html, filePath );
+		   return filePath;
 		}
 	}
 }
