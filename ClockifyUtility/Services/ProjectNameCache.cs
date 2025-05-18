@@ -16,29 +16,29 @@ namespace ClockifyUtility.Services
 			_workspaceId = workspaceId;
 		}
 
-		public async Task<string> GetProjectNameAsync ( string projectId, Action<string>? log = null )
+	   public async Task<string> GetProjectNameAsync ( string projectId )
 		{
-			if ( string.IsNullOrEmpty ( projectId ) )
-			{
-				return "No Project";
-			}
+		   if ( string.IsNullOrEmpty ( projectId ) )
+		   {
+			   return "No Project";
+		   }
 
-			if ( _cache.TryGetValue ( projectId, out string? name ) )
-			{
-				return name;
-			}
+		   if ( _cache.TryGetValue ( projectId, out string? name ) )
+		   {
+			   return name;
+		   }
 
-			string url = $"https://api.clockify.me/api/v1/workspaces/{_workspaceId}/projects/{projectId}";
-			using HttpClient client = new();
-			client.DefaultRequestHeaders.Add ( "X-Api-Key", _apiKey );
-			log?.Invoke ( $"[ProjectNameCache] Querying project API: {url}" );
-			HttpResponseMessage resp = await client.GetAsync(url);
-			if ( !resp.IsSuccessStatusCode )
-			{
-				log?.Invoke ( $"[ProjectNameCache] Failed to fetch project name for {projectId}: {resp.StatusCode}" );
-				_cache [ projectId ] = "Unknown Project";
-				return "Unknown Project";
-			}
+		   string url = $"https://api.clockify.me/api/v1/workspaces/{_workspaceId}/projects/{projectId}";
+		   using HttpClient client = new();
+		   client.DefaultRequestHeaders.Add ( "X-Api-Key", _apiKey );
+		   Serilog.Log.Debug("[ProjectNameCache] Querying project API for projectId=REDACTED");
+		   HttpResponseMessage resp = await client.GetAsync(url);
+		   if ( !resp.IsSuccessStatusCode )
+		   {
+			   Serilog.Log.Warning("[ProjectNameCache] Failed to fetch project name for projectId=REDACTED: {StatusCode}", resp.StatusCode);
+			   _cache [ projectId ] = "Unknown Project";
+			   return "Unknown Project";
+		   }
 			JObject obj = JObject.Parse(await resp.Content.ReadAsStringAsync());
 			name = obj [ "name" ]?.ToString ( ) ?? "Unknown Project";
 			_cache [ projectId ] = name;
