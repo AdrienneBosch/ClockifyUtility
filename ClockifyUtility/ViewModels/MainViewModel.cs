@@ -168,10 +168,9 @@ namespace ClockifyUtility.ViewModels
 					   }
 					   string clientName = config.Clockify?.ClientName ?? "Unknown Client";
 					   Status = $"Generating invoice for {clientName}...";
-					   string filePath = await _invoiceService.GenerateInvoiceAsync(start, end, config);
-					   Status = $"Invoice generated for {clientName}: {filePath}";
-					   Log.Information("Invoice generated at: {FilePath}", filePath);
+					   await _invoiceService.GenerateInvoiceAsync(start, end, config);
 				   }
+				   Status = "Invoice(s) saved successfully";
 			   }
 		   }
 		   catch (Services.MissingClockifyIdException ex)
