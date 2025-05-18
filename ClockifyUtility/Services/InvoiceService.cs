@@ -207,22 +207,21 @@ namespace ClockifyUtility.Services
 		public async Task<string> GenerateInvoiceAsync (
 					DateTime start,
 			DateTime end,
-			ConfigModel config,
-			Action<string>? log = null
+			ConfigModel config
 		)
 		{
-			List<TimeEntryModel> entries = await _clockifyService.FetchTimeEntriesAsync ( start, end, config, log );
-			log?.Invoke ( $"[InvoiceService] Fetched {entries.Count} time entries from Clockify." );
+			List<TimeEntryModel> entries = await _clockifyService.FetchTimeEntriesAsync ( start, end, config );
+			Serilog.Log.Information("[InvoiceService] Fetched {Count} time entries from Clockify.", entries.Count);
 
 			ProjectNameCache projectNameCache = new(config.ClockifyApiKey, config.WorkspaceId);
 			for ( int i = 0; i < entries.Count; i++ )
 			{
 				TimeEntryModel entry = entries[i];
-				log?.Invoke ( $"[InvoiceService] TimeEntry {i}: projectId={entry.ProjectId}" );
-				if ( string.IsNullOrEmpty ( entry.ProjectName ) )
-				{
-					entry.ProjectName = await projectNameCache.GetProjectNameAsync ( entry.ProjectId, log );
-				}
+				Serilog.Log.Debug("[InvoiceService] TimeEntry {Index}: projectId=REDACTED", i);
+			   if ( string.IsNullOrEmpty ( entry.ProjectName ) )
+			   {
+				   entry.ProjectName = await projectNameCache.GetProjectNameAsync ( entry.ProjectId );
+			   }
 				if ( string.IsNullOrEmpty ( entry.ProjectName ) )
 				{
 					entry.ProjectName = "No Project";

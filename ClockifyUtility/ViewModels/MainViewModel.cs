@@ -8,7 +8,7 @@ namespace ClockifyUtility.ViewModels
 	{
 		private readonly IConfigService _configService;
 		private readonly IInvoiceService _invoiceService;
-		private string _log = string.Empty;
+
 		private string _status = string.Empty;
 
 		public MainViewModel ( IInvoiceService invoiceService, IConfigService configService )
@@ -22,11 +22,7 @@ namespace ClockifyUtility.ViewModels
 
 		public ICommand GenerateInvoiceCommand { get; }
 
-		public string Log
-		{
-			get => _log;
-			set { _log = value; OnPropertyChanged ( nameof ( Log ) ); }
-		}
+
 
 		public string Status
 		{
@@ -34,43 +30,39 @@ namespace ClockifyUtility.ViewModels
 			set { _status = value; OnPropertyChanged ( nameof ( Status ) ); }
 		}
 
-		private void AppendLog ( string message )
-		{
-			Log += $"[{DateTime.Now:HH:mm:ss}] {message}\n";
-			System.Diagnostics.Debug.WriteLine ( $"[LOG] {message}" );
-		}
+
 
 		private async Task GenerateInvoiceAsync ( )
 		{
 			try
 			{
 				Status = "Generating invoice...";
-				AppendLog ( "Starting invoice generation." );
+			Serilog.Log.Information("Starting invoice generation.");
 				Models.ConfigModel config = _configService.LoadConfig ( );
-				AppendLog ( "Loaded configuration." );
+			Serilog.Log.Information("Loaded configuration.");
 				DateTime start = new(DateTime.Now.Year, DateTime.Now.Month, 1);
-				DateTime end = start.AddMonths(1).AddDays(-1);
-				AppendLog ( $"Invoice period: {start:yyyy-MM-dd} to {end:yyyy-MM-dd}" );
+			DateTime end = start.AddMonths(1).AddDays(-1);
+			Serilog.Log.Information("Invoice period: {Start} to {End}", start.ToString("yyyy-MM-dd"), end.ToString("yyyy-MM-dd"));
 
-				// Pass AppendLog to InvoiceService for deep logging
-				string filePath = await _invoiceService.GenerateInvoiceAsync(start, end, config, AppendLog);
-				Status = $"Invoice generated: {filePath}";
-				AppendLog ( $"Invoice generated at: {filePath}" );
+				// Generate invoice
+				string filePath = await _invoiceService.GenerateInvoiceAsync(start, end, config);
+			Status = $"Invoice generated: {filePath}";
+			Serilog.Log.Information("Invoice generated at: {FilePath}", filePath);
 			}
 			catch ( Services.MissingClockifyIdException ex )
 			{
-				Status = "Missing Clockify UserId or WorkspaceId.";
-				AppendLog ( "Missing Clockify UserId or WorkspaceId. Querying Clockify API..." );
-				await ShowClockifyIdDialogAsync ( ex.ApiKey );
+			Status = "Missing Clockify UserId or WorkspaceId.";
+			Serilog.Log.Warning("Missing Clockify UserId or WorkspaceId. Querying Clockify API...");
+			await ShowClockifyIdDialogAsync ( ex.ApiKey );
 			}
 			catch ( Exception ex )
 			{
-				Status = $"Error: {ex.Message}";
-				AppendLog ( $"Error: {ex.Message}" );
-				System.Windows.Application.Current.Dispatcher.Invoke ( ( ) =>
-				{
-					_ = System.Windows.MessageBox.Show ( $"Error generating invoice:\n{ex.Message}", "Error", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error );
-				} );
+			Status = $"Error: {ex.Message}";
+			Serilog.Log.Error(ex, "Error generating invoice");
+			System.Windows.Application.Current.Dispatcher.Invoke ( ( ) =>
+			{
+				_ = System.Windows.MessageBox.Show ( $"Error generating invoice:\n{ex.Message}", "Error", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error );
+			} );
 			}
 		}
 
@@ -86,11 +78,11 @@ namespace ClockifyUtility.ViewModels
 					Views.ClockifyIdDialog dialog = new ( userId, workspaces );
 					_ = dialog.ShowDialog ( );
 				} );
-				AppendLog ( "Displayed Clockify ID dialog." );
+				Serilog.Log.Information("Displayed Clockify ID dialog.");
 			}
 			catch ( Exception ex )
 			{
-				AppendLog ( $"Error fetching Clockify IDs: {ex.Message}" );
+				Serilog.Log.Error(ex, "Error fetching Clockify IDs");
 				System.Windows.Application.Current.Dispatcher.Invoke ( ( ) =>
 				{
 					_ = System.Windows.MessageBox.Show ( $"Could not connect to Clockify. Please check your API key and internet connection.\n\nError details:\n{ex.Message}", "Clockify Connection Error", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error );
