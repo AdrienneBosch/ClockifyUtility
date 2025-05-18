@@ -79,13 +79,23 @@ public partial class App : Application
 		_ = services.AddSingleton<IClockifyService, ClockifyService> ( );
 		_ = services.AddSingleton<IFileService, FileService> ( );
 		_ = services.AddSingleton<IConfigService, ConfigService> ( );
-		_ = services.AddSingleton<ProjectService> ( sp =>
+		// Defer ProjectService config loading to avoid startup crash if config is invalid
+		_ = services.AddSingleton<ProjectService>(sp =>
 		{
-			var config = sp.GetRequiredService<IConfigService>().LoadConfig();
-			var apiKey = config.ClockifyApiKey;
-			if (string.IsNullOrWhiteSpace(apiKey))
-				throw new InvalidOperationException("ClockifyApiKey is missing in appsettings.json (Clockify section)");
-			return new ProjectService(apiKey);
+			var configService = sp.GetRequiredService<IConfigService>();
+			string? apiKey = null;
+			try
+			{
+				var config = configService.LoadConfig();
+				apiKey = config.ClockifyApiKey;
+			}
+			catch (Exception ex)
+			{
+				// Log and allow ProjectService to be created with a dummy key; will fail later if used
+				Serilog.Log.Warning(ex, "ProjectService: Could not load config at startup. Will require valid config at use time.");
+				apiKey = string.Empty;
+			}
+			return new ProjectService(apiKey ?? string.Empty);
 		});
 		_ = services.AddSingleton<IInvoiceService> ( sp =>
 			new InvoiceService (
