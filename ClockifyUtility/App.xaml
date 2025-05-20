@@ -14,6 +14,8 @@
             <FontFamily x:Key="FontAwesomeRegular">/Fonts/Font Awesome 6 Free-Regular-400.otf#Font Awesome 6 Free Regular</FontFamily>
             <FontFamily x:Key="FontAwesomeSolid">/Fonts/Font Awesome 6 Free-Solid-900.otf#Font Awesome 6 Free Solid</FontFamily>
 
+            <!-- Button Hover Highlight Color -->
+            <SolidColorBrush x:Key="ButtonHoverHighlightBrush" Color="#1e408c"/>
             <!-- Button Styles -->
             <Style x:Key="MonthSelectorButtonStyle" TargetType="Button">
                 <Setter Property="Background" Value="{StaticResource PrimaryBrush}"/>
@@ -37,6 +39,11 @@
                         </ControlTemplate>
                     </Setter.Value>
                 </Setter>
+                <Style.Triggers>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="Background" Value="{StaticResource ButtonHoverHighlightBrush}"/>
+                    </Trigger>
+                </Style.Triggers>
             </Style>
 
             <!-- General Button Style -->
@@ -60,6 +67,11 @@
                         </ControlTemplate>
                     </Setter.Value>
                 </Setter>
+                <Style.Triggers>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="Background" Value="{StaticResource ButtonHoverHighlightBrush}"/>
+                    </Trigger>
+                </Style.Triggers>
             </Style>
             <Style TargetType="Button" x:Key="SecondaryButtonStyle">
                 <Setter Property="Background" Value="{StaticResource SecondaryBrush}"/>
@@ -81,6 +93,11 @@
                         </ControlTemplate>
                     </Setter.Value>
                 </Setter>
+                <Style.Triggers>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="Background" Value="{StaticResource ButtonHoverHighlightBrush}"/>
+                    </Trigger>
+                </Style.Triggers>
             </Style>
 
             <!-- TextBlock Style -->
