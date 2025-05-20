@@ -17,8 +17,8 @@
             <!-- Button Styles -->
             <Style x:Key="MonthSelectorButtonStyle" TargetType="Button">
                 <Setter Property="Background" Value="{StaticResource PrimaryBrush}"/>
-                <Setter Property="BorderBrush" Value="{StaticResource PrimaryVariantBrush}"/>
-                <Setter Property="BorderThickness" Value="0.7"/>
+                <Setter Property="BorderBrush" Value="Transparent"/>
+                <Setter Property="BorderThickness" Value="0"/>
                 <Setter Property="Foreground" Value="White"/>
                 <Setter Property="FontFamily" Value="{StaticResource FontAwesomeRegular}"/>
                 <Setter Property="FontSize" Value="19"/>
