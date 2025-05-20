@@ -18,7 +18,7 @@
             <Style x:Key="MonthSelectorButtonStyle" TargetType="Button">
                 <Setter Property="Background" Value="{StaticResource PrimaryBrush}"/>
                 <Setter Property="BorderBrush" Value="{StaticResource PrimaryVariantBrush}"/>
-                <Setter Property="BorderThickness" Value="2"/>
+                <Setter Property="BorderThickness" Value="0.7"/>
                 <Setter Property="Foreground" Value="White"/>
                 <Setter Property="FontFamily" Value="{StaticResource FontAwesomeRegular}"/>
                 <Setter Property="FontSize" Value="19"/>
@@ -31,7 +31,7 @@
                             <Border Background="{TemplateBinding Background}"
                                     BorderBrush="{TemplateBinding BorderBrush}"
                                     BorderThickness="{TemplateBinding BorderThickness}"
-                                    CornerRadius="4">
+                                    CornerRadius="2">
                                 <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                             </Border>
                         </ControlTemplate>
@@ -44,7 +44,7 @@
                 <Setter Property="Background" Value="{StaticResource PrimaryBrush}"/>
                 <Setter Property="Foreground" Value="White"/>
                 <Setter Property="BorderBrush" Value="{StaticResource PrimaryVariantBrush}"/>
-                <Setter Property="BorderThickness" Value="2"/>
+                <Setter Property="BorderThickness" Value="0.7"/>
                 <Setter Property="Padding" Value="6,2"/>
                 <Setter Property="FontSize" Value="14"/>
                 <Setter Property="Margin" Value="4"/>
@@ -54,7 +54,7 @@
                             <Border Background="{TemplateBinding Background}"
                                     BorderBrush="{TemplateBinding BorderBrush}"
                                     BorderThickness="{TemplateBinding BorderThickness}"
-                                    CornerRadius="4">
+                                    CornerRadius="2">
                                 <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                             </Border>
                         </ControlTemplate>
@@ -65,7 +65,7 @@
                 <Setter Property="Background" Value="{StaticResource SecondaryBrush}"/>
                 <Setter Property="Foreground" Value="White"/>
                 <Setter Property="BorderBrush" Value="{StaticResource SecondaryVariantBrush}"/>
-                <Setter Property="BorderThickness" Value="2"/>
+                <Setter Property="BorderThickness" Value="0.7"/>
                 <Setter Property="Padding" Value="6,2"/>
                 <Setter Property="FontSize" Value="14"/>
                 <Setter Property="Margin" Value="4"/>
@@ -75,7 +75,7 @@
                             <Border Background="{TemplateBinding Background}"
                                     BorderBrush="{TemplateBinding BorderBrush}"
                                     BorderThickness="{TemplateBinding BorderThickness}"
-                                    CornerRadius="4">
+                                    CornerRadius="2">
                                 <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                             </Border>
                         </ControlTemplate>
