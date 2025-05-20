@@ -5,18 +5,28 @@
              StartupUri="MainWindow.xaml">
     <Application.Resources>
         <ResourceDictionary>
+
             <!-- Merge the color palette -->
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="Colors.xaml" />
+                <ResourceDictionary Source="Colors.xaml"/>
             </ResourceDictionary.MergedDictionaries>
 
-            <!-- Register Font Awesome Regular and Solid fonts -->
+            <!-- System highlight overrides (MUST precede usage) -->
+            <Color x:Key="{x:Static SystemColors.HighlightColorKey}">#1e408c</Color>
+            <Color x:Key="{x:Static SystemColors.HighlightTextColorKey}">#FFFFFF</Color>
+
+            <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="{StaticResource {x:Static SystemColors.HighlightColorKey}}"/>
+            <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="{StaticResource {x:Static SystemColors.HighlightColorKey}}"/>
+            <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="{StaticResource {x:Static SystemColors.HighlightTextColorKey}}"/>
+
+            <!-- Register Font Awesome fonts -->
             <FontFamily x:Key="FontAwesomeRegular">/Fonts/Font Awesome 6 Free-Regular-400.otf#Font Awesome 6 Free Regular</FontFamily>
             <FontFamily x:Key="FontAwesomeSolid">/Fonts/Font Awesome 6 Free-Solid-900.otf#Font Awesome 6 Free Solid</FontFamily>
 
             <!-- Button Hover Highlight Color -->
             <SolidColorBrush x:Key="ButtonHoverHighlightBrush" Color="#1e408c"/>
-            <!-- Button Styles -->
+
+            <!-- Month selector buttons -->
             <Style x:Key="MonthSelectorButtonStyle" TargetType="Button">
                 <Setter Property="Background" Value="{StaticResource PrimaryBrush}"/>
                 <Setter Property="BorderBrush" Value="Transparent"/>
@@ -46,8 +56,8 @@
                 </Style.Triggers>
             </Style>
 
-            <!-- General Button Style -->
-            <Style TargetType="Button" x:Key="PrimaryButtonStyle">
+            <!-- Primary button -->
+            <Style x:Key="PrimaryButtonStyle" TargetType="Button">
                 <Setter Property="Background" Value="{StaticResource PrimaryBrush}"/>
                 <Setter Property="Foreground" Value="White"/>
                 <Setter Property="BorderBrush" Value="#1e408c"/>
@@ -73,7 +83,9 @@
                     </Trigger>
                 </Style.Triggers>
             </Style>
-            <Style TargetType="Button" x:Key="SecondaryButtonStyle">
+
+            <!-- Secondary button -->
+            <Style x:Key="SecondaryButtonStyle" TargetType="Button">
                 <Setter Property="Background" Value="{StaticResource SecondaryBrush}"/>
                 <Setter Property="Foreground" Value="White"/>
                 <Setter Property="BorderBrush" Value="{StaticResource SecondaryVariantBrush}"/>
@@ -100,47 +112,79 @@
                 </Style.Triggers>
             </Style>
 
-            <!-- TextBlock Style -->
-            <Style TargetType="TextBlock" x:Key="SectionHeaderTextBlockStyle">
+            <!-- TextBlock styles -->
+            <Style x:Key="SectionHeaderTextBlockStyle" TargetType="TextBlock">
                 <Setter Property="Foreground" Value="White"/>
                 <Setter Property="FontWeight" Value="Bold"/>
                 <Setter Property="FontSize" Value="18"/>
             </Style>
-            <Style TargetType="TextBlock" x:Key="BodyTextBlockStyle">
+            <Style x:Key="BodyTextBlockStyle" TargetType="TextBlock">
                 <Setter Property="Foreground" Value="White"/>
                 <Setter Property="FontSize" Value="14"/>
             </Style>
 
-            <!-- Window Background -->
+            <!-- Window, panels -->
             <Style TargetType="Window">
                 <Setter Property="Background" Value="{StaticResource BackgroundBrush}"/>
                 <Setter Property="Foreground" Value="White"/>
             </Style>
-            <!-- Panel/Section Background -->
             <Style TargetType="StackPanel">
                 <Setter Property="Background" Value="{StaticResource SurfaceBrush}"/>
             </Style>
             <Style TargetType="Grid">
                 <Setter Property="Background" Value="{StaticResource SurfaceBrush}"/>
             </Style>
-            <!-- TextBox Style -->
+
+            <!-- TextBox -->
             <Style TargetType="TextBox">
-                <Setter Property="Background" Value="{StaticResource SurfaceBrush}"/>
+                <Setter Property="Background" Value="{StaticResource BackgroundBrush}"/>
                 <Setter Property="Foreground" Value="White"/>
                 <Setter Property="BorderBrush" Value="{StaticResource PrimaryVariantBrush}"/>
             </Style>
-            <!-- ListBox Style -->
+
+            <!-- ListBox -->
             <Style TargetType="ListBox">
                 <Setter Property="Background" Value="{StaticResource SurfaceBrush}"/>
                 <Setter Property="Foreground" Value="White"/>
                 <Setter Property="BorderBrush" Value="{StaticResource PrimaryVariantBrush}"/>
             </Style>
-            <!-- ComboBox Style -->
+
+            <!-- ComboBox -->
             <Style TargetType="ComboBox">
-                <Setter Property="Background" Value="{StaticResource SurfaceBrush}"/>
+                <Setter Property="Background" Value="{StaticResource BackgroundBrush}"/>
                 <Setter Property="Foreground" Value="White"/>
                 <Setter Property="BorderBrush" Value="{StaticResource PrimaryVariantBrush}"/>
+                <Setter Property="BorderThickness" Value="1"/>
+                <Setter Property="Padding" Value="4,2"/>
             </Style>
+
+            <!-- ComboBoxItem with custom template -->
+            <Style TargetType="ComboBoxItem">
+                <Setter Property="Background" Value="#0d162b"/>
+                <Setter Property="Foreground" Value="White"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="ComboBoxItem">
+                            <Border x:Name="Bd"
+                                    Background="{TemplateBinding Background}"
+                                    Padding="4"
+                                    SnapsToDevicePixels="True">
+                                <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="Bd" Property="Background" Value="{StaticResource ButtonHoverHighlightBrush}"/>
+                                </Trigger>
+                                <Trigger Property="IsSelected" Value="True">
+                                    <Setter TargetName="Bd" Property="Background" Value="{StaticResource ButtonHoverHighlightBrush}"/>
+                                    <Setter Property="Foreground" Value="White"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
         </ResourceDictionary>
     </Application.Resources>
 </Application>
