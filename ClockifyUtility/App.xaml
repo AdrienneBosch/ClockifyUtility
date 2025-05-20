@@ -50,8 +50,8 @@
             <Style TargetType="Button" x:Key="PrimaryButtonStyle">
                 <Setter Property="Background" Value="{StaticResource PrimaryBrush}"/>
                 <Setter Property="Foreground" Value="White"/>
-                <Setter Property="BorderBrush" Value="{StaticResource PrimaryVariantBrush}"/>
-                <Setter Property="BorderThickness" Value="0.7"/>
+                <Setter Property="BorderBrush" Value="#1e408c"/>
+                <Setter Property="BorderThickness" Value="0.9"/>
                 <Setter Property="Padding" Value="6,2"/>
                 <Setter Property="FontSize" Value="14"/>
                 <Setter Property="Margin" Value="4"/>
