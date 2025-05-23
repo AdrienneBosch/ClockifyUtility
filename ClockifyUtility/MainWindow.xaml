@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ClockifyUtility"
+        xmlns:controls="clr-namespace:ClockifyUtility.Controls"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid Background="{StaticResource BackgroundBrush}">
@@ -41,7 +42,7 @@
                 </StackPanel>
 
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,10">
-                    <ComboBox Width="300"
+                    <controls:CustomComboBox Width="300"
                               Height="30"
                               Margin="0,0,10,0"
                               Padding="6,0,2,0"
@@ -51,6 +52,11 @@
                               Background="{StaticResource BackgroundBrush}"
                               Foreground="White"
                               BorderBrush="{StaticResource PrimaryVariantBrush}"
+                              DropDownBackground="{StaticResource SurfaceBrush}"
+                              CornerRadius="3"
+                              MouseOverBackground="{StaticResource ButtonHoverHighlightBrush}"
+                              PressedBackground="{StaticResource PrimaryBrush}"
+                              DisabledBackground="Gray"
                               KeyboardNavigation.TabNavigation="Local"
                               ItemsSource="{Binding DisplayInvoiceConfigs}"
                               SelectedItem="{Binding SelectedInvoiceConfig, Mode=TwoWay}" />

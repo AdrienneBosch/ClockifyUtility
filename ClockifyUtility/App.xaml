@@ -9,6 +9,7 @@
             <!-- Merge the color palette -->
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Colors.xaml"/>
+                <ResourceDictionary Source="Themes/CustomComboBox.xaml"/>
             </ResourceDictionary.MergedDictionaries>
 
             <!-- System highlight overrides (MUST precede usage) -->
