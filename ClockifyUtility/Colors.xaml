@@ -10,7 +10,7 @@
     <!-- Backgrounds and Surfaces -->
     <Color x:Key="BackgroundColor">#FF0d162b</Color>
     <Color x:Key="SurfaceColor">#FF122b61</Color>
-    <Color x:Key="SelectorBoxColor">#FF0d1f47</Color>
+    <Color x:Key="SelectorBoxColor">#FF0e224e</Color>
 
     <!-- Error and Highlight -->
     <Color x:Key="ErrorColor">#FFD32F2F</Color>
