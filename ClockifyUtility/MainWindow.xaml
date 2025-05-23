@@ -42,24 +42,19 @@
                 </StackPanel>
 
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,10">
-                    <controls:CustomComboBox Width="300"
-                              Height="30"
-                              Margin="0,0,10,0"
-                              Padding="6,0,2,0"
-                              FontSize="12"
-                              VerticalContentAlignment="Center"
-                              HorizontalContentAlignment="Left"
-                              Background="{StaticResource BackgroundBrush}"
-                              Foreground="White"
-                              BorderBrush="{StaticResource PrimaryVariantBrush}"
-                              DropDownBackground="{StaticResource SurfaceBrush}"
-                              CornerRadius="3"
-                              MouseOverBackground="{StaticResource ButtonHoverHighlightBrush}"
-                              PressedBackground="{StaticResource PrimaryBrush}"
-                              DisabledBackground="Gray"
-                              KeyboardNavigation.TabNavigation="Local"
-                              ItemsSource="{Binding DisplayInvoiceConfigs}"
-                              SelectedItem="{Binding SelectedInvoiceConfig, Mode=TwoWay}" />
+                    <controls:PaletteComboBox Width="300"
+                                              Height="30"
+                                              Margin="0,0,10,0"
+                                              Padding="6,0,2,0"
+                                              FontSize="12"
+                                              VerticalContentAlignment="Center"
+                                              HorizontalContentAlignment="Left"
+                                              Background="{StaticResource BackgroundBrush}"
+                                              Foreground="White"
+                                              BorderBrush="{StaticResource PrimaryVariantBrush}"
+                                              KeyboardNavigation.TabNavigation="Local"
+                                              ItemsSource="{Binding DisplayInvoiceConfigs}"
+                                              SelectedItem="{Binding SelectedInvoiceConfig, Mode=TwoWay}" />
 
                     <Button Style="{StaticResource MonthSelectorButtonStyle}"
                             Width="16"

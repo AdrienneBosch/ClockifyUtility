@@ -10,6 +10,7 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Colors.xaml"/>
                 <ResourceDictionary Source="Themes/CustomComboBox.xaml"/>
+                <ResourceDictionary Source="Themes/PaletteComboBox.xaml"/>
             </ResourceDictionary.MergedDictionaries>
 
             <!-- System highlight overrides (MUST precede usage) -->

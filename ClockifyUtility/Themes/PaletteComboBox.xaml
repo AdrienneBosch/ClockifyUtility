@@ -1,11 +1,8 @@
-<!-- This file is now obsolete and can be deleted. -->
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:local="clr-namespace:ClockifyUtility.Controls"
-                    xmlns:sys="clr-namespace:System;assembly=mscorlib">
-    <local:SubtractValueConverter x:Key="SubtractValueConverter" />
-
-    <Style x:Key="CustomComboBoxItemStyle" TargetType="{x:Type ComboBoxItem}">
+                    xmlns:local="clr-namespace:ClockifyUtility.Controls">
+    <!-- ComboBoxItem style for dropdown items -->
+    <Style x:Key="PaletteComboBoxItemStyle" TargetType="{x:Type ComboBoxItem}">
         <Setter Property="Foreground" Value="White"/>
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="Padding" Value="8,2,8,2"/>
@@ -27,11 +24,9 @@
         </Style.Triggers>
     </Style>
 
-    <Style TargetType="{x:Type local:CustomComboBox}">
+    <Style TargetType="{x:Type local:PaletteComboBox}">
         <Setter Property="SnapsToDevicePixels" Value="True"/>
         <Setter Property="OverridesDefaultStyle" Value="True"/>
-        <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto"/>
-        <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto"/>
         <Setter Property="MinWidth" Value="120"/>
         <Setter Property="MinHeight" Value="30"/>
         <Setter Property="Background" Value="{DynamicResource SurfaceBrush}"/>
@@ -39,57 +34,44 @@
         <Setter Property="Foreground" Value="White"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="Padding" Value="6,0,2,0"/>
-        <Setter Property="ItemContainerStyle" Value="{StaticResource CustomComboBoxItemStyle}"/>
+        <Setter Property="ItemContainerStyle" Value="{StaticResource PaletteComboBoxItemStyle}"/>
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="{x:Type local:CustomComboBox}">
+                <ControlTemplate TargetType="{x:Type local:PaletteComboBox}">
                     <Grid>
                         <Border x:Name="Border"
                                 Background="{TemplateBinding Background}"
                                 BorderBrush="{TemplateBinding BorderBrush}"
                                 BorderThickness="{TemplateBinding BorderThickness}"
-                                CornerRadius="{TemplateBinding CornerRadius}">
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="32" />
-                                </Grid.ColumnDefinitions>
-                                <Button x:Name="ContentClickCatcher"
-                                        Grid.Column="0"
-                                        Background="Transparent"
-                                        BorderThickness="0"
-                                        Focusable="False"
-                                        HorizontalAlignment="Stretch"
-                                        VerticalAlignment="Stretch"
-                                        Cursor="Hand">
-                                    <ContentPresenter x:Name="ContentSite"
-                                                      ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
-                                                      ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
-                                                      Content="{TemplateBinding SelectionBoxItem}"
-                                                      VerticalAlignment="Center"
-                                                      HorizontalAlignment="Left"
-                                                      Margin="4,0,0,0"/>
-                                </Button>
-                                <Border x:Name="ArrowSizer" Grid.Column="1" Width="32" Height="0" Visibility="Collapsed" />
-                                <ToggleButton x:Name="ToggleButton"
-                                              Grid.Column="1"
+                                CornerRadius="4">
+                            <DockPanel LastChildFill="True">
+                                <ContentPresenter x:Name="ContentSite"
+                                                  ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                                                  ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
+                                                  Content="{TemplateBinding SelectionBoxItem}"
+                                                  VerticalAlignment="Center"
+                                                  HorizontalAlignment="Left"
+                                                  Margin="8,0,0,0"
+                                                  RecognizesAccessKey="True"/>
+                                <ToggleButton x:Name="DropDownToggle"
+                                              DockPanel.Dock="Right"
                                               Focusable="False"
                                               IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
                                               ClickMode="Press"
-                                              Background="Transparent"
+                                              Background="{TemplateBinding Background}"
                                               BorderThickness="0"
-                                              HorizontalAlignment="Stretch"
+                                              Width="38"
+                                              HorizontalAlignment="Right"
                                               VerticalAlignment="Stretch">
                                     <Grid>
-                                        <Path x:Name="Arrow"
-                                              Data="M 0 0 L 6 8 L 12 0 Z"
+                                        <Path Data="M 0 0 L 8 8 L 16 0 Z"
                                               Fill="White"
-                                              Width="12" Height="8"
+                                              Width="16" Height="8"
                                               HorizontalAlignment="Center"
                                               VerticalAlignment="Center"/>
                                     </Grid>
                                 </ToggleButton>
-                            </Grid>
+                            </DockPanel>
                         </Border>
                         <Popup x:Name="PART_Popup"
                                Placement="Bottom"
@@ -101,7 +83,7 @@
                                     Background="{DynamicResource SurfaceBrush}"
                                     BorderBrush="{DynamicResource PrimaryVariantBrush}"
                                     BorderThickness="1"
-                                    CornerRadius="{TemplateBinding CornerRadius}">
+                                    CornerRadius="4">
                                 <ScrollViewer Margin="0"
                                               SnapsToDevicePixels="True">
                                     <ItemsPresenter/>
@@ -110,14 +92,15 @@
                         </Popup>
                     </Grid>
                     <ControlTemplate.Triggers>
-                        <Trigger SourceName="ContentClickCatcher" Property="IsMouseOver" Value="True">
+                        <Trigger Property="IsMouseOver" Value="True">
                             <Setter TargetName="Border" Property="Background" Value="{DynamicResource ButtonHoverHighlightBrush}"/>
-                        </Trigger>
-                        <Trigger Property="IsEnabled" Value="False">
-                            <Setter TargetName="Border" Property="Background" Value="{Binding DisabledBackground, RelativeSource={RelativeSource TemplatedParent}}"/>
                         </Trigger>
                         <Trigger Property="IsDropDownOpen" Value="True">
                             <Setter TargetName="Border" Property="Background" Value="{DynamicResource ButtonHoverHighlightBrush}"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="Border" Property="Background" Value="#333"/>
+                            <Setter Property="Foreground" Value="#888"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
