@@ -22,8 +22,13 @@
                                 BorderBrush="{TemplateBinding BorderBrush}"
                                 BorderThickness="{TemplateBinding BorderThickness}"
                                 CornerRadius="{TemplateBinding CornerRadius}">
-                            <DockPanel>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="32" />
+                                </Grid.ColumnDefinitions>
                                 <ContentPresenter x:Name="ContentSite"
+                                                  Grid.Column="0"
                                                   ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
                                                   ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
                                                   Content="{TemplateBinding SelectionBoxItem}"
@@ -31,20 +36,24 @@
                                                   HorizontalAlignment="Left"
                                                   Margin="4,0,0,0"/>
                                 <ToggleButton x:Name="ToggleButton"
-                                              DockPanel.Dock="Right"
+                                              Grid.Column="1"
                                               Focusable="False"
                                               IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
                                               ClickMode="Press"
                                               Background="Transparent"
-                                              BorderThickness="0">
-                                    <Path x:Name="Arrow"
-                                          Data="M 0 0 L 4 4 L 8 0 Z"
-                                          Fill="{TemplateBinding Foreground}"
-                                          HorizontalAlignment="Center"
-                                          VerticalAlignment="Center"
-                                          Margin="0,0,8,0"/>
+                                              BorderThickness="0"
+                                              HorizontalAlignment="Stretch"
+                                              VerticalAlignment="Stretch">
+                                    <Grid>
+                                        <Path x:Name="Arrow"
+                                              Data="M 0 0 L 6 8 L 12 0 Z"
+                                              Fill="{TemplateBinding Foreground}"
+                                              Width="12" Height="8"
+                                              HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"/>
+                                    </Grid>
                                 </ToggleButton>
-                            </DockPanel>
+                            </Grid>
                         </Border>
                         <Popup x:Name="PART_Popup"
                                Placement="Bottom"
