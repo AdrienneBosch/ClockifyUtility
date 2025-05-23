@@ -24,6 +24,36 @@
         </Style.Triggers>
     </Style>
 
+    <!-- ToggleButton style for drop-down arrow -->
+    <Style TargetType="ToggleButton" x:Key="PaletteComboBoxDropDownToggleStyle">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Width" Value="38"/>
+        <Setter Property="HorizontalAlignment" Value="Right"/>
+        <Setter Property="VerticalAlignment" Value="Stretch"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ToggleButton">
+                    <Grid x:Name="ToggleGrid" Background="Transparent">
+                        <Path Data="M 0 0 L 8 8 L 16 0 Z"
+                              Fill="White"
+                              Width="16" Height="8"
+                              HorizontalAlignment="Center"
+                              VerticalAlignment="Center"/>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="ToggleGrid" Property="Background" Value="{DynamicResource PrimaryBrush}"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="ToggleGrid" Property="Background" Value="{DynamicResource PrimaryBrush}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <Style TargetType="{x:Type local:PaletteComboBox}">
         <Setter Property="SnapsToDevicePixels" Value="True"/>
         <Setter Property="OverridesDefaultStyle" Value="True"/>
@@ -55,22 +85,11 @@
                                                   RecognizesAccessKey="True"/>
                                 <ToggleButton x:Name="DropDownToggle"
                                               DockPanel.Dock="Right"
+                                              Style="{StaticResource PaletteComboBoxDropDownToggleStyle}"
                                               Focusable="False"
                                               IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
                                               ClickMode="Press"
-                                              Background="{TemplateBinding Background}"
-                                              BorderThickness="0"
-                                              Width="38"
-                                              HorizontalAlignment="Right"
-                                              VerticalAlignment="Stretch">
-                                    <Grid>
-                                        <Path Data="M 0 0 L 8 8 L 16 0 Z"
-                                              Fill="White"
-                                              Width="16" Height="8"
-                                              HorizontalAlignment="Center"
-                                              VerticalAlignment="Center"/>
-                                    </Grid>
-                                </ToggleButton>
+                                              Background="{TemplateBinding Background}"/>
                             </DockPanel>
                         </Border>
                         <Popup x:Name="PART_Popup"
