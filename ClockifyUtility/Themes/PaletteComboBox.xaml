@@ -59,7 +59,7 @@
         <Setter Property="OverridesDefaultStyle" Value="True"/>
         <Setter Property="MinWidth" Value="120"/>
         <Setter Property="MinHeight" Value="30"/>
-        <Setter Property="Background" Value="{DynamicResource SurfaceBrush}"/>
+        <Setter Property="Background" Value="{DynamicResource SelectorBoxBrush}"/>
         <Setter Property="BorderBrush" Value="{DynamicResource PrimaryVariantBrush}"/>
         <Setter Property="Foreground" Value="White"/>
         <Setter Property="BorderThickness" Value="1"/>

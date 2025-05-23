@@ -60,7 +60,7 @@
 
             <!-- Primary button -->
             <Style x:Key="PrimaryButtonStyle" TargetType="Button">
-                <Setter Property="Background" Value="{StaticResource PrimaryBrush}"/>
+                <Setter Property="Background" Value="{StaticResource SelectorBoxBrush}"/>
                 <Setter Property="Foreground" Value="White"/>
                 <Setter Property="BorderBrush" Value="#1e408c"/>
                 <Setter Property="BorderThickness" Value="0.9"/>

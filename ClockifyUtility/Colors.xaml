@@ -10,6 +10,7 @@
     <!-- Backgrounds and Surfaces -->
     <Color x:Key="BackgroundColor">#FF0d162b</Color>
     <Color x:Key="SurfaceColor">#FF122b61</Color>
+    <Color x:Key="SelectorBoxColor">#FF0d1f47</Color>
 
     <!-- Error and Highlight -->
     <Color x:Key="ErrorColor">#FFD32F2F</Color>
@@ -28,6 +29,7 @@
     <SolidColorBrush x:Key="SecondaryVariantBrush" Color="{StaticResource SecondaryVariantColor}"/>
     <SolidColorBrush x:Key="BackgroundBrush" Color="{StaticResource BackgroundColor}"/>
     <SolidColorBrush x:Key="SurfaceBrush" Color="{StaticResource SurfaceColor}"/>
+    <SolidColorBrush x:Key="SelectorBoxBrush" Color="{StaticResource SelectorBoxColor}"/>
     <SolidColorBrush x:Key="ErrorBrush" Color="{StaticResource ErrorColor}"/>
     <SolidColorBrush x:Key="HighlightBrush" Color="{StaticResource HighlightColor}"/>
     <SolidColorBrush x:Key="OnPrimaryBrush" Color="{StaticResource OnPrimaryColor}"/>
