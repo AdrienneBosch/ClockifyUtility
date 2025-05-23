@@ -84,7 +84,7 @@
                                                   ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
                                                   ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
                                                   Content="{TemplateBinding SelectionBoxItem}"
-                                                  VerticalAlignment="Stretch"
+                                                  VerticalAlignment="Center"
                                                   HorizontalAlignment="Stretch"
                                                   Margin="8,0,0,0"
                                                   RecognizesAccessKey="True"/>
