@@ -75,14 +75,16 @@
                                 BorderThickness="{TemplateBinding BorderThickness}"
                                 CornerRadius="4">
                             <DockPanel LastChildFill="True">
-                                <ContentPresenter x:Name="ContentSite"
-                                                  ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
-                                                  ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
-                                                  Content="{TemplateBinding SelectionBoxItem}"
-                                                  VerticalAlignment="Center"
-                                                  HorizontalAlignment="Left"
-                                                  Margin="8,0,0,0"
-                                                  RecognizesAccessKey="True"/>
+                                <Grid>
+                                    <ContentPresenter x:Name="ContentSite"
+                                                      ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                                                      ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
+                                                      Content="{TemplateBinding SelectionBoxItem}"
+                                                      VerticalAlignment="Center"
+                                                      HorizontalAlignment="Left"
+                                                      Margin="8,0,0,0"
+                                                      RecognizesAccessKey="True"/>
+                                </Grid>
                                 <ToggleButton x:Name="DropDownToggle"
                                               DockPanel.Dock="Right"
                                               Style="{StaticResource PaletteComboBoxDropDownToggleStyle}"
