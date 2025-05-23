@@ -36,4 +36,5 @@
     <SolidColorBrush x:Key="OnSecondaryBrush" Color="{StaticResource OnSecondaryColor}"/>
     <SolidColorBrush x:Key="OnBackgroundBrush" Color="{StaticResource OnBackgroundColor}"/>
     <SolidColorBrush x:Key="OnSurfaceBrush" Color="{StaticResource OnSurfaceColor}"/>
+    <SolidColorBrush x:Key="ButtonHoverHighlightBrush" Color="#1e3e83"/>
 </ResourceDictionary>

@@ -49,7 +49,7 @@
                                               FontSize="13"
                                               VerticalContentAlignment="Center"
                                               HorizontalContentAlignment="Left"
-                                              Background="{StaticResource BackgroundBrush}"
+                                              Background="{StaticResource SelectorBoxBrush}"
                                               Foreground="White"
                                               BorderBrush="{StaticResource PrimaryVariantBrush}"
                                               KeyboardNavigation.TabNavigation="Local"
