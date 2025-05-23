@@ -1,6 +1,8 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:local="clr-namespace:ClockifyUtility.Controls">
+                    xmlns:local="clr-namespace:ClockifyUtility.Controls"
+                    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+    <local:SubtractValueConverter x:Key="SubtractValueConverter" />
     <Style TargetType="{x:Type local:CustomComboBox}">
         <Setter Property="SnapsToDevicePixels" Value="True"/>
         <Setter Property="OverridesDefaultStyle" Value="True"/>
@@ -35,6 +37,7 @@
                                                   VerticalAlignment="Center"
                                                   HorizontalAlignment="Left"
                                                   Margin="4,0,0,0"/>
+                                <Border x:Name="ArrowSizer" Grid.Column="1" Width="32" Height="0" Visibility="Collapsed" />
                                 <ToggleButton x:Name="ToggleButton"
                                               Grid.Column="1"
                                               Focusable="False"
@@ -66,6 +69,12 @@
                                     BorderBrush="{TemplateBinding BorderBrush}"
                                     BorderThickness="{TemplateBinding BorderThickness}"
                                     CornerRadius="{TemplateBinding CornerRadius}">
+                                <Border.Width>
+                                    <MultiBinding Converter="{StaticResource SubtractValueConverter}">
+                                        <Binding Path="ActualWidth" RelativeSource="{RelativeSource AncestorType={x:Type local:CustomComboBox}}"/>
+                                        <Binding Path="ActualWidth" ElementName="ArrowSizer"/>
+                                    </MultiBinding>
+                                </Border.Width>
                                 <ScrollViewer Margin="4,6,4,6"
                                               SnapsToDevicePixels="True">
                                     <ItemsPresenter/>
