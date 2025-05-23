@@ -11,6 +11,25 @@ namespace ClockifyUtility.Controls
             DefaultStyleKeyProperty.OverrideMetadata(typeof(CustomComboBox), new FrameworkPropertyMetadata(typeof(CustomComboBox)));
         }
 
+        public override void OnApplyTemplate()
+        {
+            base.OnApplyTemplate();
+            if (GetTemplateChild("ContentClickCatcher") is Button btn)
+            {
+                btn.Click -= ContentClickCatcher_Click;
+                btn.Click += ContentClickCatcher_Click;
+            }
+        }
+
+        private void ContentClickCatcher_Click(object sender, RoutedEventArgs e)
+        {
+            if (IsEnabled && !IsDropDownOpen)
+            {
+                Focus();
+                IsDropDownOpen = true;
+            }
+        }
+
         public Brush DropDownBackground
         {
             get => (Brush)GetValue(DropDownBackgroundProperty);

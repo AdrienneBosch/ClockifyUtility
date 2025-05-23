@@ -29,6 +29,15 @@
                                     <ColumnDefinition Width="*" />
                                     <ColumnDefinition Width="32" />
                                 </Grid.ColumnDefinitions>
+                                <!-- Make the content area clickable to open the dropdown -->
+                                <Button x:Name="ContentClickCatcher"
+                                        Grid.Column="0"
+                                        Background="Transparent"
+                                        BorderThickness="0"
+                                        Focusable="False"
+                                        HorizontalAlignment="Stretch"
+                                        VerticalAlignment="Stretch"
+                                        Cursor="Hand"/>
                                 <ContentPresenter x:Name="ContentSite"
                                                   Grid.Column="0"
                                                   ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
