@@ -84,8 +84,8 @@
                                                   ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
                                                   ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
                                                   Content="{TemplateBinding SelectionBoxItem}"
-                                                  VerticalAlignment="Center"
-                                                  HorizontalAlignment="Left"
+                                                  VerticalAlignment="Stretch"
+                                                  HorizontalAlignment="Stretch"
                                                   Margin="8,0,0,0"
                                                   RecognizesAccessKey="True"/>
                                 <ToggleButton x:Name="DropDownToggle"
