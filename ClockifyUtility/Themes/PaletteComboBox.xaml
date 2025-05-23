@@ -74,25 +74,28 @@
                                 BorderBrush="{TemplateBinding BorderBrush}"
                                 BorderThickness="{TemplateBinding BorderThickness}"
                                 CornerRadius="4">
-                            <DockPanel LastChildFill="True">
-                                <Grid>
-                                    <ContentPresenter x:Name="ContentSite"
-                                                      ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
-                                                      ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
-                                                      Content="{TemplateBinding SelectionBoxItem}"
-                                                      VerticalAlignment="Center"
-                                                      HorizontalAlignment="Left"
-                                                      Margin="8,0,0,0"
-                                                      RecognizesAccessKey="True"/>
-                                </Grid>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="38" />
+                                </Grid.ColumnDefinitions>
+                                <ContentPresenter x:Name="ContentSite"
+                                                  Grid.Column="0"
+                                                  ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                                                  ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
+                                                  Content="{TemplateBinding SelectionBoxItem}"
+                                                  VerticalAlignment="Center"
+                                                  HorizontalAlignment="Left"
+                                                  Margin="8,0,0,0"
+                                                  RecognizesAccessKey="True"/>
                                 <ToggleButton x:Name="DropDownToggle"
-                                              DockPanel.Dock="Right"
+                                              Grid.Column="1"
                                               Style="{StaticResource PaletteComboBoxDropDownToggleStyle}"
                                               Focusable="False"
                                               IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
                                               ClickMode="Press"
                                               Background="{TemplateBinding Background}"/>
-                            </DockPanel>
+                            </Grid>
                         </Border>
                         <Popup x:Name="PART_Popup"
                                Placement="Bottom"
