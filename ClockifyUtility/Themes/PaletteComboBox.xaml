@@ -65,6 +65,7 @@
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="Padding" Value="6,0,2,0"/>
         <Setter Property="ItemContainerStyle" Value="{StaticResource PaletteComboBoxItemStyle}"/>
+        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type local:PaletteComboBox}">
@@ -127,6 +128,10 @@
                         <Trigger Property="IsEnabled" Value="False">
                             <Setter TargetName="Border" Property="Background" Value="#333"/>
                             <Setter Property="Foreground" Value="#888"/>
+                        </Trigger>
+                        <!-- Custom Focused Border -->
+                        <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                            <Setter TargetName="Border" Property="BorderBrush" Value="{DynamicResource CustomComboBoxFocusBorderBrush}"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>

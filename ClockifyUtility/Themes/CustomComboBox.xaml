@@ -40,6 +40,7 @@
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="Padding" Value="6,0,2,0"/>
         <Setter Property="ItemContainerStyle" Value="{StaticResource CustomComboBoxItemStyle}"/>
+        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type local:CustomComboBox}">
@@ -118,6 +119,10 @@
                         </Trigger>
                         <Trigger Property="IsDropDownOpen" Value="True">
                             <Setter TargetName="Border" Property="Background" Value="{DynamicResource ButtonHoverHighlightBrush}"/>
+                        </Trigger>
+                        <!-- Custom Focused Border -->
+                        <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                            <Setter TargetName="Border" Property="BorderBrush" Value="{DynamicResource CustomComboBoxFocusBorderBrush}"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>

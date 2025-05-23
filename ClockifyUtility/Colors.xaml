@@ -37,4 +37,6 @@
     <SolidColorBrush x:Key="OnBackgroundBrush" Color="{StaticResource OnBackgroundColor}"/>
     <SolidColorBrush x:Key="OnSurfaceBrush" Color="{StaticResource OnSurfaceColor}"/>
     <SolidColorBrush x:Key="ButtonHoverHighlightBrush" Color="#1e3e83"/>
+    <!-- Custom ComboBox Focus Border Brush (white for testing) -->
+    <SolidColorBrush x:Key="CustomComboBoxFocusBorderBrush" Color="#FFFFFFFF"/>
 </ResourceDictionary>
