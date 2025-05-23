@@ -102,14 +102,16 @@
                                IsOpen="{TemplateBinding IsDropDownOpen}"
                                AllowsTransparency="True"
                                Focusable="False"
-                               PopupAnimation="Slide">
+                               PopupAnimation="Slide"
+                               MinWidth="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType={x:Type local:PaletteComboBox}}}">
                             <Border x:Name="DropDownBorder"
                                     Background="{DynamicResource SurfaceBrush}"
                                     BorderBrush="{DynamicResource PrimaryVariantBrush}"
                                     BorderThickness="1"
                                     CornerRadius="4">
                                 <ScrollViewer Margin="0"
-                                              SnapsToDevicePixels="True">
+                                              SnapsToDevicePixels="True"
+                                              HorizontalScrollBarVisibility="Disabled">
                                     <ItemsPresenter/>
                                 </ScrollViewer>
                             </Border>
