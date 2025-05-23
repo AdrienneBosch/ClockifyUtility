@@ -23,10 +23,10 @@ namespace ClockifyUtility.Controls
 
         private void ContentSite_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if (IsEnabled && !IsDropDownOpen)
+            if (IsEnabled)
             {
                 Focus();
-                IsDropDownOpen = true;
+                IsDropDownOpen = !IsDropDownOpen;
                 e.Handled = true;
             }
         }
