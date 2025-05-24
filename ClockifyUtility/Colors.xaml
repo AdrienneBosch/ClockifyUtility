@@ -42,6 +42,6 @@
     <SolidColorBrush x:Key="CustomComboBoxFocusBorderBrush" Color="#FFFFFFFF"/>
     <SolidColorBrush x:Key="PrimaryButtonBackgroundBrush" Color="#0e224e"/>
     <SolidColorBrush x:Key="PrimaryButtonBorderBrush" Color="#1e408c"/>
-    <SolidColorBrush x:Key="PrimaryButtonHoverBrush" Color="#1e3e83"/>
+    <SolidColorBrush x:Key="PrimaryButtonHoverBrush" Color="#FF0000"/>
     <SolidColorBrush x:Key="SecondaryButtonBackgroundBrush" Color="#0b1a3d"/>
 </ResourceDictionary>

@@ -80,13 +80,15 @@
                                     <ColumnDefinition Width="*" />
                                     <ColumnDefinition Width="38" />
                                 </Grid.ColumnDefinitions>
-                                <Grid Grid.Column="0" Background="{TemplateBinding Background}">
-                                    <ContentPresenter x:Name="ContentSite"
-                                                      Content="{TemplateBinding SelectionBoxItem}"
-                                                      VerticalAlignment="Center"
-                                                      HorizontalAlignment="Stretch"
-                                                      Margin="8,0,0,0"
-                                                      RecognizesAccessKey="True"/>
+                                <Grid Grid.Column="0">
+                                    <Border x:Name="SelectedItemBackground" Background="{TemplateBinding Background}" CornerRadius="4,0,0,4">
+                                        <ContentPresenter x:Name="ContentSite"
+                                                          Content="{TemplateBinding SelectionBoxItem}"
+                                                          VerticalAlignment="Center"
+                                                          HorizontalAlignment="Stretch"
+                                                          Margin="8,0,0,0"
+                                                          RecognizesAccessKey="True"/>
+                                    </Border>
                                 </Grid>
                                 <ToggleButton x:Name="DropDownToggle"
                                               Grid.Column="1"
@@ -121,10 +123,12 @@
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter TargetName="Border" Property="Background" Value="{DynamicResource ButtonHoverHighlightBrush}"/>
                             <Setter TargetName="Border" Property="BorderBrush" Value="{DynamicResource ButtonHoverHighlightBrush}"/>
+                            <Setter TargetName="SelectedItemBackground" Property="Background" Value="{DynamicResource ButtonHoverHighlightBrush}"/>
                         </Trigger>
                         <Trigger Property="IsDropDownOpen" Value="True">
                             <Setter TargetName="Border" Property="Background" Value="{DynamicResource ButtonHoverHighlightBrush}"/>
                             <Setter TargetName="Border" Property="BorderBrush" Value="{DynamicResource ButtonHoverHighlightBrush}"/>
+                            <Setter TargetName="SelectedItemBackground" Property="Background" Value="{DynamicResource ButtonHoverHighlightBrush}"/>
                         </Trigger>
                         <Trigger Property="IsEnabled" Value="False">
                             <Setter TargetName="Border" Property="Background" Value="#333"/>
