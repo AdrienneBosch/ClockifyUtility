@@ -38,6 +38,7 @@ namespace ClockifyUtility.ViewModels
 		private string _generateButtonText = "Generate Invoice";
 		private bool _isGenerateButtonEnabled = true;
 		private List<string> _displayInvoiceConfigs = new();
+		private double _generateButtonFontSize = 14.0;
 
 		private readonly IConfigService _configService;
 		private readonly IInvoiceService _invoiceService;
@@ -118,6 +119,12 @@ namespace ClockifyUtility.ViewModels
 				OnPropertyChanged ( nameof ( StarIconUnicode ) );
 				OnPropertyChanged ( nameof ( StarIconFontFamily ) );
 			}
+		}
+
+		public double GenerateButtonFontSize
+		{
+			get => _generateButtonFontSize;
+			set { _generateButtonFontSize = value; OnPropertyChanged(nameof(GenerateButtonFontSize)); }
 		}
 
 		// --- Constructor ---
@@ -217,6 +224,7 @@ namespace ClockifyUtility.ViewModels
 			try
 			{
 				IsGenerateButtonEnabled = false;
+				GenerateButtonFontSize = 12.0;
 				GenerateButtonText = "Generating...";
 				Status = "Generating invoice...";
 				Serilog.Log.Information ( "Starting invoice generation." );
@@ -304,6 +312,7 @@ namespace ClockifyUtility.ViewModels
 			{
 				await Task.Delay ( 1200 );
 				GenerateButtonText = "Generate Invoice";
+				GenerateButtonFontSize = 14.0;
 				IsGenerateButtonEnabled = true;
 			}
 		}

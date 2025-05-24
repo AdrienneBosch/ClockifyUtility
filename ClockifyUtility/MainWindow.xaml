@@ -81,7 +81,10 @@
                         IsEnabled="{Binding IsGenerateButtonEnabled}"
                         Style="{StaticResource PrimaryButtonStyle}"
                         HorizontalContentAlignment="Center"
-                        VerticalContentAlignment="Center" BorderBrush="{DynamicResource PrimaryButtonBorderBrush}" Background="{DynamicResource PrimaryButtonBackgroundBrush}" />
+                        VerticalContentAlignment="Center"
+                        BorderBrush="{DynamicResource PrimaryButtonBorderBrush}"
+                        Background="{DynamicResource PrimaryButtonBackgroundBrush}"
+                        FontSize="{Binding GenerateButtonFontSize}" />
 
             </StackPanel>
         </Border>
