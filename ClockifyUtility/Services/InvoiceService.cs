@@ -77,11 +77,6 @@ namespace ClockifyUtility.Services
             _ = sb.AppendLine(
                 $"    <div style='font-size:1.1em;color:{amountDueColor};text-align:right;font-weight:600;'>"
             );
-            if (!string.IsNullOrWhiteSpace(config.Clockify.InvoiceNumber))
-            {
-                _ = sb.AppendLine($"<div><span style='font-weight:700;'>Invoice #:</span> {config.Clockify.InvoiceNumber}</div>");
-            }
-
             _ = sb.AppendLine($"<div><span style='font-weight:700;'>Date:</span> {DateTime.Now:yyyy-MM-dd}</div>");
             _ = sb.AppendLine($"<div><span style='font-weight:700;'>Period:</span> {monthYear}</div>");
             _ = sb.AppendLine("    </div>");

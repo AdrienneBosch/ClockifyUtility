@@ -289,7 +289,6 @@ namespace ClockifyUtility.ViewModels
 						string nextInvoiceNumber = num.ToString("D3");
 						appSettings.InvoiceNumber = nextInvoiceNumber;
 						System.IO.File.WriteAllText(appSettingsPath, Newtonsoft.Json.JsonConvert.SerializeObject(appSettings, Newtonsoft.Json.Formatting.Indented));
-						config.Clockify.InvoiceNumber = nextInvoiceNumber;
 						string clientName = config.Clockify?.ClientName ?? "Unknown Client";
 						Status = $"Generating invoice for {clientName}...";
 						GenerateButtonText = $"Processing {clientName}...";
