@@ -52,11 +52,7 @@
                                               Foreground="White"
                                               KeyboardNavigation.TabNavigation="Local"
                                               ItemsSource="{Binding DisplayInvoiceConfigs}"
-                                              SelectedItem="{Binding SelectedInvoiceConfig, Mode=TwoWay}" BorderBrush="#FF1E408C" >
-                        <controls:PaletteComboBox.Background>
-                            <SolidColorBrush Color="#FF050E21" Opacity="2"/>
-                        </controls:PaletteComboBox.Background>
-                    </controls:PaletteComboBox>
+                                              SelectedItem="{Binding SelectedInvoiceConfig, Mode=TwoWay}" BorderBrush="{DynamicResource PrimaryButtonBorderBrush}" Background="{DynamicResource PrimaryButtonBackgroundBrush}" />
 
                     <Button Style="{StaticResource MonthSelectorButtonStyle}"
                             Width="16"
@@ -83,7 +79,7 @@
                         IsEnabled="{Binding IsGenerateButtonEnabled}"
                         Style="{StaticResource PrimaryButtonStyle}"
                         HorizontalContentAlignment="Center"
-                        VerticalContentAlignment="Center" />
+                        VerticalContentAlignment="Center" BorderBrush="{DynamicResource PrimaryButtonBorderBrush}" Background="{DynamicResource PrimaryButtonBackgroundBrush}" />
 
             </StackPanel>
         </Border>
