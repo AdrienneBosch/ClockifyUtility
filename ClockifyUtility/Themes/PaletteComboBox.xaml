@@ -113,7 +113,8 @@
                                     CornerRadius="4">
                                 <ScrollViewer Margin="0"
                                               SnapsToDevicePixels="True"
-                                              HorizontalScrollBarVisibility="Disabled">
+                                              HorizontalScrollBarVisibility="Disabled"
+                                              VerticalScrollBarVisibility="Disabled">
                                     <ItemsPresenter/>
                                 </ScrollViewer>
                             </Border>
