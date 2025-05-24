@@ -278,20 +278,18 @@ namespace ClockifyUtility.ViewModels
 							Serilog.Log.Warning ( "Config file {ConfigFile} is invalid and will be skipped: {Errors}", configFile, string.Join ( "; ", errors ) );
 							skippedConfigs.Add ( configFile + ": " + string.Join ( ", ", errors ) );
 							continue;
-						}
-						 
-						// Read and increment InvoiceNumber in the config file itself
-						string currentInvoiceNumber = config.Clockify.InvoiceNumber;
-						if (string.IsNullOrWhiteSpace(currentInvoiceNumber))
-							currentInvoiceNumber = "000";
+						 }
+						// Use centralized appsettings.json for invoice number
+						var appSettingsJson = System.IO.File.ReadAllText(appSettingsPath);
+						var appSettings = Newtonsoft.Json.JsonConvert.DeserializeObject<AppSettings>(appSettingsJson) ?? new AppSettings();
+						string currentInvoiceNumber = appSettings.InvoiceNumber ?? "000";
 						if (!int.TryParse(currentInvoiceNumber, out int num))
 							num = 0;
 						num++;
 						string nextInvoiceNumber = num.ToString("D3");
+						appSettings.InvoiceNumber = nextInvoiceNumber;
+						System.IO.File.WriteAllText(appSettingsPath, Newtonsoft.Json.JsonConvert.SerializeObject(appSettings, Newtonsoft.Json.Formatting.Indented));
 						config.Clockify.InvoiceNumber = nextInvoiceNumber;
-						// Save updated config back to file
-						File.WriteAllText(fullPath, Newtonsoft.Json.JsonConvert.SerializeObject(config, Newtonsoft.Json.Formatting.Indented));
-						
 						string clientName = config.Clockify?.ClientName ?? "Unknown Client";
 						Status = $"Generating invoice for {clientName}...";
 						GenerateButtonText = $"Processing {clientName}...";
