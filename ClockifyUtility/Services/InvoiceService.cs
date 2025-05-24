@@ -10,16 +10,19 @@ namespace ClockifyUtility.Services
 		private readonly IClockifyService _clockifyService;
 		private readonly IFileService _fileService;
 		private readonly ProjectService _projectService;
+		private readonly IPdfService _pdfService;
 
 		public InvoiceService (
 			IClockifyService clockifyService,
 			IFileService fileService,
-			ProjectService projectService
+			ProjectService projectService,
+			IPdfService pdfService
 		)
 		{
 			_clockifyService = clockifyService;
 			_fileService = fileService;
 			_projectService = projectService;
+			_pdfService = pdfService;
 		}
 
 	   private string BuildHtmlInvoice (
@@ -304,13 +307,28 @@ namespace ClockifyUtility.Services
 		   // Sanitize FromName and ClientName for filename
 		   string fromNameSafe = string.Join("_", config.Clockify.FromName.Split(System.IO.Path.GetInvalidFileNameChars())).Replace(" ", "_");
 		   string clientNameSafe = string.Join("_", config.Clockify.ClientName.Split(System.IO.Path.GetInvalidFileNameChars())).Replace(" ", "_");
-		   string fileName = $"Invoice_{fromNameSafe}_{clientNameSafe}_{monthYear.Replace(" ", "_")}.html";
-		   string filePath = System.IO.Path.Combine(
+		   string fileName = $"Invoice_{fromNameSafe}_{clientNameSafe}_{monthYear.Replace(" ", "_")}";
+		   string htmlFilePath = System.IO.Path.Combine(
 			   config.Clockify.OutputPath,
-			   fileName
+			   fileName + ".html"
 		   );
-		   await _fileService.SaveHtmlAsync ( html, filePath );
-		   return filePath;
+		   string pdfFilePath = System.IO.Path.Combine(
+			   config.Clockify.OutputPath,
+			   fileName + ".pdf"
+		   );
+		   await _fileService.SaveHtmlAsync ( html, htmlFilePath );
+
+		   try
+		   {
+			   await _pdfService.SavePdfAsync(html, pdfFilePath);
+			   Serilog.Log.Information($"[InvoiceService] PDF invoice saved: {pdfFilePath}");
+		   }
+		   catch (Exception ex)
+		   {
+			   Serilog.Log.Error(ex, $"[InvoiceService] Failed to generate PDF invoice: {pdfFilePath}");
+		   }
+
+		   return htmlFilePath;
 		}
 	}
 }
