@@ -65,18 +65,37 @@ namespace ClockifyUtility.Services
                 $"<div style='max-width:730px;margin:0 auto;padding:0 2vw;background:{sectionBg};color:{sectionText};border-radius:10px;box-shadow:0 2px 8px rgba(44,62,80,0.04);'>"
             );
 
+            // --- HEADER WITH TITLE (LEFT) AND LOGO (RIGHT) ---
+            _ = sb.AppendLine($"<div style='background:{headingBg};border-radius:14px;padding:1.8em 2em 1.3em 2em;margin-bottom:2em;box-shadow:0 4px 16px rgba(44,62,80,0.09);color:{textColor};'>");
+            _ = sb.AppendLine("  <div style='display:flex;align-items:center;justify-content:space-between;flex-wrap:nowrap;margin-bottom:1em;width:100%;'>");
+            // Left: Title
+            _ = sb.AppendLine("    <div style='font-size:2.2em;color:" + headerColor + ";font-weight:700;'>Developer Invoice</div>");
+            // Right: Logo (if present)
+            if (!string.IsNullOrWhiteSpace(config.Clockify.LogoPath) && System.IO.File.Exists(config.Clockify.LogoPath))
+            {
+                try
+                {
+                    byte[] imageBytes = System.IO.File.ReadAllBytes(config.Clockify.LogoPath);
+                    string base64 = Convert.ToBase64String(imageBytes);
+                    string ext = System.IO.Path.GetExtension(config.Clockify.LogoPath).ToLowerInvariant();
+                    string mimeType = ext switch
+                    {
+                        ".png" => "image/png",
+                        ".jpg" or ".jpeg" => "image/jpeg",
+                        ".gif" => "image/gif",
+                        _ => "image/png"
+                    };
+                    sb.AppendLine($"<img src='data:{mimeType};base64,{base64}' alt='Logo' style='max-height:64px;max-width:180px;object-fit:contain;vertical-align:middle;display:block;margin-left:2em;'/>");
+                }
+                catch { /* ignore logo errors */ }
+            }
+            _ = sb.AppendLine("  </div>");
+
+            // --- Invoice details row (below header) ---
             _ = sb.AppendLine(
-                $"<div style='background:{headingBg};border-radius:14px;padding:1.8em 2em 1.3em 2em;margin-bottom:2em;box-shadow:0 4px 16px rgba(44,62,80,0.09);color:{textColor};'>"
+                $"  <div style='display:flex;justify-content:flex-end;margin-bottom:0.5em;'>"
             );
-            _ = sb.AppendLine(
-                "  <div style='display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;margin-bottom:1em;'>"
-            );
-            _ = sb.AppendLine(
-                $"    <div style='font-size:2.2em;color:{headerColor};font-weight:700;'>Developer Invoice</div>"
-            );
-            _ = sb.AppendLine(
-                $"    <div style='font-size:1.1em;color:{amountDueColor};text-align:right;font-weight:600;'>"
-            );
+            _ = sb.AppendLine($"    <div style='font-size:1.1em;color:{amountDueColor};text-align:right;font-weight:600;'>");
             _ = sb.AppendLine($"<div><span style='font-weight:700;'>Date:</span> {DateTime.Now:yyyy-MM-dd}</div>");
             _ = sb.AppendLine($"<div><span style='font-weight:700;'>Period:</span> {monthYear}</div>");
             if (!string.IsNullOrWhiteSpace(config.Clockify.InvoiceNumber))

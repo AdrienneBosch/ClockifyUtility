@@ -74,6 +74,8 @@ namespace ClockifyUtility.Models
         public required string OutputPath { get; set; }
         [JsonProperty("InvoiceNumber")]
         public string? InvoiceNumber { get; set; }
+        [JsonProperty("LogoPath")]
+        public string? LogoPath { get; set; }
     }
 
 // Removed duplicate ConstantLineItem class. Use the one in ConstantLineItem.cs
