@@ -54,7 +54,7 @@
                                               ItemsSource="{Binding DisplayInvoiceConfigs}"
                                               SelectedItem="{Binding SelectedInvoiceConfig, Mode=TwoWay}"
                                               BorderBrush="{DynamicResource PrimaryButtonBorderBrush}"
-                                              Background="Red" />
+                                              Background="{DynamicResource PrimaryButtonBackgroundBrush}" />
 
                     <Button Style="{StaticResource MonthSelectorButtonStyle}"
                             Width="16"
