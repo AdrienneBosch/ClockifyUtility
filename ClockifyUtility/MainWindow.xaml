@@ -6,7 +6,8 @@
         xmlns:local="clr-namespace:ClockifyUtility"
         xmlns:controls="clr-namespace:ClockifyUtility.Controls"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="450" Width="800"
+        WindowStartupLocation="CenterScreen">
     <Grid Background="{StaticResource BackgroundBrush}">
         <Border Background="{StaticResource SurfaceBrush}"
                 Padding="32"
