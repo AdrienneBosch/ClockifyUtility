@@ -52,7 +52,11 @@
                                               Foreground="White"
                                               KeyboardNavigation.TabNavigation="Local"
                                               ItemsSource="{Binding DisplayInvoiceConfigs}"
-                                              SelectedItem="{Binding SelectedInvoiceConfig, Mode=TwoWay}" BorderBrush="#FF1E408C" Background="#FF0E224E" />
+                                              SelectedItem="{Binding SelectedInvoiceConfig, Mode=TwoWay}" BorderBrush="#FF1E408C" >
+                        <controls:PaletteComboBox.Background>
+                            <SolidColorBrush Color="#FF050E21" Opacity="2"/>
+                        </controls:PaletteComboBox.Background>
+                    </controls:PaletteComboBox>
 
                     <Button Style="{StaticResource MonthSelectorButtonStyle}"
                             Width="16"
