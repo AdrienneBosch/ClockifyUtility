@@ -101,7 +101,7 @@
                                     <ColumnDefinition Width="38" />
                                 </Grid.ColumnDefinitions>
                                 <Grid Grid.Column="0">
-                                    <Border x:Name="SelectedItemBackground" Background="{TemplateBinding Background}" CornerRadius="2,0,0,2">
+                                    <Border x:Name="SelectedItemBackground" Background="{TemplateBinding Background}" CornerRadius="2">
                                         <ContentPresenter x:Name="ContentSite"
                                                           Content="{TemplateBinding SelectionBoxItem}"
                                                           VerticalAlignment="Center"
@@ -145,11 +145,13 @@
                             <Setter TargetName="Border" Property="Background" Value="{DynamicResource PrimaryButtonHoverBrush}"/>
                             <Setter TargetName="Border" Property="BorderBrush" Value="{DynamicResource PrimaryButtonHoverBrush}"/>
                             <Setter TargetName="SelectedItemBackground" Property="Background" Value="{DynamicResource PrimaryButtonHoverBrush}"/>
+                            <Setter TargetName="SelectedItemBackground" Property="CornerRadius" Value="2"/>
                         </Trigger>
                         <Trigger Property="IsDropDownOpen" Value="True">
                             <Setter TargetName="Border" Property="Background" Value="{DynamicResource PrimaryButtonHoverBrush}"/>
                             <Setter TargetName="Border" Property="BorderBrush" Value="{DynamicResource PrimaryButtonHoverBrush}"/>
                             <Setter TargetName="SelectedItemBackground" Property="Background" Value="{DynamicResource PrimaryButtonHoverBrush}"/>
+                            <Setter TargetName="SelectedItemBackground" Property="CornerRadius" Value="2"/>
                         </Trigger>
                         <Trigger Property="IsEnabled" Value="False">
                             <Setter TargetName="Border" Property="Background" Value="#333"/>
