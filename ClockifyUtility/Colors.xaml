@@ -12,6 +12,7 @@
     <Color x:Key="SurfaceColor">#FF122b61</Color>
     <Color x:Key="SelectorBoxColor">#FF0e224e</Color>
     <Color x:Key="SecondaryButtonBackgroundColor">#FF0b1a3d</Color>
+    <Color x:Key="DisabledButtonBackgroundColor">#FF3e5791</Color>
 
     <!-- Error and Highlight -->
     <Color x:Key="ErrorColor">#FFD32F2F</Color>
@@ -44,4 +45,5 @@
     <SolidColorBrush x:Key="PrimaryButtonBorderBrush" Color="#1e408c"/>
     <SolidColorBrush x:Key="PrimaryButtonHoverBrush" Color="#204291"/>
     <SolidColorBrush x:Key="SecondaryButtonBackgroundBrush" Color="#0b1a3d"/>
+    <SolidColorBrush x:Key="DisabledButtonBackgroundBrush" Color="#3e5791"/>
 </ResourceDictionary>
