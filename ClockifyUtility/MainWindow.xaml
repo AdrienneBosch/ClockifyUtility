@@ -49,12 +49,10 @@
                                               FontSize="13"
                                               VerticalContentAlignment="Center"
                                               HorizontalContentAlignment="Left"
-                                              Background="{StaticResource SelectorBoxBrush}"
                                               Foreground="White"
-                                              BorderBrush="{StaticResource PrimaryVariantBrush}"
                                               KeyboardNavigation.TabNavigation="Local"
                                               ItemsSource="{Binding DisplayInvoiceConfigs}"
-                                              SelectedItem="{Binding SelectedInvoiceConfig, Mode=TwoWay}" />
+                                              SelectedItem="{Binding SelectedInvoiceConfig, Mode=TwoWay}" BorderBrush="#FF1E408C" Background="#FF0E224E" />
 
                     <Button Style="{StaticResource MonthSelectorButtonStyle}"
                             Width="16"
