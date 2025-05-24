@@ -60,9 +60,9 @@
 
             <!-- Primary button -->
             <Style x:Key="PrimaryButtonStyle" TargetType="Button">
-                <Setter Property="Background" Value="{StaticResource SelectorBoxBrush}"/>
+                <Setter Property="Background" Value="{StaticResource PrimaryButtonBackgroundBrush}"/>
                 <Setter Property="Foreground" Value="White"/>
-                <Setter Property="BorderBrush" Value="#1e408c"/>
+                <Setter Property="BorderBrush" Value="{StaticResource PrimaryButtonBorderBrush}"/>
                 <Setter Property="BorderThickness" Value="0.9"/>
                 <Setter Property="Padding" Value="6,2"/>
                 <Setter Property="FontSize" Value="14"/>
@@ -81,7 +81,7 @@
                 </Setter>
                 <Style.Triggers>
                     <Trigger Property="IsMouseOver" Value="True">
-                        <Setter Property="Background" Value="{StaticResource ButtonHoverHighlightBrush}"/>
+                        <Setter Property="Background" Value="{StaticResource PrimaryButtonHoverBrush}"/>
                     </Trigger>
                 </Style.Triggers>
             </Style>
