@@ -16,6 +16,7 @@
                             Background="{TemplateBinding Background}"
                             BorderBrush="{TemplateBinding Background}"
                             BorderThickness="0"
+                            CornerRadius="2"
                             SnapsToDevicePixels="True"
                             Padding="12,6,12,6">
                         <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
@@ -93,14 +94,14 @@
                                 Background="{TemplateBinding Background}"
                                 BorderBrush="{TemplateBinding BorderBrush}"
                                 BorderThickness="{TemplateBinding BorderThickness}"
-                                CornerRadius="4">
+                                CornerRadius="2">
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*" />
                                     <ColumnDefinition Width="38" />
                                 </Grid.ColumnDefinitions>
                                 <Grid Grid.Column="0">
-                                    <Border x:Name="SelectedItemBackground" Background="{TemplateBinding Background}" CornerRadius="4,0,0,4">
+                                    <Border x:Name="SelectedItemBackground" Background="{TemplateBinding Background}" CornerRadius="2,0,0,2">
                                         <ContentPresenter x:Name="ContentSite"
                                                           Content="{TemplateBinding SelectionBoxItem}"
                                                           VerticalAlignment="Center"
@@ -129,7 +130,7 @@
                                     Background="{DynamicResource PrimaryButtonBackgroundBrush}"
                                     BorderBrush="{DynamicResource PrimaryButtonBorderBrush}"
                                     BorderThickness="1"
-                                    CornerRadius="4">
+                                    CornerRadius="2">
                                 <ScrollViewer Margin="0"
                                               SnapsToDevicePixels="True"
                                               HorizontalScrollBarVisibility="Disabled"
