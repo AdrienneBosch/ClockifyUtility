@@ -84,6 +84,7 @@ public partial class App : Application
 		ServiceCollection services = new();
 		_ = services.AddSingleton<IClockifyService, ClockifyService> ( );
 		_ = services.AddSingleton<IFileService, FileService> ( );
+		_ = services.AddSingleton<IPdfService, PdfService> ( );
 		_ = services.AddSingleton<IConfigService, ConfigService> ( );
 		// Defer ProjectService config loading to avoid startup crash if config is invalid
 		_ = services.AddSingleton<ProjectService>(sp =>
@@ -107,7 +108,8 @@ public partial class App : Application
 			new InvoiceService (
 				sp.GetRequiredService<IClockifyService> ( ),
 				sp.GetRequiredService<IFileService> ( ),
-				sp.GetRequiredService<ProjectService> ( )
+				sp.GetRequiredService<ProjectService> ( ),
+				sp.GetRequiredService<IPdfService> ( )
 			)
 		);
 		_ = services.AddSingleton<MainViewModel> ( );

@@ -20,6 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="DinkToPdf" Version="1.0.8" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.5" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="9.0.5" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.5" />
@@ -33,6 +34,16 @@
   <ItemGroup>
     <Resource Include="Fonts\Font Awesome 6 Free-Regular-400.otf" />
     <Resource Include="Fonts\Font Awesome 6 Free-Solid-900.otf" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="NativeLibs\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="NativeLibs\libwkhtmltox.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>
