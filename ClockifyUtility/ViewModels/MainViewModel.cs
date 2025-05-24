@@ -277,7 +277,8 @@ namespace ClockifyUtility.ViewModels
 						string clientName = config.Clockify?.ClientName ?? "Unknown Client";
 						Status = $"Generating invoice for {clientName}...";
 						GenerateButtonText = $"Processing {clientName}...";
-						await _invoiceService.GenerateInvoiceAsync ( start, end, config );
+						var (html, pdfFilePath) = await _invoiceService.GenerateInvoiceAsync ( start, end, config );
+						// Optionally, you could use the html string here if needed (e.g., preview)
 					}
 					if ( skippedConfigs.Count > 0 )
 					{

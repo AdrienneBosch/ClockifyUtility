@@ -4,6 +4,6 @@ namespace ClockifyUtility.Services
 {
     public interface IPdfService
     {
-        Task SavePdfAsync(string html, string outputPath);
+        Task GeneratePdfAsync(string html, string outputPath);
     }
 }

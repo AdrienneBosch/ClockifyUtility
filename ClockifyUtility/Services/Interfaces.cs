@@ -19,6 +19,6 @@ namespace ClockifyUtility.Services
 
 	public interface IInvoiceService
 	{
-   Task<string> GenerateInvoiceAsync ( DateTime start, DateTime end, InvoiceConfig config );
+		Task<(string Html, string PdfFilePath)> GenerateInvoiceAsync(DateTime start, DateTime end, InvoiceConfig config);
 	}
 }
