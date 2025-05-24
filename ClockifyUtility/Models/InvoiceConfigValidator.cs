@@ -41,7 +41,7 @@ namespace ClockifyUtility.Models
                 if (string.IsNullOrWhiteSpace(c.CurrencySymbol)) errors.Add("CurrencySymbol is required.");
                 if (c.HourlyRate <= 0) errors.Add("HourlyRate must be greater than 0.");
                 if (string.IsNullOrWhiteSpace(c.OutputPath)) errors.Add("OutputPath is required.");
-                if (string.IsNullOrWhiteSpace(c.InvoiceNumber)) errors.Add("InvoiceNumber is required.");
+                // InvoiceNumber is now handled centrally and is not required in config files
             }
             if (config.ConstantLineItems != null)
             {

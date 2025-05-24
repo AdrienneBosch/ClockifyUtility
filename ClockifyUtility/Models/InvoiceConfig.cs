@@ -72,8 +72,8 @@ namespace ClockifyUtility.Models
         public required float HourlyRate { get; set; }
         [JsonProperty("OutputPath", Required = Required.Always)]
         public required string OutputPath { get; set; }
-        [JsonProperty("InvoiceNumber", Required = Required.Always)]
-        public required string InvoiceNumber { get; set; }
+        [JsonProperty("InvoiceNumber")]
+        public string? InvoiceNumber { get; set; }
     }
 
 // Removed duplicate ConstantLineItem class. Use the one in ConstantLineItem.cs
