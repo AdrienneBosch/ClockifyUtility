@@ -294,9 +294,9 @@ namespace ClockifyUtility.Services
                 totalAmount
             );
 
-            string fromNameSafe = string.Join("_", config.Clockify.FromName.Split(System.IO.Path.GetInvalidFileNameChars())).Replace(" ", "_");
-            string clientNameSafe = string.Join("_", config.Clockify.ClientName.Split(System.IO.Path.GetInvalidFileNameChars())).Replace(" ", "_");
-            string fileName = $"Invoice_{fromNameSafe}_{clientNameSafe}_{monthYear.Replace(" ", "_")}";
+            string fromNameSafe = string.Join(" ", config.Clockify.FromName.Split(System.IO.Path.GetInvalidFileNameChars())).Trim();
+            string clientNameSafe = string.Join(" ", config.Clockify.ClientName.Split(System.IO.Path.GetInvalidFileNameChars())).Trim();
+            string fileName = $"{fromNameSafe} {clientNameSafe} {monthYear} Invoice";
             string pdfFilePath = System.IO.Path.Combine(
                 config.Clockify.OutputPath,
                 fileName + ".pdf"
