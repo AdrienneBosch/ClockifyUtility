@@ -4,20 +4,193 @@
              xmlns:local="clr-namespace:ClockifyUtility"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-        <!-- Register Font Awesome Regular and Solid fonts -->
-        <FontFamily x:Key="FontAwesomeRegular">/Fonts/Font Awesome 6 Free-Regular-400.otf#Font Awesome 6 Free Regular</FontFamily>
-        <FontFamily x:Key="FontAwesomeSolid">/Fonts/Font Awesome 6 Free-Solid-900.otf#Font Awesome 6 Free Solid</FontFamily>
-        <!-- Light blue button style for month selectors -->
-        <Style x:Key="MonthSelectorButtonStyle" TargetType="Button">
-            <Setter Property="Background" Value="#D0E8FF"/>
-            <Setter Property="BorderBrush" Value="#A0C8E0"/>
-            <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="Foreground" Value="#1A3A5A"/>
-            <Setter Property="FontFamily" Value="{StaticResource FontAwesomeRegular}"/>
-            <Setter Property="FontSize" Value="22"/>
-            <Setter Property="Width" Value="40"/>
-            <Setter Property="Height" Value="30"/>
-            <Setter Property="Margin" Value="0"/>
-        </Style>
+        <ResourceDictionary>
+
+            <!-- Merge the color palette -->
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Colors.xaml"/>
+                <ResourceDictionary Source="Themes/CustomComboBox.xaml"/>
+                <ResourceDictionary Source="Themes/PaletteComboBox.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+
+            <!-- System highlight overrides (MUST precede usage) -->
+            <Color x:Key="{x:Static SystemColors.HighlightColorKey}">#1e408c</Color>
+            <Color x:Key="{x:Static SystemColors.HighlightTextColorKey}">#FFFFFF</Color>
+
+            <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="{StaticResource {x:Static SystemColors.HighlightColorKey}}"/>
+            <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="{StaticResource {x:Static SystemColors.HighlightColorKey}}"/>
+            <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="{StaticResource {x:Static SystemColors.HighlightTextColorKey}}"/>
+
+            <!-- Register Font Awesome fonts -->
+            <FontFamily x:Key="FontAwesomeRegular">/Fonts/Font Awesome 6 Free-Regular-400.otf#Font Awesome 6 Free Regular</FontFamily>
+            <FontFamily x:Key="FontAwesomeSolid">/Fonts/Font Awesome 6 Free-Solid-900.otf#Font Awesome 6 Free Solid</FontFamily>
+
+            <!-- Button Hover Highlight Color -->
+            <SolidColorBrush x:Key="ButtonHoverHighlightBrush" Color="#1e408c"/>
+
+            <!-- Month selector buttons -->
+            <Style x:Key="MonthSelectorButtonStyle" TargetType="Button">
+                <Setter Property="Background" Value="{StaticResource PrimaryBrush}"/>
+                <Setter Property="BorderBrush" Value="Transparent"/>
+                <Setter Property="BorderThickness" Value="0"/>
+                <Setter Property="Foreground" Value="White"/>
+                <Setter Property="FontFamily" Value="{StaticResource FontAwesomeRegular}"/>
+                <Setter Property="FontSize" Value="19"/>
+                <Setter Property="Width" Value="34"/>
+                <Setter Property="Height" Value="26"/>
+                <Setter Property="Margin" Value="0"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Border Background="{TemplateBinding Background}"
+                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                    BorderThickness="{TemplateBinding BorderThickness}"
+                                    CornerRadius="2">
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+                <Style.Triggers>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="Background" Value="{StaticResource ButtonHoverHighlightBrush}"/>
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+
+            <!-- Primary button -->
+            <Style x:Key="PrimaryButtonStyle" TargetType="Button">
+                <Setter Property="Background" Value="{DynamicResource PrimaryButtonBackgroundBrush}"/>
+                <Setter Property="Foreground" Value="White"/>
+                <Setter Property="BorderBrush" Value="{DynamicResource PrimaryButtonBorderBrush}"/>
+                <Setter Property="BorderThickness" Value="0.9"/>
+                <Setter Property="Padding" Value="6,2"/>
+                <Setter Property="FontSize" Value="14"/>
+                <Setter Property="Margin" Value="4"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Border x:Name="ButtonBorder"
+                                    Background="{TemplateBinding Background}"
+                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                    BorderThickness="{TemplateBinding BorderThickness}"
+                                    CornerRadius="2">
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="ButtonBorder" Property="Background" Value="{DynamicResource PrimaryButtonHoverBrush}"/>
+                                </Trigger>
+                                <Trigger Property="IsEnabled" Value="False">
+                                    <Setter TargetName="ButtonBorder" Property="Background" Value="{DynamicResource DisabledButtonBackgroundBrush}"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <!-- Secondary button -->
+            <Style x:Key="SecondaryButtonStyle" TargetType="Button">
+                <Setter Property="Background" Value="{StaticResource SecondaryBrush}"/>
+                <Setter Property="Foreground" Value="White"/>
+                <Setter Property="BorderBrush" Value="{StaticResource SecondaryVariantBrush}"/>
+                <Setter Property="BorderThickness" Value="0.7"/>
+                <Setter Property="Padding" Value="6,2"/>
+                <Setter Property="FontSize" Value="14"/>
+                <Setter Property="Margin" Value="4"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Border Background="{TemplateBinding Background}"
+                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                    BorderThickness="{TemplateBinding BorderThickness}"
+                                    CornerRadius="2">
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+                <Style.Triggers>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="Background" Value="{StaticResource ButtonHoverHighlightBrush}"/>
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+
+            <!-- TextBlock styles -->
+            <Style x:Key="SectionHeaderTextBlockStyle" TargetType="TextBlock">
+                <Setter Property="Foreground" Value="White"/>
+                <Setter Property="FontWeight" Value="Bold"/>
+                <Setter Property="FontSize" Value="18"/>
+            </Style>
+            <Style x:Key="BodyTextBlockStyle" TargetType="TextBlock">
+                <Setter Property="Foreground" Value="White"/>
+                <Setter Property="FontSize" Value="14"/>
+            </Style>
+
+            <!-- Window, panels -->
+            <Style TargetType="Window">
+                <Setter Property="Background" Value="{StaticResource BackgroundBrush}"/>
+                <Setter Property="Foreground" Value="White"/>
+            </Style>
+            <Style TargetType="StackPanel">
+                <Setter Property="Background" Value="{StaticResource SurfaceBrush}"/>
+            </Style>
+            <Style TargetType="Grid">
+                <Setter Property="Background" Value="{StaticResource SurfaceBrush}"/>
+            </Style>
+
+            <!-- TextBox -->
+            <Style TargetType="TextBox">
+                <Setter Property="Background" Value="{StaticResource BackgroundBrush}"/>
+                <Setter Property="Foreground" Value="White"/>
+                <Setter Property="BorderBrush" Value="{StaticResource PrimaryVariantBrush}"/>
+            </Style>
+
+            <!-- ListBox -->
+            <Style TargetType="ListBox">
+                <Setter Property="Background" Value="{StaticResource SurfaceBrush}"/>
+                <Setter Property="Foreground" Value="White"/>
+                <Setter Property="BorderBrush" Value="{StaticResource PrimaryVariantBrush}"/>
+            </Style>
+
+            <!-- ComboBox -->
+            <Style TargetType="ComboBox">
+                <Setter Property="Background" Value="{StaticResource BackgroundBrush}"/>
+                <Setter Property="Foreground" Value="White"/>
+                <Setter Property="BorderBrush" Value="{StaticResource PrimaryVariantBrush}"/>
+                <Setter Property="BorderThickness" Value="1"/>
+                <Setter Property="Padding" Value="4,2"/>
+            </Style>
+
+            <!-- ComboBoxItem with custom template -->
+            <Style TargetType="ComboBoxItem">
+                <Setter Property="Background" Value="#0d162b"/>
+                <Setter Property="Foreground" Value="White"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="ComboBoxItem">
+                            <Border x:Name="Bd"
+                                    Background="{TemplateBinding Background}"
+                                    Padding="4"
+                                    SnapsToDevicePixels="True">
+                                <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="Bd" Property="Background" Value="{StaticResource ButtonHoverHighlightBrush}"/>
+                                </Trigger>
+                                <Trigger Property="IsSelected" Value="True">
+                                    <Setter TargetName="Bd" Property="Background" Value="{StaticResource ButtonHoverHighlightBrush}"/>
+                                    <Setter Property="Foreground" Value="White"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+        </ResourceDictionary>
     </Application.Resources>
 </Application>

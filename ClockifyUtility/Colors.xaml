@@ -1,0 +1,49 @@
+<!-- Colors.xaml: Central color palette for the application -->
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!-- Primary and Secondary Colors -->
+    <Color x:Key="PrimaryColor">#FF122b61</Color> <!-- Custom Button Blue -->
+    <Color x:Key="PrimaryVariantColor">#FF16b7d5</Color> <!-- Custom Border Color -->
+    <Color x:Key="SecondaryColor">#FF122b61</Color>
+    <Color x:Key="SecondaryVariantColor">#FF16b7d5</Color>
+
+    <!-- Backgrounds and Surfaces -->
+    <Color x:Key="BackgroundColor">#FF0d162b</Color>
+    <Color x:Key="SurfaceColor">#FF122b61</Color>
+    <Color x:Key="SelectorBoxColor">#FF0e224e</Color>
+    <Color x:Key="SecondaryButtonBackgroundColor">#FF0b1a3d</Color>
+    <Color x:Key="DisabledButtonBackgroundColor">#FF3e5791</Color>
+
+    <!-- Error and Highlight -->
+    <Color x:Key="ErrorColor">#FFD32F2F</Color>
+    <Color x:Key="HighlightColor">#FFB3E5FC</Color> <!-- Light Blue -->
+
+    <!-- On Colors (text/icons on colored backgrounds) -->
+    <Color x:Key="OnPrimaryColor">#FFFFFFFF</Color>
+    <Color x:Key="OnSecondaryColor">#FFFFFFFF</Color>
+    <Color x:Key="OnBackgroundColor">#FFFFFFFF</Color>
+    <Color x:Key="OnSurfaceColor">#FFFFFFFF</Color>
+
+    <!-- Brushes -->
+    <SolidColorBrush x:Key="PrimaryBrush" Color="{StaticResource PrimaryColor}"/>
+    <SolidColorBrush x:Key="PrimaryVariantBrush" Color="{StaticResource PrimaryVariantColor}"/>
+    <SolidColorBrush x:Key="SecondaryBrush" Color="{StaticResource SecondaryColor}"/>
+    <SolidColorBrush x:Key="SecondaryVariantBrush" Color="{StaticResource SecondaryVariantColor}"/>
+    <SolidColorBrush x:Key="BackgroundBrush" Color="{StaticResource BackgroundColor}"/>
+    <SolidColorBrush x:Key="SurfaceBrush" Color="{StaticResource SurfaceColor}"/>
+    <SolidColorBrush x:Key="SelectorBoxBrush" Color="{StaticResource SelectorBoxColor}"/>
+    <SolidColorBrush x:Key="ErrorBrush" Color="{StaticResource ErrorColor}"/>
+    <SolidColorBrush x:Key="HighlightBrush" Color="{StaticResource HighlightColor}"/>
+    <SolidColorBrush x:Key="OnPrimaryBrush" Color="{StaticResource OnPrimaryColor}"/>
+    <SolidColorBrush x:Key="OnSecondaryBrush" Color="{StaticResource OnSecondaryColor}"/>
+    <SolidColorBrush x:Key="OnBackgroundBrush" Color="{StaticResource OnBackgroundColor}"/>
+    <SolidColorBrush x:Key="OnSurfaceBrush" Color="{StaticResource OnSurfaceColor}"/>
+    <SolidColorBrush x:Key="ButtonHoverHighlightBrush" Color="#1e3e83"/>
+    <!-- Custom ComboBox Focus Border Brush (white for testing) -->
+    <SolidColorBrush x:Key="CustomComboBoxFocusBorderBrush" Color="#FFFFFFFF"/>
+    <SolidColorBrush x:Key="PrimaryButtonBackgroundBrush" Color="#0e224e"/>
+    <SolidColorBrush x:Key="PrimaryButtonBorderBrush" Color="#1e408c"/>
+    <SolidColorBrush x:Key="PrimaryButtonHoverBrush" Color="#204291"/>
+    <SolidColorBrush x:Key="SecondaryButtonBackgroundBrush" Color="#0b1a3d"/>
+    <SolidColorBrush x:Key="DisabledButtonBackgroundBrush" Color="#3e5791"/>
+</ResourceDictionary>

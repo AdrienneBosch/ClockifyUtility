@@ -4,59 +4,89 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ClockifyUtility"
+        xmlns:controls="clr-namespace:ClockifyUtility.Controls"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
-    <Grid>
-        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-            <!-- Month Navigation Panel -->
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,10">
-                <!-- FontAwesome calendar-minus: Unicode F272 -->
-                <Button x:Name="btnPreviousMonth"
-                        Style="{StaticResource MonthSelectorButtonStyle}"
-                        Content="&#xF272;"
-                        Margin="0,0,10,0"
-                        Command="{Binding PreviousMonthCommand}"
-                        ToolTip="Previous month"
-                        AutomationProperties.Name="Previous month" />
-                <TextBlock x:Name="lblCurrentMonth" Text="{Binding CurrentMonthLabel}" FontSize="16" VerticalAlignment="Center" Width="120" TextAlignment="Center" />
-                <!-- FontAwesome calendar-plus: Unicode F271 -->
-                <Button x:Name="btnNextMonth"
-                        Style="{StaticResource MonthSelectorButtonStyle}"
-                        Content="&#xF271;"
-                        Margin="10,0,0,0"
-                        Command="{Binding NextMonthCommand}"
-                        ToolTip="Next month"
-                        AutomationProperties.Name="Next month" />
-            </StackPanel>
+    <Grid Background="{StaticResource BackgroundBrush}">
+        <Border Background="{StaticResource SurfaceBrush}"
+                Padding="32"
+                CornerRadius="3"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                SnapsToDevicePixels="True">
+            <StackPanel>
 
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,10">
-                <ComboBox Width="300" Height="30" Margin="0,0,10,0"
-                          Padding="6,0,2,0"
-                          FontSize="12"
-                          VerticalContentAlignment="Center"
-                          HorizontalContentAlignment="Left"
-                          ItemsSource="{Binding DisplayInvoiceConfigs}"
-                          SelectedItem="{Binding SelectedInvoiceConfig, Mode=TwoWay}" />
-                <Button Style="{StaticResource MonthSelectorButtonStyle}"
-                        Width="18" Height="18" Margin="6,6,0,6" Padding="0"
-                        Command="{Binding SetDefaultInvoiceCommand}"
-                        ToolTip="Set as default" AutomationProperties.Name="Set as default" VerticalAlignment="Center">
-                    <TextBlock FontSize="12"
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,10">
+                    <Button x:Name="btnPreviousMonth"
+                            Style="{StaticResource MonthSelectorButtonStyle}"
+                            Content="&#xF272;"
+                            Margin="0,0,10,0"
+                            Command="{Binding PreviousMonthCommand}"
+                            ToolTip="Previous month"
+                            AutomationProperties.Name="Previous month" />
+
+                    <TextBlock x:Name="lblCurrentMonth"
+                               Text="{Binding CurrentMonthLabel}"
+                               Style="{StaticResource SectionHeaderTextBlockStyle}"
                                VerticalAlignment="Center"
-                               HorizontalAlignment="Center"
-                               Text="{Binding StarIconUnicode}"
-                               FontFamily="{Binding StarIconFontFamily}"/>
-                </Button>
+                               Width="120"
+                               TextAlignment="Center" />
+
+                    <Button x:Name="btnNextMonth"
+                            Style="{StaticResource MonthSelectorButtonStyle}"
+                            Content="&#xF271;"
+                            Margin="10,0,0,0"
+                            Command="{Binding NextMonthCommand}"
+                            ToolTip="Next month"
+                            AutomationProperties.Name="Next month" />
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,10">
+                    <controls:PaletteComboBox Width="300"
+                                              Height="30"
+                                              Margin="0,0,10,0"
+                                              Padding="6,0,2,0"
+                                              FontSize="13"
+                                              VerticalContentAlignment="Center"
+                                              HorizontalContentAlignment="Left"
+                                              Foreground="White"
+                                              KeyboardNavigation.TabNavigation="Local"
+                                              ItemsSource="{Binding DisplayInvoiceConfigs}"
+                                              SelectedItem="{Binding SelectedInvoiceConfig, Mode=TwoWay}"
+                                              BorderBrush="{DynamicResource PrimaryButtonBorderBrush}"
+                                              Background="{DynamicResource PrimaryButtonBackgroundBrush}" />
+
+                    <Button Style="{StaticResource MonthSelectorButtonStyle}"
+                            Width="16"
+                            Height="16"
+                            Margin="6,6,0,6"
+                            Padding="0"
+                            Focusable="False"
+                            Command="{Binding SetDefaultInvoiceCommand}"
+                            ToolTip="Set as default"
+                            AutomationProperties.Name="Set as default"
+                            VerticalAlignment="Center">
+                        <TextBlock FontSize="10"
+                                   VerticalAlignment="Center"
+                                   HorizontalAlignment="Center"
+                                   Text="{Binding StarIconUnicode}"
+                                   FontFamily="{Binding StarIconFontFamily}" />
+                    </Button>
+                </StackPanel>
+
+                <Button Width="220"
+                        Height="30"
+                        Command="{Binding GenerateInvoiceCommand}"
+                        Content="{Binding GenerateButtonText}"
+                        IsEnabled="{Binding IsGenerateButtonEnabled}"
+                        Style="{StaticResource PrimaryButtonStyle}"
+                        HorizontalContentAlignment="Center"
+                        VerticalContentAlignment="Center"
+                        BorderBrush="{DynamicResource PrimaryButtonBorderBrush}"
+                        Background="{DynamicResource PrimaryButtonBackgroundBrush}"
+                        FontSize="{Binding GenerateButtonFontSize}" />
+
             </StackPanel>
-            <Button Width="220" Height="30" Command="{Binding GenerateInvoiceCommand}"
-                    Content="{Binding GenerateButtonText}"
-                    IsEnabled="{Binding IsGenerateButtonEnabled}"
-                    FontSize="12"
-                    Padding="0"
-                    HorizontalContentAlignment="Center"
-                    VerticalContentAlignment="Center"
-                    />
-            <!-- Removed Status label as per requirements -->
-        </StackPanel>
+        </Border>
     </Grid>
 </Window>
