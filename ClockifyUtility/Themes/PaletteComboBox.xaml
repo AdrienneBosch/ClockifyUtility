@@ -11,11 +11,11 @@
         <Setter Property="SnapsToDevicePixels" Value="True"/>
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Background" Value="{DynamicResource ButtonHoverHighlightBrush}"/>
+                <Setter Property="Background" Value="{DynamicResource PrimaryButtonHoverBrush}"/>
                 <Setter Property="Foreground" Value="White"/>
             </Trigger>
             <Trigger Property="IsSelected" Value="True">
-                <Setter Property="Background" Value="{DynamicResource ButtonHoverHighlightBrush}"/>
+                <Setter Property="Background" Value="{DynamicResource PrimaryButtonHoverBrush}"/>
                 <Setter Property="Foreground" Value="White"/>
             </Trigger>
             <Trigger Property="IsEnabled" Value="False">
@@ -43,10 +43,10 @@
                     </Grid>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="ToggleGrid" Property="Background" Value="{DynamicResource PrimaryBrush}"/>
+                            <Setter TargetName="ToggleGrid" Property="Background" Value="{DynamicResource PrimaryButtonHoverBrush}"/>
                         </Trigger>
                         <Trigger Property="IsPressed" Value="True">
-                            <Setter TargetName="ToggleGrid" Property="Background" Value="{DynamicResource PrimaryBrush}"/>
+                            <Setter TargetName="ToggleGrid" Property="Background" Value="{DynamicResource PrimaryButtonHoverBrush}"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -121,21 +121,21 @@
                     </Grid>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="Border" Property="Background" Value="{DynamicResource ButtonHoverHighlightBrush}"/>
-                            <Setter TargetName="Border" Property="BorderBrush" Value="{DynamicResource ButtonHoverHighlightBrush}"/>
-                            <Setter TargetName="SelectedItemBackground" Property="Background" Value="{DynamicResource ButtonHoverHighlightBrush}"/>
+                            <Setter TargetName="Border" Property="Background" Value="{DynamicResource PrimaryButtonHoverBrush}"/>
+                            <Setter TargetName="Border" Property="BorderBrush" Value="{DynamicResource PrimaryButtonHoverBrush}"/>
+                            <Setter TargetName="SelectedItemBackground" Property="Background" Value="{DynamicResource PrimaryButtonHoverBrush}"/>
                         </Trigger>
                         <Trigger Property="IsDropDownOpen" Value="True">
-                            <Setter TargetName="Border" Property="Background" Value="{DynamicResource ButtonHoverHighlightBrush}"/>
-                            <Setter TargetName="Border" Property="BorderBrush" Value="{DynamicResource ButtonHoverHighlightBrush}"/>
-                            <Setter TargetName="SelectedItemBackground" Property="Background" Value="{DynamicResource ButtonHoverHighlightBrush}"/>
+                            <Setter TargetName="Border" Property="Background" Value="{DynamicResource PrimaryButtonHoverBrush}"/>
+                            <Setter TargetName="Border" Property="BorderBrush" Value="{DynamicResource PrimaryButtonHoverBrush}"/>
+                            <Setter TargetName="SelectedItemBackground" Property="Background" Value="{DynamicResource PrimaryButtonHoverBrush}"/>
                         </Trigger>
                         <Trigger Property="IsEnabled" Value="False">
                             <Setter TargetName="Border" Property="Background" Value="#333"/>
                             <Setter Property="Foreground" Value="#888"/>
                         </Trigger>
                         <Trigger Property="IsKeyboardFocusWithin" Value="True">
-                            <Setter TargetName="Border" Property="BorderBrush" Value="{DynamicResource ButtonHoverHighlightBrush}"/>
+                            <Setter TargetName="Border" Property="BorderBrush" Value="{DynamicResource PrimaryButtonHoverBrush}"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
