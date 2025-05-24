@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Input;
 using ClockifyUtility.Services;
 using ClockifyUtility.Models;
+using ClockifyUtility.Helpers;
 
 namespace ClockifyUtility.ViewModels
 {
@@ -16,8 +17,10 @@ namespace ClockifyUtility.ViewModels
 	{
 		public string? DefaultInvoice { get; set; }
 		public string? InvoiceConfigDirectory { get; set; }
+		public string? InvoiceNumber { get; set; } // Added for invoice number tracking
 	}
 
+	// MainViewModel and RelayCommand restored below
 	public class MainViewModel : System.ComponentModel.INotifyPropertyChanged
 	{
 		// --- Star Icon Properties for Default Invoice ---
@@ -152,7 +155,9 @@ namespace ClockifyUtility.ViewModels
 			}
 			if ( !string.IsNullOrWhiteSpace ( invoiceConfigDir ) && System.IO.Directory.Exists ( invoiceConfigDir ) )
 			{
-				var files = System.IO.Directory.GetFiles(invoiceConfigDir, "*.json");
+				var files = System.IO.Directory.GetFiles(invoiceConfigDir, "*.json")
+					.Where(f => !System.IO.Path.GetFileName(f).StartsWith("appsettings.", StringComparison.OrdinalIgnoreCase))
+					.ToList();
 				_availableInvoiceConfigs = files.Select ( f => System.IO.Path.GetFileName ( f ) ).ToList ( );
 			}
 			else
@@ -274,6 +279,19 @@ namespace ClockifyUtility.ViewModels
 							skippedConfigs.Add ( configFile + ": " + string.Join ( ", ", errors ) );
 							continue;
 						}
+						 
+						// Read and increment InvoiceNumber in the config file itself
+						string currentInvoiceNumber = config.Clockify.InvoiceNumber;
+						if (string.IsNullOrWhiteSpace(currentInvoiceNumber))
+							currentInvoiceNumber = "000";
+						if (!int.TryParse(currentInvoiceNumber, out int num))
+							num = 0;
+						num++;
+						string nextInvoiceNumber = num.ToString("D3");
+						config.Clockify.InvoiceNumber = nextInvoiceNumber;
+						// Save updated config back to file
+						File.WriteAllText(fullPath, Newtonsoft.Json.JsonConvert.SerializeObject(config, Newtonsoft.Json.Formatting.Indented));
+						
 						string clientName = config.Clockify?.ClientName ?? "Unknown Client";
 						Status = $"Generating invoice for {clientName}...";
 						GenerateButtonText = $"Processing {clientName}...";
