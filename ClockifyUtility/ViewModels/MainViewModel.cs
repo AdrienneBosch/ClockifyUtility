@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Input;
 using ClockifyUtility.Services;
 using ClockifyUtility.Models;
+using ClockifyUtility.Helpers;
 
 namespace ClockifyUtility.ViewModels
 {
@@ -16,8 +17,10 @@ namespace ClockifyUtility.ViewModels
 	{
 		public string? DefaultInvoice { get; set; }
 		public string? InvoiceConfigDirectory { get; set; }
+		public string? InvoiceNumber { get; set; } // Added for invoice number tracking
 	}
 
+	// MainViewModel and RelayCommand restored below
 	public class MainViewModel : System.ComponentModel.INotifyPropertyChanged
 	{
 		// --- Star Icon Properties for Default Invoice ---
@@ -152,7 +155,9 @@ namespace ClockifyUtility.ViewModels
 			}
 			if ( !string.IsNullOrWhiteSpace ( invoiceConfigDir ) && System.IO.Directory.Exists ( invoiceConfigDir ) )
 			{
-				var files = System.IO.Directory.GetFiles(invoiceConfigDir, "*.json");
+				var files = System.IO.Directory.GetFiles(invoiceConfigDir, "*.json")
+					.Where(f => !System.IO.Path.GetFileName(f).StartsWith("appsettings.", StringComparison.OrdinalIgnoreCase))
+					.ToList();
 				_availableInvoiceConfigs = files.Select ( f => System.IO.Path.GetFileName ( f ) ).ToList ( );
 			}
 			else
@@ -273,10 +278,22 @@ namespace ClockifyUtility.ViewModels
 							Serilog.Log.Warning ( "Config file {ConfigFile} is invalid and will be skipped: {Errors}", configFile, string.Join ( "; ", errors ) );
 							skippedConfigs.Add ( configFile + ": " + string.Join ( ", ", errors ) );
 							continue;
-						}
+						 }
+						// Use centralized appsettings.json for invoice number
+						var appSettingsJson = System.IO.File.ReadAllText(appSettingsPath);
+						var appSettings = Newtonsoft.Json.JsonConvert.DeserializeObject<AppSettings>(appSettingsJson) ?? new AppSettings();
+						string currentInvoiceNumber = appSettings.InvoiceNumber ?? "000";
+						if (!int.TryParse(currentInvoiceNumber, out int num))
+							num = 0;
+						num++;
+						string nextInvoiceNumber = num.ToString("D3");
+						appSettings.InvoiceNumber = nextInvoiceNumber;
+						System.IO.File.WriteAllText(appSettingsPath, Newtonsoft.Json.JsonConvert.SerializeObject(appSettings, Newtonsoft.Json.Formatting.Indented));
 						string clientName = config.Clockify?.ClientName ?? "Unknown Client";
 						Status = $"Generating invoice for {clientName}...";
 						GenerateButtonText = $"Processing {clientName}...";
+						// Set InvoiceNumber on config.Clockify from appsettings value
+						config.Clockify.InvoiceNumber = nextInvoiceNumber;
 						var (html, pdfFilePath) = await _invoiceService.GenerateInvoiceAsync ( start, end, config );
 						// Optionally, you could use the html string here if needed (e.g., preview)
 					}
