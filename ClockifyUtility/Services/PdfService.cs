@@ -20,7 +20,7 @@ namespace ClockifyUtility.Services
             _converter = new SynchronizedConverter(new PdfTools());
         }
 
-        public Task SavePdfAsync(string html, string outputPath)
+        public Task GeneratePdfAsync(string html, string outputPath)
         {
             var doc = new HtmlToPdfDocument
             {
