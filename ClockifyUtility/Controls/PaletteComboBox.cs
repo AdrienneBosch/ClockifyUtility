@@ -14,10 +14,14 @@ namespace ClockifyUtility.Controls
         public override void OnApplyTemplate()
         {
             base.OnApplyTemplate();
+            if (GetTemplateChild("SelectedItemBackground") is Border border)
+            {
+                border.PreviewMouseLeftButtonDown -= ContentSite_PreviewMouseLeftButtonDown;
+                border.PreviewMouseLeftButtonDown += ContentSite_PreviewMouseLeftButtonDown;
+            }
             if (GetTemplateChild("ContentSite") is ContentPresenter presenter)
             {
                 presenter.PreviewMouseLeftButtonDown -= ContentSite_PreviewMouseLeftButtonDown;
-                presenter.PreviewMouseLeftButtonDown += ContentSite_PreviewMouseLeftButtonDown;
             }
         }
 
