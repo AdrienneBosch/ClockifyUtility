@@ -52,7 +52,9 @@
                                               Foreground="White"
                                               KeyboardNavigation.TabNavigation="Local"
                                               ItemsSource="{Binding DisplayInvoiceConfigs}"
-                                              SelectedItem="{Binding SelectedInvoiceConfig, Mode=TwoWay}" BorderBrush="{DynamicResource PrimaryButtonBorderBrush}" Background="{DynamicResource PrimaryButtonBackgroundBrush}" />
+                                              SelectedItem="{Binding SelectedInvoiceConfig, Mode=TwoWay}"
+                                              BorderBrush="{DynamicResource PrimaryButtonBorderBrush}"
+                                              Background="Red" />
 
                     <Button Style="{StaticResource MonthSelectorButtonStyle}"
                             Width="16"
