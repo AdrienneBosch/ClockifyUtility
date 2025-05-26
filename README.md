@@ -65,3 +65,5 @@ If you run the app without these values, a dialog will appear showing your User 
 - If you see a dialog about missing User ID or Workspace ID, follow the instructions to update your config file.
 - Make sure your API key is valid and you have internet access.
 
+##Example Invoice Output
+![Clockify Utility Preview](ClockifyUtility/Assets/preview.png)
