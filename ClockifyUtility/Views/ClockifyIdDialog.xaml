@@ -1,30 +1,37 @@
 <Window x:Class="ClockifyUtility.Views.ClockifyIdDialog"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Clockify IDs" Height="400" Width="500">
-    <StackPanel Margin="20">
-        <TextBlock Text="Clockify User and Workspace IDs" Style="{StaticResource SectionHeaderTextBlockStyle}" Margin="0,0,0,10" />
-        <TextBlock Text="User ID:" Style="{StaticResource BodyTextBlockStyle}" FontWeight="Bold" />
-        <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-            <TextBox x:Name="UserIdBox" Width="350" IsReadOnly="True" Margin="0,0,10,0" />
-            <Button Content="Copy" Width="60" Click="CopyUserId_Click" Style="{StaticResource SecondaryButtonStyle}" />
-        </StackPanel>
-        <TextBlock Text="Workspaces:" Style="{StaticResource BodyTextBlockStyle}" FontWeight="Bold" />
-        <ListBox x:Name="WorkspaceList" Height="200">
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Width="350" Style="{StaticResource BodyTextBlockStyle}">
-                            <Run Text="{Binding Name}" />
-                            <Run Text=" (" />
-                            <Run Text="{Binding Id}" />
-                            <Run Text=")" />
-                        </TextBlock>
-                        <Button Content="Copy ID" Width="60" CommandParameter="{Binding Id}" Click="CopyWorkspaceId_Click" Style="{StaticResource SecondaryButtonStyle}" />
-                    </StackPanel>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
-        <TextBlock Text="Copy the required ID(s) and paste them into your appsettings.json, then restart the app." Style="{StaticResource BodyTextBlockStyle}" Margin="0,10,0,0" />
-    </StackPanel>
+        Title="Clockify IDs" Height="440" Width="500">
+    <Border Background="#0d162b" BorderBrush="#0d162b" BorderThickness="8">
+        <Border Background="#122b61" Margin="0,12,0,0">
+            <StackPanel Margin="12">
+                <TextBlock x:Name="InvoiceFileNameText" Foreground="White" FontWeight="Bold" Margin="0,0,0,8" />
+                <TextBlock Text="Clockify User and Workspace IDs" Style="{StaticResource SectionHeaderTextBlockStyle}" Margin="0,0,0,10" />
+                <TextBlock TextWrapping="Wrap" Margin="0,0,0,12" Foreground="White" FontWeight="Bold">
+                    Note: Copy the required ID(s) below and paste them into your invoice config file. Invoices will be <Underline>skipped</Underline> until these values are added.
+                </TextBlock>
+                <TextBlock Text="User ID:" Style="{StaticResource BodyTextBlockStyle}" FontWeight="Bold" />
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                    <TextBox x:Name="UserIdBox" Width="350" IsReadOnly="True" Margin="0,0,10,0" Background="#19376D" Foreground="White" BorderBrush="#19376D" />
+                    <Button Content="Copy" Width="60" Click="CopyUserId_Click" Style="{StaticResource SecondaryButtonStyle}" />
+                </StackPanel>
+                <TextBlock Text="Workspaces:" Style="{StaticResource BodyTextBlockStyle}" FontWeight="Bold" />
+                <ListBox x:Name="WorkspaceList" Height="200">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Width="350" Style="{StaticResource BodyTextBlockStyle}">
+                                    <Run Text="{Binding Name}" />
+                                    <Run Text=" (" />
+                                    <Run Text="{Binding Id}" />
+                                    <Run Text=")" />
+                                </TextBlock>
+                                <Button Content="Copy ID" Width="60" CommandParameter="{Binding Id}" Click="CopyWorkspaceId_Click" Style="{StaticResource SecondaryButtonStyle}" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </StackPanel>
+        </Border>
+    </Border>
 </Window>
