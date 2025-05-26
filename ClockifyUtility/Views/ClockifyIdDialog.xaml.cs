@@ -5,7 +5,7 @@ namespace ClockifyUtility.Views
 {
 	public partial class ClockifyIdDialog : Window
 	{
-		public ClockifyIdDialog ( string userId, List<Models.WorkspaceInfo> workspaces, string invoiceFileName )
+		public ClockifyIdDialog ( string userId, List<Models.WorkspaceInfo> workspaces, string invoiceFileName, Window? owner = null )
 		{
 			InitializeComponent ( );
 			UserIdBox.Text = userId;
@@ -17,6 +17,13 @@ namespace ClockifyUtility.Views
 				if (invoiceTextBlock != null)
 					invoiceTextBlock.Text = $"Invoice config: {invoiceFileName}";
 			};
+
+			if (owner != null)
+			{
+				this.Owner = owner;
+				this.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+				this.Topmost = true;
+			}
 		}
 
 		private void CopyUserId_Click ( object sender, RoutedEventArgs e )

@@ -354,7 +354,8 @@ namespace ClockifyUtility.ViewModels
 				List<Models.WorkspaceInfo> workspaces = await apiService.GetWorkspacesAsync();
 				System.Windows.Application.Current.Dispatcher.Invoke ( ( ) =>
 				{
-					Views.ClockifyIdDialog dialog = new(userId, workspaces, invoiceFileName);
+					var owner = System.Windows.Application.Current?.MainWindow;
+					Views.ClockifyIdDialog dialog = new(userId, workspaces, invoiceFileName, owner);
 					dialog.ShowDialog ( );
 				} );
 				Serilog.Log.Information ( $"Displayed Clockify ID dialog for invoice config: {invoiceFileName}" );
