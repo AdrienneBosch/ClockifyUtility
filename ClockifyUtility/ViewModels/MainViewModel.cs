@@ -351,7 +351,12 @@ namespace ClockifyUtility.ViewModels
 				ClockifyApiService apiService = new(apiKey);
 				string userId = await apiService.GetUserIdAsync();
 				List<Models.WorkspaceInfo> workspaces = await apiService.GetWorkspacesAsync();
-				string message = $"Clockify User ID: {userId}\n";
+				string message =
+					"Your invoice configuration is missing the required Clockify User ID or Workspace ID.\n\n" +
+					"Below are the User ID and available workspaces for your account.\n" +
+					"Please copy these values and add them to your invoice config file.\n" +
+					"Once added, the invoice will be generated. Until then, the invoice will be skipped.\n\n" +
+					$"Clockify User ID: {userId}\n";
 				if (workspaces.Count == 0)
 				{
 					message += "No workspaces found.";
