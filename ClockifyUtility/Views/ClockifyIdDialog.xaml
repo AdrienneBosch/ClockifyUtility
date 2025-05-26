@@ -2,29 +2,31 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Clockify IDs" Height="400" Width="500">
-    <StackPanel Margin="20">
-        <TextBlock Text="Clockify User and Workspace IDs" Style="{StaticResource SectionHeaderTextBlockStyle}" Margin="0,0,0,10" />
-        <TextBlock Text="User ID:" Style="{StaticResource BodyTextBlockStyle}" FontWeight="Bold" />
-        <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-            <TextBox x:Name="UserIdBox" Width="350" IsReadOnly="True" Margin="0,0,10,0" />
-            <Button Content="Copy" Width="60" Click="CopyUserId_Click" Style="{StaticResource SecondaryButtonStyle}" />
+    <Border Background="#19376D" BorderBrush="#19376D" BorderThickness="8">
+        <StackPanel Margin="12">
+            <TextBlock Text="Clockify User and Workspace IDs" Style="{StaticResource SectionHeaderTextBlockStyle}" Margin="0,0,0,10" />
+            <TextBlock Text="User ID:" Style="{StaticResource BodyTextBlockStyle}" FontWeight="Bold" />
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                <TextBox x:Name="UserIdBox" Width="350" IsReadOnly="True" Margin="0,0,10,0" />
+                <Button Content="Copy" Width="60" Click="CopyUserId_Click" Style="{StaticResource SecondaryButtonStyle}" />
+            </StackPanel>
+            <TextBlock Text="Workspaces:" Style="{StaticResource BodyTextBlockStyle}" FontWeight="Bold" />
+            <ListBox x:Name="WorkspaceList" Height="200">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Width="350" Style="{StaticResource BodyTextBlockStyle}">
+                                <Run Text="{Binding Name}" />
+                                <Run Text=" (" />
+                                <Run Text="{Binding Id}" />
+                                <Run Text=")" />
+                            </TextBlock>
+                            <Button Content="Copy ID" Width="60" CommandParameter="{Binding Id}" Click="CopyWorkspaceId_Click" Style="{StaticResource SecondaryButtonStyle}" />
+                        </StackPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+            <TextBlock Text="Copy the required ID(s) and paste them into your appsettings.json, then restart the app." Style="{StaticResource BodyTextBlockStyle}" Margin="0,10,0,0" />
         </StackPanel>
-        <TextBlock Text="Workspaces:" Style="{StaticResource BodyTextBlockStyle}" FontWeight="Bold" />
-        <ListBox x:Name="WorkspaceList" Height="200">
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Width="350" Style="{StaticResource BodyTextBlockStyle}">
-                            <Run Text="{Binding Name}" />
-                            <Run Text=" (" />
-                            <Run Text="{Binding Id}" />
-                            <Run Text=")" />
-                        </TextBlock>
-                        <Button Content="Copy ID" Width="60" CommandParameter="{Binding Id}" Click="CopyWorkspaceId_Click" Style="{StaticResource SecondaryButtonStyle}" />
-                    </StackPanel>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
-        <TextBlock Text="Copy the required ID(s) and paste them into your appsettings.json, then restart the app." Style="{StaticResource BodyTextBlockStyle}" Margin="0,10,0,0" />
-    </StackPanel>
+    </Border>
 </Window>

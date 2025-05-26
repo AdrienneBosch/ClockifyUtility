@@ -284,7 +284,7 @@ namespace ClockifyUtility.ViewModels
 								clockifyIdPopupShown = true;
 								// Try to get API key from config if possible
 								string apiKey = config.Clockify?.ClockifyApiKey ?? string.Empty;
-								await ShowClockifyIdMessageAsync(apiKey);
+								await ShowClockifyIdDialogAsync(apiKey);
 							}
 							continue;
 						}
@@ -323,7 +323,7 @@ namespace ClockifyUtility.ViewModels
 				Status = "Missing Clockify UserId or WorkspaceId.";
 				GenerateButtonText = "Error";
 				Serilog.Log.Warning ( "Missing Clockify UserId or WorkspaceId. Querying Clockify API..." );
-				await ShowClockifyIdMessageAsync ( ex.ApiKey );
+				await ShowClockifyIdDialogAsync ( ex.ApiKey );
 			}
 			catch ( Exception ex )
 			{
@@ -344,54 +344,6 @@ namespace ClockifyUtility.ViewModels
 			}
 		}
 
-		private async Task ShowClockifyIdMessageAsync ( string apiKey )
-		{
-			try
-			{
-				ClockifyApiService apiService = new(apiKey);
-				string userId = await apiService.GetUserIdAsync();
-				List<Models.WorkspaceInfo> workspaces = await apiService.GetWorkspacesAsync();
-				string message =
-						"*** Clockify Invoice Configuration Missing Required IDs ***\n\n" +
-						"Your invoice configuration is missing the required Clockify User ID or Workspace ID.\n\n" +
-						"--- What to do ---\n" +
-						"1. Copy the User ID and Workspace ID(s) below.\n" +
-						"2. Paste them into your invoice config file.\n" +
-						"3. Save the config and re-run invoice generation.\n\n" +
-						"Until these values are added, the invoice will be skipped.\n\n" +
-						"==============================\n" +
-						$"Clockify User ID:\n    {userId}\n\n" +
-						"Workspaces:\n";
-				if (workspaces.Count == 0)
-				{
-					message += "    No workspaces found.";
-				}
-				else
-				{
-					foreach (var ws in workspaces)
-					{
-						message += $"    - {ws.Name}\n      (ID: {ws.Id})\n";
-					}
-				}
-				message += "==============================";
-				System.Windows.Application.Current.Dispatcher.Invoke(() =>
-				{
-					System.Windows.MessageBox.Show(message, "Clockify User and Workspace Info", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Information);
-				});
-				Serilog.Log.Information("Displayed Clockify User and Workspace info message box.");
-			}
-			catch ( Exception ex )
-			{
-				Serilog.Log.Error ( ex, "Error fetching Clockify IDs" );
-				System.Windows.Application.Current.Dispatcher.Invoke ( ( ) =>
-				{
-					_ = System.Windows.MessageBox.Show ( $"Could not connect to Clockify. Please check your API key and internet connection.\n\nError details:\n{ex.Message}", "Clockify Connection Error", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error );
-				} );
-			}
-		}
-
-		// Commented out the old ShowClockifyIdDialogAsync method
-		/*
 		private async Task ShowClockifyIdDialogAsync ( string apiKey )
 		{
 			try
@@ -402,7 +354,7 @@ namespace ClockifyUtility.ViewModels
 				System.Windows.Application.Current.Dispatcher.Invoke ( ( ) =>
 				{
 					Views.ClockifyIdDialog dialog = new(userId, workspaces);
-					_ = dialog.ShowDialog ( );
+					dialog.ShowDialog ( );
 				} );
 				Serilog.Log.Information ( "Displayed Clockify ID dialog." );
 			}
@@ -415,7 +367,6 @@ namespace ClockifyUtility.ViewModels
 				} );
 			}
 		}
-		*/
 
 		public event System.ComponentModel.PropertyChangedEventHandler? PropertyChanged;
 		protected void OnPropertyChanged ( string propertyName )
