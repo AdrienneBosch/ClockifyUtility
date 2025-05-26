@@ -25,23 +25,12 @@ The application requires an `appsettings.json` file in the same directory as the
 
 Copy and rename a template to `appsettings.json` and edit as needed.
 
-Example `appsettings.json`:
-
-```
-
-{
-"InvoiceConfigDirectory": "C:/Path/To/Your/InvoiceConfigs",
-"DefaultInvoice": "my-invoice.json",
-"InvoiceNumber": "001"
-}
-
-```
-
+#### App Settings:
 - `InvoiceConfigDirectory`: Path to the folder containing your invoice config files (one per client/project).
 - `DefaultInvoice`: (Optional) The default invoice config file to use.
 - `InvoiceNumber`: (Optional) The starting invoice number (auto-incremented).
 
-### 4. Create Invoice Config Files
+#### Invoice Config Files
 
 Each invoice config file (e.g., `my-invoice.json`) should include your Clockify API key, User ID, Workspace ID, client info, and invoice styling.
 
@@ -50,30 +39,6 @@ Each invoice config file (e.g., `my-invoice.json`) should include your Clockify 
 - `AppSettings.template.invoice.json`
 
 Copy and rename this file for each client/project, then edit the details.
-
-Example invoice config:
-
-```
-
-{
-"Clockify": {
-"ClockifyApiKey": "YOUR\_API\_KEY",
-"UserId": "YOUR\_USER\_ID",
-"WorkspaceId": "YOUR\_WORKSPACE\_ID",
-"ClientName": "Client Name",
-"ClientEmailAddress": "[client@email.com](mailto:client@email.com)",
-"FromName": "Your Name",
-"CompanyAddressLine1": "123 Main St",
-"ContactEmail": "[your@email.com](mailto:your@email.com)",
-"HourlyRate": 100.0,
-"CurrencySymbol": "\$"
-},
-"InvoiceStyle": {
-"PrimaryColor": "#2C3E50"
-}
-}
-
-```
 
 #### How to Get Your Clockify API Key
 
