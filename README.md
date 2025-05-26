@@ -21,14 +21,16 @@ The application requires an `appsettings.json` file in the same directory as the
 **Template files are provided within the `Templates` folder:**
 
 - `appsettings.template.json`
+  - Used for application wide settings 
 - `AppSettings.template.invoice.json`
-
-Copy and rename a template to `appsettings.json` and edit as needed.
+  - Used to setup an invoice. You can setup mutiple invoices by adding them to the `InvoiceConfigDirectory` with different configurations 
 
 #### App Settings:
 - `InvoiceConfigDirectory`: Path to the folder containing your invoice config files (one per client/project).
 - `DefaultInvoice`: (Optional) The default invoice config file to use.
 - `InvoiceNumber`: (Optional) The starting invoice number (auto-incremented).
+
+Copy and rename a template to `appsettings.json` and edit as needed.
 
 #### Invoice Config Files
 
