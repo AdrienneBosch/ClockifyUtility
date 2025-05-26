@@ -40,20 +40,32 @@ public partial class App : Application
 	   }
 	   var results = ClockifyUtility.Services.InvoiceConfigLoader.LoadAllConfigs(invoiceConfigDir);
 		var errorMsgs = new System.Text.StringBuilder();
+		var criticalErrorMsgs = new System.Text.StringBuilder();
 		foreach (var result in results)
 		{
 			if (result.Errors != null && result.Errors.Count > 0)
 			{
+				// Only treat as critical if errors are not just missing UserId/WorkspaceId
+				var nonIdErrors = result.Errors.FindAll(err =>
+					!(err.Contains("UserId is required.") || err.Contains("WorkspaceId is required.")));
+				if (nonIdErrors.Count > 0)
+				{
+					criticalErrorMsgs.AppendLine($"File: {System.IO.Path.GetFileName(result.FilePath)}");
+					foreach (var err in result.Errors)
+						criticalErrorMsgs.AppendLine($"  - {err}");
+					criticalErrorMsgs.AppendLine();
+				}
+				// Always show all errors in the main errorMsgs for possible later use
 				errorMsgs.AppendLine($"File: {System.IO.Path.GetFileName(result.FilePath)}");
 				foreach (var err in result.Errors)
 					errorMsgs.AppendLine($"  - {err}");
 				errorMsgs.AppendLine();
 			}
 		}
-		if (errorMsgs.Length > 0)
+		if (criticalErrorMsgs.Length > 0)
 		{
 			System.Windows.MessageBox.Show(
-				$"Some invoice configuration files are invalid:\n\n{errorMsgs}",
+				$"Some invoice configuration files are invalid:\n\n{criticalErrorMsgs}",
 				"Invoice Config Validation Error",
 				MessageBoxButton.OK,
 				MessageBoxImage.Error
