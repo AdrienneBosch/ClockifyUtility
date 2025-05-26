@@ -352,22 +352,28 @@ namespace ClockifyUtility.ViewModels
 				string userId = await apiService.GetUserIdAsync();
 				List<Models.WorkspaceInfo> workspaces = await apiService.GetWorkspacesAsync();
 				string message =
-					"Your invoice configuration is missing the required Clockify User ID or Workspace ID.\n\n" +
-					"Below are the User ID and available workspaces for your account.\n" +
-					"Please copy these values and add them to your invoice config file.\n" +
-					"Once added, the invoice will be generated. Until then, the invoice will be skipped.\n\n" +
-					$"Clockify User ID: {userId}\n";
+						"*** Clockify Invoice Configuration Missing Required IDs ***\n\n" +
+						"Your invoice configuration is missing the required Clockify User ID or Workspace ID.\n\n" +
+						"--- What to do ---\n" +
+						"1. Copy the User ID and Workspace ID(s) below.\n" +
+						"2. Paste them into your invoice config file.\n" +
+						"3. Save the config and re-run invoice generation.\n\n" +
+						"Until these values are added, the invoice will be skipped.\n\n" +
+						"==============================\n" +
+						$"Clockify User ID:\n    {userId}\n\n" +
+						"Workspaces:\n";
 				if (workspaces.Count == 0)
 				{
-					message += "No workspaces found.";
+					message += "    No workspaces found.";
 				}
 				else
 				{
 					foreach (var ws in workspaces)
 					{
-						message += $"- {ws.Name} (ID: {ws.Id})\n";
+						message += $"    - {ws.Name}\n      (ID: {ws.Id})\n";
 					}
 				}
+				message += "==============================";
 				System.Windows.Application.Current.Dispatcher.Invoke(() =>
 				{
 					System.Windows.MessageBox.Show(message, "Clockify User and Workspace Info", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Information);
