@@ -227,6 +227,7 @@ namespace ClockifyUtility.ViewModels
 		private async Task GenerateInvoiceAsync ( )
 		{
 			bool clockifyIdPopupShown = false;
+			string clockifyIdPopupInvoiceName = null;
 			try
 			{
 				IsGenerateButtonEnabled = false;
@@ -282,9 +283,9 @@ namespace ClockifyUtility.ViewModels
 							if (!clockifyIdPopupShown && (errors.Any(e => e.Contains("UserId is required.")) || errors.Any(e => e.Contains("WorkspaceId is required."))))
 							{
 								clockifyIdPopupShown = true;
-								// Try to get API key from config if possible
+								clockifyIdPopupInvoiceName = configFile;
 								string apiKey = config.Clockify?.ClockifyApiKey ?? string.Empty;
-								await ShowClockifyIdDialogAsync(apiKey);
+								await ShowClockifyIdDialogAsync(apiKey, configFile);
 							}
 							continue;
 						}
@@ -323,7 +324,7 @@ namespace ClockifyUtility.ViewModels
 				Status = "Missing Clockify UserId or WorkspaceId.";
 				GenerateButtonText = "Error";
 				Serilog.Log.Warning ( "Missing Clockify UserId or WorkspaceId. Querying Clockify API..." );
-				await ShowClockifyIdDialogAsync ( ex.ApiKey );
+				await ShowClockifyIdDialogAsync ( ex.ApiKey, clockifyIdPopupInvoiceName ?? "Unknown Invoice" );
 			}
 			catch ( Exception ex )
 			{
@@ -344,7 +345,7 @@ namespace ClockifyUtility.ViewModels
 			}
 		}
 
-		private async Task ShowClockifyIdDialogAsync ( string apiKey )
+		private async Task ShowClockifyIdDialogAsync ( string apiKey, string invoiceFileName )
 		{
 			try
 			{
@@ -353,10 +354,10 @@ namespace ClockifyUtility.ViewModels
 				List<Models.WorkspaceInfo> workspaces = await apiService.GetWorkspacesAsync();
 				System.Windows.Application.Current.Dispatcher.Invoke ( ( ) =>
 				{
-					Views.ClockifyIdDialog dialog = new(userId, workspaces);
+					Views.ClockifyIdDialog dialog = new(userId, workspaces, invoiceFileName);
 					dialog.ShowDialog ( );
 				} );
-				Serilog.Log.Information ( "Displayed Clockify ID dialog." );
+				Serilog.Log.Information ( $"Displayed Clockify ID dialog for invoice config: {invoiceFileName}" );
 			}
 			catch ( Exception ex )
 			{

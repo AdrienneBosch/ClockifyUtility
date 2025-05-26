@@ -5,6 +5,7 @@
     <Border Background="#0d162b" BorderBrush="#0d162b" BorderThickness="8">
         <Border Background="#122b61" Margin="0,12,0,0">
             <StackPanel Margin="12">
+                <TextBlock x:Name="InvoiceFileNameText" Foreground="#FFFAE392" FontWeight="Bold" Margin="0,0,0,8" />
                 <TextBlock Text="Clockify User and Workspace IDs" Style="{StaticResource SectionHeaderTextBlockStyle}" Margin="0,0,0,10" />
                 <TextBlock TextWrapping="Wrap" Margin="0,0,0,12" Foreground="White" FontWeight="Bold">
                     Note: Copy the required ID(s) below and paste them into your invoice config file. Invoices will be <Underline>skipped</Underline> until these values are added.
