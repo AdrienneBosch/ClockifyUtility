@@ -226,6 +226,7 @@ namespace ClockifyUtility.ViewModels
 
 		private async Task GenerateInvoiceAsync ( )
 		{
+			bool clockifyIdPopupShown = false;
 			try
 			{
 				IsGenerateButtonEnabled = false;
@@ -277,8 +278,16 @@ namespace ClockifyUtility.ViewModels
 						{
 							Serilog.Log.Warning ( "Config file {ConfigFile} is invalid and will be skipped: {Errors}", configFile, string.Join ( "; ", errors ) );
 							skippedConfigs.Add ( configFile + ": " + string.Join ( ", ", errors ) );
+							// If missing UserId or WorkspaceId, show popup (once)
+							if (!clockifyIdPopupShown && (errors.Any(e => e.Contains("UserId is required.")) || errors.Any(e => e.Contains("WorkspaceId is required."))))
+							{
+								clockifyIdPopupShown = true;
+								// Try to get API key from config if possible
+								string apiKey = config.Clockify?.ClockifyApiKey ?? string.Empty;
+								await ShowClockifyIdMessageAsync(apiKey);
+							}
 							continue;
-						 }
+						}
 						// Use centralized appsettings.json for invoice number
 						var appSettingsJson = System.IO.File.ReadAllText(appSettingsPath);
 						var appSettings = Newtonsoft.Json.JsonConvert.DeserializeObject<AppSettings>(appSettingsJson) ?? new AppSettings();
