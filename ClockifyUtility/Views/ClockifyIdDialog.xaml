@@ -7,11 +7,11 @@
             <StackPanel Margin="12">
                 <TextBlock Text="Clockify User and Workspace IDs" Style="{StaticResource SectionHeaderTextBlockStyle}" Margin="0,0,0,10" />
                 <TextBlock TextWrapping="Wrap" Margin="0,0,0,12" Foreground="White" FontWeight="Bold">
-                    Note: Copy the required ID(s) below and paste them into your appsettings.json or invoice config file. Invoices will be <Underline>skipped</Underline> until these values are added and the app is restarted.
+                    Note: Copy the required ID(s) below and paste them into your invoice config file. Invoices will be <Underline>skipped</Underline> until these values are added.
                 </TextBlock>
                 <TextBlock Text="User ID:" Style="{StaticResource BodyTextBlockStyle}" FontWeight="Bold" />
                 <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-                    <TextBox x:Name="UserIdBox" Width="350" IsReadOnly="True" Margin="0,0,10,0" />
+                    <TextBox x:Name="UserIdBox" Width="350" IsReadOnly="True" Margin="0,0,10,0" Background="#19376D" Foreground="White" BorderBrush="#19376D" />
                     <Button Content="Copy" Width="60" Click="CopyUserId_Click" Style="{StaticResource SecondaryButtonStyle}" />
                 </StackPanel>
                 <TextBlock Text="Workspaces:" Style="{StaticResource BodyTextBlockStyle}" FontWeight="Bold" />
