@@ -22,7 +22,7 @@ The application requires an `appsettings.json` file in the same directory as the
 
 - `appsettings.template.json`
   - Used for application wide settings 
-- `AppSettings.template.invoice.json`
+- `invoice.config.template.json`
   - Used to setup an invoice. You can setup mutiple invoices by adding them to the `InvoiceConfigDirectory` with different configurations 
 
 #### App Settings:
@@ -38,7 +38,7 @@ Each invoice config file (e.g., `my-invoice.json`) should include your Clockify 
 
 **A template invoice config is provided:**
 
-- `AppSettings.template.invoice.json`
+- `invoice.config.template.json`
 
 Copy and rename this file for each client/project, then edit the details.
 
