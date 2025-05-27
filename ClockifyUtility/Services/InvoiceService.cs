@@ -238,6 +238,25 @@ namespace ClockifyUtility.Services
                 fileName + ".pdf"
             );
 
+            // Ensure output directory exists and log the result
+            try
+            {
+                if (!System.IO.Directory.Exists(config.Clockify.OutputPath))
+                {
+                    System.IO.Directory.CreateDirectory(config.Clockify.OutputPath);
+                    Serilog.Log.Information($"[InvoiceService] Created output directory: {config.Clockify.OutputPath}");
+                }
+                else
+                {
+                    Serilog.Log.Information($"[InvoiceService] Output directory already exists: {config.Clockify.OutputPath}");
+                }
+            }
+            catch (Exception dirEx)
+            {
+                Serilog.Log.Error(dirEx, $"[InvoiceService] Failed to create or access output directory: {config.Clockify.OutputPath}");
+                throw;
+            }
+
             try
             {
                 await _pdfService.GeneratePdfAsync(html, pdfFilePath);
