@@ -155,10 +155,11 @@ namespace ClockifyUtility.ViewModels
 			}
 			if ( !string.IsNullOrWhiteSpace ( invoiceConfigDir ) && System.IO.Directory.Exists ( invoiceConfigDir ) )
 			{
+				// Include ALL .json files, including appsettings.json
 				var files = System.IO.Directory.GetFiles(invoiceConfigDir, "*.json")
-					.Where(f => !System.IO.Path.GetFileName(f).StartsWith("appsettings.", StringComparison.OrdinalIgnoreCase))
+					.Select(f => System.IO.Path.GetFileName(f))
 					.ToList();
-				_availableInvoiceConfigs = files.Select ( f => System.IO.Path.GetFileName ( f ) ).ToList ( );
+				_availableInvoiceConfigs = files;
 			}
 			else
 			{
