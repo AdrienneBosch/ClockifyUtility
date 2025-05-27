@@ -1,9 +1,8 @@
 {
-  // Example client-specific invoice configuration for Clockify Invoice Generator
   "Clockify": {
     "ClockifyApiKey": "your-api-key-here",
-    "UserId": "your-user-id",
-    "WorkspaceId": "your-workspace-id",
+    "UserId": "",
+    "WorkspaceId": "",
     "FromName": "Your Name",
     "CompanyAddressLine1": "123 Main St",
     "CompanyAddressLine2": "Suite 456",
@@ -23,8 +22,8 @@
     "ClientNumber": "+11234567890",
     "CurrencySymbol": "$",
     "HourlyRate": 8.0,
-    "OutputPath": "D:/Invoices/2025",
-    "LogoPath": "./logo.png", // Optional: path to logo image
+    "OutputPath": "./InvoiceConfigs",
+    "LogoPath": "", 
     "ConstantLineItems": [
       {
         "Description": "GitHub Co-pilot ($10/month)",
