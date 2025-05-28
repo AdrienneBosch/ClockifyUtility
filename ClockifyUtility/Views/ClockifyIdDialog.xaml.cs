@@ -22,7 +22,14 @@ namespace ClockifyUtility.Views
 			{
 				this.Owner = owner;
 				this.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-				this.Topmost = true;
+				this.Topmost = owner.IsActive; // Initialize Topmost based on owner's current activity state
+				// Only set Topmost to true while the owner window is active
+				owner.Activated += (s, e) => this.Topmost = true;
+				owner.Deactivated += (s, e) => this.Topmost = false;
+				this.Closed += (s, e) => {
+					owner.Activated -= (s2, e2) => this.Topmost = true;
+					owner.Deactivated -= (s2, e2) => this.Topmost = false;
+				};
 			}
 		}
 
