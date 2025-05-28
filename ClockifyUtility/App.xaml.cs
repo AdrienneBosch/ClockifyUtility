@@ -108,10 +108,10 @@ public partial class App : Application
 				var config = configService.LoadConfig();
 				apiKey = config.ClockifyApiKey;
 			}
-			catch (Exception ex)
+			catch (Exception)
 			{
-				// Log and allow ProjectService to be created with a dummy key; will fail later if used
-				Serilog.Log.Warning(ex, "ProjectService: Could not load config at startup. Will require valid config at use time.");
+				// Log a concise warning with config file name for missing config
+				Serilog.Log.Warning("ProjectService: UserId or WorkspaceId is missing from config file '{ConfigFile}'. Will require valid config at use time.", "appsettings.json");
 				apiKey = string.Empty;
 			}
 			return new ProjectService(apiKey ?? string.Empty);
