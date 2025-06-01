@@ -10,9 +10,14 @@
 
   <ItemGroup>
     <None Remove="Assets\ClockifyUtilityLogo.png" />
+    <None Remove="Assets\ClockifyUtilityLogoSmaller.PNG" />
     <None Remove="Fonts\Font Awesome 6 Brands-Regular-400.otf" />
     <None Remove="Fonts\Font Awesome 6 Free-Regular-400.otf" />
     <None Remove="Fonts\Font Awesome 6 Free-Solid-900.otf" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Assets\ClockifyUtilityLogoSmaller.PNG" />
   </ItemGroup>
   <ItemGroup>
     <None Update="appsettings.json">
