@@ -56,7 +56,7 @@
                                               FontSize="13"
                                               VerticalContentAlignment="Center"
                                               HorizontalContentAlignment="Left"
-                                              Foreground="White"
+                                              Foreground="{StaticResource WhiteBrush}"
                                               KeyboardNavigation.TabNavigation="Local"
                                               ItemsSource="{Binding DisplayInvoiceConfigs}"
                                               SelectedItem="{Binding SelectedInvoiceConfig, Mode=TwoWay}"
