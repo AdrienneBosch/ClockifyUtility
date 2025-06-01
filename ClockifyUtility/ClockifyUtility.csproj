@@ -9,6 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Assets\ClockifyUtilityLogo.png" />
     <None Remove="Fonts\Font Awesome 6 Brands-Regular-400.otf" />
     <None Remove="Fonts\Font Awesome 6 Free-Regular-400.otf" />
     <None Remove="Fonts\Font Awesome 6 Free-Solid-900.otf" />
@@ -32,6 +33,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Assets\ClockifyUtilityLogo.png" />
     <Resource Include="Fonts\Font Awesome 6 Free-Regular-400.otf" />
     <Resource Include="Fonts\Font Awesome 6 Free-Solid-900.otf" />
   </ItemGroup>
