@@ -14,7 +14,7 @@
                HorizontalAlignment="Left"
                VerticalAlignment="Top"
                Stretch="Uniform"
-               Height="90"/>
+               Height="64"/>
         <Border Background="{StaticResource SurfaceBrush}"
                 Padding="32"
                 CornerRadius="3"
