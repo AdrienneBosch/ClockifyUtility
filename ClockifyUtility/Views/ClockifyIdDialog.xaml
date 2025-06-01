@@ -2,8 +2,8 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Clockify IDs" Height="440" Width="500">
-    <Border Background="#0d162b" BorderBrush="#0d162b" BorderThickness="8">
-        <Border Background="#122b61" Margin="0,12,0,0">
+    <Border Background="{DynamicResource BackgroundBrush}" BorderBrush="#0d162b" BorderThickness="8">
+        <Border Background="{DynamicResource ButtonHoverHighlightBrush}" Margin="0,12,0,0">
             <StackPanel Margin="12">
                 <TextBlock x:Name="InvoiceFileNameText" Foreground="White" FontWeight="Bold" Margin="0,0,0,8" />
                 <TextBlock Text="Clockify User and Workspace IDs" Style="{StaticResource SectionHeaderTextBlockStyle}" Margin="0,0,0,10" />
