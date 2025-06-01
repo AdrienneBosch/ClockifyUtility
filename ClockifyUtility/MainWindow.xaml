@@ -37,7 +37,7 @@
                                Style="{StaticResource SectionHeaderTextBlockStyle}"
                                VerticalAlignment="Center"
                                Width="120"
-                               TextAlignment="Center" />
+                               TextAlignment="Center" FontFamily="Nirmala UI Semilight" />
 
                     <Button x:Name="btnNextMonth"
                             Style="{StaticResource MonthSelectorButtonStyle}"
