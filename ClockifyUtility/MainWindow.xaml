@@ -91,7 +91,8 @@
                         VerticalContentAlignment="Center"
                         BorderBrush="{DynamicResource PrimaryButtonBorderBrush}"
                         Background="{DynamicResource PrimaryButtonBackgroundBrush}"
-                        FontSize="{Binding GenerateButtonFontSize}" />
+                        FontSize="{Binding GenerateButtonFontSize}"
+                        FontFamily="Nirmala UI Semilight" />
 
             </StackPanel>
         </Border>
