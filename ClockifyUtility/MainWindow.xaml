@@ -9,6 +9,12 @@
         Title="MainWindow" Height="450" Width="800"
         WindowStartupLocation="CenterScreen">
     <Grid Background="{StaticResource BackgroundBrush}">
+        <Image Source="pack://application:,,,/Assets/ClockifyUtilityLogoSmaller.PNG"
+               Margin="6"
+               HorizontalAlignment="Left"
+               VerticalAlignment="Top"
+               Stretch="Uniform"
+               Height="64"/>
         <Border Background="{StaticResource SurfaceBrush}"
                 Padding="32"
                 CornerRadius="3"
