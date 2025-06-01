@@ -10,11 +10,11 @@
         WindowStartupLocation="CenterScreen">
     <Grid Background="{StaticResource BackgroundBrush}">
         <Image Source="pack://application:,,,/Assets/ClockifyUtilityLogo.png"
-               Margin="16"
+               Margin="6"
                HorizontalAlignment="Left"
                VerticalAlignment="Top"
                Stretch="Uniform"
-               Height="120"/>
+               Height="90"/>
         <Border Background="{StaticResource SurfaceBrush}"
                 Padding="32"
                 CornerRadius="3"
