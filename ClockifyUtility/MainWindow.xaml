@@ -61,7 +61,8 @@
                                               ItemsSource="{Binding DisplayInvoiceConfigs}"
                                               SelectedItem="{Binding SelectedInvoiceConfig, Mode=TwoWay}"
                                               BorderBrush="{DynamicResource PrimaryButtonBorderBrush}"
-                                              Background="{DynamicResource PrimaryButtonBackgroundBrush}" />
+                                              Background="{DynamicResource PrimaryButtonBackgroundBrush}"
+                                              FontFamily="Nirmala UI Semilight" />
 
                     <Button Style="{StaticResource MonthSelectorButtonStyle}"
                             Width="16"
