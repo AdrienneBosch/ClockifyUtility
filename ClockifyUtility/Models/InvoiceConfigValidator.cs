@@ -34,7 +34,7 @@ namespace ClockifyUtility.Models
                 if (string.IsNullOrWhiteSpace(c.BankName)) errors.Add("BankName is required.");
                 if (string.IsNullOrWhiteSpace(c.BankAccountNumber)) errors.Add("BankAccountNumber is required.");
                 if (string.IsNullOrWhiteSpace(c.BankAccountHolder)) errors.Add("BankAccountHolder is required.");
-                if (string.IsNullOrWhiteSpace(c.BankRoutingNumber)) errors.Add("BankRoutingNumber is required.");
+                // BankRoutingNumber is optional now
                 if (string.IsNullOrWhiteSpace(c.ClientName)) errors.Add("ClientName is required.");
                 if (string.IsNullOrWhiteSpace(c.ClientEmailAddress) || !EmailRegex.IsMatch(c.ClientEmailAddress)) errors.Add("ClientEmailAddress is required and must be a valid email.");
                 if (string.IsNullOrWhiteSpace(c.ClientNumber)) errors.Add("ClientNumber is required.");
