@@ -134,7 +134,34 @@ namespace ClockifyUtility.Services
 				+ "</tr>" );
 			sb.AppendLine ( "</table>" );
 
-			sb.AppendLine ( $"<div style='background:{headingBg};color:{amountDueColor};padding:1.3em 2.2em;border-radius:10px;display:inline-block;font-size:1.4em;margin-top:1.5em;margin-bottom:3em;font-weight:700;box-shadow:0 2px 8px rgba(44,62,80,0.06);'>Amount Due: {config.Clockify.CurrencySymbol}{totalAmountTable:F2}</div>" );
+			sb.AppendLine ( $"<div style='background:{headingBg};color:{amountDueColor};padding:1.3em 2.2em;border-radius:10px;display:inline-block;font-size:1.4em;margin-top:1.5em;margin-bottom:1.5em;font-weight:700;box-shadow:0 2px 8px rgba(44,62,80,0.06);'>Amount Due: {config.Clockify.CurrencySymbol}{totalAmountTable:F2}</div>" );
+
+			// Render payment/bank details if present in config
+			bool hasBankInfo =
+				!string.IsNullOrWhiteSpace(config.Clockify.BankName) ||
+				!string.IsNullOrWhiteSpace(config.Clockify.BankAccountHolder) ||
+				!string.IsNullOrWhiteSpace(config.Clockify.BankAccountNumber) ||
+				!string.IsNullOrWhiteSpace(config.Clockify.BankRoutingNumber) ||
+				!string.IsNullOrWhiteSpace(config.Clockify.BankSwift);
+
+			if (hasBankInfo)
+			{
+				sb.AppendLine($"<div style='background:{sectionBg};border-radius:8px;padding:1em;margin-top:1em;margin-bottom:2em;border:1px solid {borderColor};'>");
+				sb.AppendLine($"  <div style='color:{headerColor};font-size:1.05em;font-weight:700;margin-bottom:0.4em;'>Payment Details</div>");
+				sb.AppendLine($"  <div style='font-size:1em;color:{textColor};line-height:1.45;'>");
+				if (!string.IsNullOrWhiteSpace(config.Clockify.BankName))
+					sb.AppendLine($"    <div><strong>Bank:</strong> {config.Clockify.BankName}</div>");
+				if (!string.IsNullOrWhiteSpace(config.Clockify.BankAccountHolder))
+					sb.AppendLine($"    <div><strong>Account holder:</strong> {config.Clockify.BankAccountHolder}</div>");
+				if (!string.IsNullOrWhiteSpace(config.Clockify.BankAccountNumber))
+					sb.AppendLine($"    <div><strong>Account number:</strong> {config.Clockify.BankAccountNumber}</div>");
+				if (!string.IsNullOrWhiteSpace(config.Clockify.BankRoutingNumber))
+					sb.AppendLine($"    <div><strong>Routing / Sort code:</strong> {config.Clockify.BankRoutingNumber}</div>");
+				if (!string.IsNullOrWhiteSpace(config.Clockify.BankSwift))
+					sb.AppendLine($"    <div><strong>SWIFT / BIC:</strong> {config.Clockify.BankSwift}</div>");
+				sb.AppendLine($"  </div>");
+				sb.AppendLine($"</div>");
+			}
 
 			sb.AppendLine ( "</div>" );
 			sb.AppendLine ( "</body></html>" );
