@@ -104,6 +104,9 @@ namespace ClockifyUtility.Services
 					sb.AppendLine($"    <div><strong>Account number:</strong> {config.Clockify.BankAccountNumber}</div>");
 				if (!string.IsNullOrWhiteSpace(config.Clockify.BankRoutingNumber))
 					sb.AppendLine($"    <div><strong>Routing / Sort code:</strong> {config.Clockify.BankRoutingNumber}</div>");
+				// Render branch code if provided
+				if (!string.IsNullOrWhiteSpace(config.Clockify.BankBranchCode))
+					sb.AppendLine($"    <div><strong>Branch code:</strong> {config.Clockify.BankBranchCode}</div>");
 				if (!string.IsNullOrWhiteSpace(config.Clockify.BankSwift))
 					sb.AppendLine($"    <div><strong>SWIFT / BIC:</strong> {config.Clockify.BankSwift}</div>");
 				sb.AppendLine($"  </div>");
