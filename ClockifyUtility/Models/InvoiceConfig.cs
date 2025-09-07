@@ -50,8 +50,10 @@ namespace ClockifyUtility.Models
         public required string BankAccountNumber { get; set; }
         [JsonProperty("BankAccountHolder", Required = Required.Always)]
         public required string BankAccountHolder { get; set; }
-        [JsonProperty("BankRoutingNumber", Required = Required.Always)]
-        public required string BankRoutingNumber { get; set; }
+        [JsonProperty("BankRoutingNumber")]
+        public string? BankRoutingNumber { get; set; }
+        [JsonProperty("BankBranchCode")]
+        public string? BankBranchCode { get; set; }
         [JsonProperty("BankSwift")]
         public string? BankSwift { get; set; }
         [JsonProperty("ClientName", Required = Required.Always)]

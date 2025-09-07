@@ -37,7 +37,7 @@
                                Style="{StaticResource SectionHeaderTextBlockStyle}"
                                VerticalAlignment="Center"
                                Width="120"
-                               TextAlignment="Center" />
+                               TextAlignment="Center" FontFamily="Nirmala UI Semilight" />
 
                     <Button x:Name="btnNextMonth"
                             Style="{StaticResource MonthSelectorButtonStyle}"
@@ -56,12 +56,13 @@
                                               FontSize="13"
                                               VerticalContentAlignment="Center"
                                               HorizontalContentAlignment="Left"
-                                              Foreground="White"
+                                              Foreground="{StaticResource WhiteBrush}"
                                               KeyboardNavigation.TabNavigation="Local"
                                               ItemsSource="{Binding DisplayInvoiceConfigs}"
                                               SelectedItem="{Binding SelectedInvoiceConfig, Mode=TwoWay}"
                                               BorderBrush="{DynamicResource PrimaryButtonBorderBrush}"
-                                              Background="{DynamicResource PrimaryButtonBackgroundBrush}" />
+                                              Background="{DynamicResource PrimaryButtonBackgroundBrush}"
+                                              FontFamily="Nirmala UI Semilight" />
 
                     <Button Style="{StaticResource MonthSelectorButtonStyle}"
                             Width="16"
@@ -91,7 +92,8 @@
                         VerticalContentAlignment="Center"
                         BorderBrush="{DynamicResource PrimaryButtonBorderBrush}"
                         Background="{DynamicResource PrimaryButtonBackgroundBrush}"
-                        FontSize="{Binding GenerateButtonFontSize}" />
+                        FontSize="{Binding GenerateButtonFontSize}"
+                        FontFamily="Nirmala UI Semilight" />
 
             </StackPanel>
         </Border>
