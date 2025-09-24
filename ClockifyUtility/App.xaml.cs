@@ -2,6 +2,7 @@
 using System.Windows;
 
 using ClockifyUtility.Services;
+using ClockifyUtility.Helpers;
 using ClockifyUtility.ViewModels;
 
 /// <summary>
@@ -15,9 +16,11 @@ public partial class App : Application
 	private static bool _serilogInitialized = false;
 	public static ServiceProvider? ServiceProvider { get; private set; }
 
-	protected override void OnStartup ( StartupEventArgs e )
-	{
-		// Step 4: Load and validate all invoice configs at startup
+        protected override void OnStartup ( StartupEventArgs e )
+        {
+                ThemeManager.Initialize(this);
+
+                // Step 4: Load and validate all invoice configs at startup
 	   string exeDir = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) ?? string.Empty;
 	   string appSettingsPath = System.IO.Path.Combine(exeDir, "appsettings.json");
 	   string? invoiceConfigDir = null;
