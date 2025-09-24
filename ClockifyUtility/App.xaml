@@ -13,7 +13,7 @@
             </ResourceDictionary.MergedDictionaries>
 
             <!-- System highlight overrides (MUST precede usage) -->
-            <Color x:Key="{x:Static SystemColors.HighlightColorKey}">#1d4ed8</Color>
+            <Color x:Key="{x:Static SystemColors.HighlightColorKey}">#1F6FEB</Color>
             <Color x:Key="{x:Static SystemColors.HighlightTextColorKey}">#FFFFFF</Color>
 
             <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="{StaticResource {x:Static SystemColors.HighlightColorKey}}"/>
