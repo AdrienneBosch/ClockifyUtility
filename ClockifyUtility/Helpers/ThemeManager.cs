@@ -47,19 +47,6 @@ public static class ThemeManager
                 ApplyTheme(application, savedTheme, persist: false);
         }
 
-        public static AppTheme CycleTheme(Application application)
-        {
-                var next = _requestedTheme switch
-                {
-                        AppTheme.System => AppTheme.Light,
-                        AppTheme.Light => AppTheme.Dark,
-                        _ => AppTheme.System,
-                };
-
-                ApplyTheme(application, next);
-                return next;
-        }
-
         public static void ApplyTheme(Application application, AppTheme theme, bool persist = true)
         {
                 _requestedTheme = theme;

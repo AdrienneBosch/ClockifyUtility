@@ -13,7 +13,7 @@
             </ResourceDictionary.MergedDictionaries>
 
             <!-- System highlight overrides (MUST precede usage) -->
-            <Color x:Key="{x:Static SystemColors.HighlightColorKey}">#1e3a8a</Color>
+            <Color x:Key="{x:Static SystemColors.HighlightColorKey}">#1d4ed8</Color>
             <Color x:Key="{x:Static SystemColors.HighlightTextColorKey}">#FFFFFF</Color>
 
             <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="{StaticResource {x:Static SystemColors.HighlightColorKey}}"/>
@@ -128,6 +128,46 @@
                         <Setter Property="BorderBrush" Value="{DynamicResource DisabledButtonBackgroundBrush}"/>
                     </Trigger>
                 </Style.Triggers>
+            </Style>
+
+            <!-- Theme radio buttons -->
+            <Style x:Key="ThemeOptionRadioButtonStyle" TargetType="RadioButton">
+                <Setter Property="Background" Value="{DynamicResource SurfaceAccentBrush}"/>
+                <Setter Property="BorderBrush" Value="{DynamicResource CardBorderBrush}"/>
+                <Setter Property="BorderThickness" Value="1"/>
+                <Setter Property="Padding" Value="10,8"/>
+                <Setter Property="FontFamily" Value="Segoe UI"/>
+                <Setter Property="Foreground" Value="{DynamicResource BodyTextBrush}"/>
+                <Setter Property="Cursor" Value="Hand"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="RadioButton">
+                            <Border x:Name="Border"
+                                    Background="{TemplateBinding Background}"
+                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                    BorderThickness="{TemplateBinding BorderThickness}"
+                                    CornerRadius="10"
+                                    SnapsToDevicePixels="True">
+                                <ContentPresenter Margin="0"
+                                                  HorizontalAlignment="Stretch"
+                                                  VerticalAlignment="Center"/>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="Border" Property="Background" Value="{DynamicResource SelectorBoxBrush}"/>
+                                </Trigger>
+                                <Trigger Property="IsChecked" Value="True">
+                                    <Setter TargetName="Border" Property="Background" Value="{DynamicResource PrimaryBrush}"/>
+                                    <Setter TargetName="Border" Property="BorderBrush" Value="{DynamicResource PrimaryBrush}"/>
+                                    <Setter Property="Foreground" Value="{DynamicResource OnPrimaryBrush}"/>
+                                </Trigger>
+                                <Trigger Property="IsEnabled" Value="False">
+                                    <Setter TargetName="Border" Property="Opacity" Value="0.6"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
             </Style>
 
             <!-- TextBlock styles -->

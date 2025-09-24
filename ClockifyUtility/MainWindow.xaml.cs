@@ -1,4 +1,6 @@
+using System;
 using System.Windows;
+using System.Windows.Controls;
 
 using ClockifyUtility.Helpers;
 using ClockifyUtility.ViewModels;
@@ -20,47 +22,62 @@ namespace ClockifyUtility
                         DataContext = viewModel;
 
                         ThemeManager.ThemeChanged += OnThemeManagerThemeChanged;
-                        UpdateThemeButton(ThemeManager.RequestedTheme, ThemeManager.EffectiveTheme);
+                        UpdateThemeSelection(ThemeManager.RequestedTheme, ThemeManager.EffectiveTheme);
                 }
 
-                private void ThemeToggleButton_Click(object sender, RoutedEventArgs e)
-                {
-                        ThemeManager.CycleTheme(Application.Current);
-                }
+                private bool _isSynchronizingTheme;
 
                 private void OnThemeManagerThemeChanged(object? sender, ThemeChangedEventArgs e)
                 {
-                        Dispatcher.Invoke(() => UpdateThemeButton(e.RequestedTheme, e.EffectiveTheme));
+                        Dispatcher.Invoke(() => UpdateThemeSelection(e.RequestedTheme, e.EffectiveTheme));
                 }
 
-                private void UpdateThemeButton(AppTheme requestedTheme, AppTheme effectiveTheme)
+                private void ThemeOptionRadioButton_Checked(object sender, RoutedEventArgs e)
                 {
-                        if (ThemeIcon is null || ThemeLabel is null)
+                        if (_isSynchronizingTheme)
                         {
                                 return;
                         }
 
-                        string iconGlyph = requestedTheme switch
+                        if (sender is RadioButton radioButton && radioButton.IsChecked == true && radioButton.Tag is string tag && Enum.TryParse(tag, out AppTheme theme))
                         {
-                                AppTheme.Light => "\uf185",
-                                AppTheme.Dark => "\uf186",
-                                _ => "\uf109"
-                        };
+                                ThemeManager.ApplyTheme(Application.Current, theme);
+                        }
+                }
 
-                        string label = requestedTheme switch
+                private void UpdateThemeSelection(AppTheme requestedTheme, AppTheme effectiveTheme)
+                {
+                        if (SystemThemeRadio is null || LightThemeRadio is null || DarkThemeRadio is null)
                         {
-                                AppTheme.Light => "Light",
-                                AppTheme.Dark => "Dark",
-                                _ => effectiveTheme switch
+                                return;
+                        }
+
+                        _isSynchronizingTheme = true;
+
+                        try
+                        {
+                                SystemThemeRadio.IsChecked = requestedTheme == AppTheme.System;
+                                LightThemeRadio.IsChecked = requestedTheme == AppTheme.Light;
+                                DarkThemeRadio.IsChecked = requestedTheme == AppTheme.Dark;
+
+                                if (SystemThemeDetailText is not null)
                                 {
-                                        AppTheme.Dark => "System · Dark",
-                                        AppTheme.Light => "System · Light",
-                                        _ => "System"
-                                }
-                        };
+                                        string detail = requestedTheme == AppTheme.System
+                                                ? effectiveTheme switch
+                                                {
+                                                        AppTheme.Dark => "OS · Dark",
+                                                        AppTheme.Light => "OS · Light",
+                                                        _ => "Matches OS"
+                                                }
+                                                : "Matches OS";
 
-                        ThemeIcon.Text = iconGlyph;
-                        ThemeLabel.Text = label;
+                                        SystemThemeDetailText.Text = detail;
+                                }
+                        }
+                        finally
+                        {
+                                _isSynchronizingTheme = false;
+                        }
                 }
 
                 protected override void OnClosed(EventArgs e)
