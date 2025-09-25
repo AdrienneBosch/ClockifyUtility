@@ -1,26 +1,26 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <!-- Core palette -->
-    <Color x:Key="PrimaryColor">#FF4C9BFF</Color>
-    <Color x:Key="PrimaryVariantColor">#FF1F6FEB</Color>
-    <Color x:Key="SecondaryColor">#FF0B1629</Color>
-    <Color x:Key="SecondaryVariantColor">#FF1B365F</Color>
-    <Color x:Key="BackgroundStartColor">#FF020915</Color>
-    <Color x:Key="BackgroundEndColor">#FF0A1C2F</Color>
-    <Color x:Key="SurfaceColor">#FF112036</Color>
-    <Color x:Key="SurfaceAccentColor">#FF152A45</Color>
-    <Color x:Key="SelectorBoxColor">#FF1D3356</Color>
-    <Color x:Key="SecondaryButtonBackgroundColor">#FF162A47</Color>
-    <Color x:Key="DisabledButtonBackgroundColor">#FF20375B</Color>
-    <Color x:Key="ErrorColor">#FFFF6B8A</Color>
-    <Color x:Key="HighlightColor">#FF66B9FF</Color>
-    <Color x:Key="OnPrimaryColor">#FFF8FBFF</Color>
-    <Color x:Key="OnSecondaryColor">#FFE1ECFF</Color>
-    <Color x:Key="OnBackgroundColor">#FFD8E6FF</Color>
-    <Color x:Key="OnSurfaceColor">#FFD3E1FF</Color>
+    <Color x:Key="PrimaryColor">#FF4A8BF2</Color>
+    <Color x:Key="PrimaryVariantColor">#FF2E63D6</Color>
+    <Color x:Key="SecondaryColor">#FF0B1424</Color>
+    <Color x:Key="SecondaryVariantColor">#FF173158</Color>
+    <Color x:Key="BackgroundStartColor">#FF050B16</Color>
+    <Color x:Key="BackgroundEndColor">#FF0D1A2E</Color>
+    <Color x:Key="SurfaceColor">#FF111F35</Color>
+    <Color x:Key="SurfaceAccentColor">#FF162843</Color>
+    <Color x:Key="SelectorBoxColor">#FF1D3456</Color>
+    <Color x:Key="SecondaryButtonBackgroundColor">#FF1C2F4F</Color>
+    <Color x:Key="DisabledButtonBackgroundColor">#FF253C5F</Color>
+    <Color x:Key="ErrorColor">#FFFF6F87</Color>
+    <Color x:Key="HighlightColor">#FF5A99FF</Color>
+    <Color x:Key="OnPrimaryColor">#FFF7FAFF</Color>
+    <Color x:Key="OnSecondaryColor">#FFD9E4FF</Color>
+    <Color x:Key="OnBackgroundColor">#FFD4E0FF</Color>
+    <Color x:Key="OnSurfaceColor">#FFCBD7FF</Color>
     <Color x:Key="TitleTextColor">#FFF1F5FF</Color>
-    <Color x:Key="BodyTextColor">#FFB8CCFF</Color>
-    <Color x:Key="MutedTextColor">#FF8CA3C9</Color>
+    <Color x:Key="BodyTextColor">#FFB5C8F3</Color>
+    <Color x:Key="MutedTextColor">#FF8EA4CA</Color>
 
     <!-- Brushes -->
     <SolidColorBrush x:Key="PrimaryBrush" Color="{StaticResource PrimaryColor}"/>
@@ -46,16 +46,16 @@
     <SolidColorBrush x:Key="BodyTextBrush" Color="{StaticResource BodyTextColor}"/>
     <SolidColorBrush x:Key="SecondaryTextBrush" Color="{StaticResource MutedTextColor}"/>
     <SolidColorBrush x:Key="DisabledForegroundBrush" Color="{StaticResource MutedTextColor}"/>
-    <SolidColorBrush x:Key="PrimaryButtonBackgroundBrush" Color="#FF2F7DEE"/>
-    <SolidColorBrush x:Key="PrimaryButtonBorderBrush" Color="#FF66B9FF"/>
-    <SolidColorBrush x:Key="PrimaryButtonHoverBrush" Color="#FF1F6FEB"/>
-    <SolidColorBrush x:Key="ButtonHoverHighlightBrush" Color="#FF3E8BFF"/>
-    <SolidColorBrush x:Key="CustomComboBoxFocusBorderBrush" Color="#FF66B9FF"/>
-    <SolidColorBrush x:Key="DividerBrush" Color="#33284760"/>
-    <SolidColorBrush x:Key="CardBorderBrush" Color="#FF1A2C4E"/>
+    <SolidColorBrush x:Key="PrimaryButtonBackgroundBrush" Color="#FF3E73E0"/>
+    <SolidColorBrush x:Key="PrimaryButtonBorderBrush" Color="#FF5A8CFF"/>
+    <SolidColorBrush x:Key="PrimaryButtonHoverBrush" Color="#FF2F63CF"/>
+    <SolidColorBrush x:Key="ButtonHoverHighlightBrush" Color="#FF5A99FF"/>
+    <SolidColorBrush x:Key="CustomComboBoxFocusBorderBrush" Color="#FF5A99FF"/>
+    <SolidColorBrush x:Key="DividerBrush" Color="#33213A60"/>
+    <SolidColorBrush x:Key="CardBorderBrush" Color="#FF1B2F4E"/>
     <LinearGradientBrush x:Key="HeaderGradientBrush" StartPoint="0,0" EndPoint="1,1">
-        <GradientStop Color="#FF0F223F" Offset="0"/>
-        <GradientStop Color="#FF1F6FEB" Offset="1"/>
+        <GradientStop Color="#FF13213B" Offset="0"/>
+        <GradientStop Color="#FF2C5FB3" Offset="1"/>
     </LinearGradientBrush>
-    <SolidColorBrush x:Key="SurfaceShadowBrush" Color="#AA000000"/>
+    <SolidColorBrush x:Key="SurfaceShadowBrush" Color="#99000000"/>
 </ResourceDictionary>

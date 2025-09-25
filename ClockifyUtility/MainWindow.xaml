@@ -7,8 +7,8 @@
         xmlns:controls="clr-namespace:ClockifyUtility.Controls"
         mc:Ignorable="d"
         Title="Clockify Utility"
-        Height="540"
-        Width="920"
+        Height="520"
+        Width="880"
         WindowStartupLocation="CenterScreen">
     <Grid Background="{DynamicResource BackgroundBrush}">
         <Grid.RowDefinitions>
@@ -18,10 +18,11 @@
 
         <Border Grid.Row="0"
                 Background="{DynamicResource HeaderGradientBrush}"
-                Padding="28,24"
+                Padding="28,18"
                 SnapsToDevicePixels="True">
             <Grid>
                 <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
@@ -29,27 +30,30 @@
                 <StackPanel Orientation="Vertical"
                             VerticalAlignment="Center">
                     <TextBlock Text="Clockify Utility"
-                               FontSize="24"
+                               FontSize="20"
                                FontWeight="SemiBold"
                                Foreground="{DynamicResource OnPrimaryBrush}"/>
                     <TextBlock Text="Create polished invoices with confidence"
-                               Margin="0,6,0,0"
-                               FontSize="13"
-                               Foreground="{DynamicResource OnSecondaryBrush}"/>
+                               Margin="0,4,0,0"
+                               FontSize="12"
+                               Foreground="{DynamicResource OnPrimaryBrush}"
+                               Opacity="0.78"/>
                 </StackPanel>
 
                 <Border Grid.Column="1"
+                        Width="16"/>
+
+                <Border Grid.Column="2"
                         Background="{DynamicResource SurfaceBrush}"
                         BorderBrush="{DynamicResource CardBorderBrush}"
                         BorderThickness="1"
-                        CornerRadius="14"
-                        Padding="14,10"
-                        Margin="24,0,0,0"
+                        CornerRadius="12"
+                        Padding="6"
                         VerticalAlignment="Center">
-                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <StackPanel Orientation="Horizontal"
+                                VerticalAlignment="Center">
                         <RadioButton x:Name="SystemThemeRadio"
-                                     Margin="0,0,8,0"
-                                     Width="120"
+                                     Margin="0,0,6,0"
                                      Style="{StaticResource ThemeOptionRadioButtonStyle}"
                                      GroupName="ThemeModes"
                                      Tag="System"
@@ -58,7 +62,7 @@
                             <RadioButton.Content>
                                 <StackPanel>
                                     <TextBlock Text="System"
-                                               FontSize="13"
+                                               FontSize="12"
                                                FontWeight="SemiBold">
                                         <TextBlock.Style>
                                             <Style TargetType="TextBlock">
@@ -74,7 +78,7 @@
                                     <TextBlock x:Name="SystemThemeDetailText"
                                                Text="Matches OS"
                                                Margin="0,2,0,0"
-                                               FontSize="11">
+                                               FontSize="10">
                                         <TextBlock.Style>
                                             <Style TargetType="TextBlock">
                                                 <Setter Property="Foreground" Value="{DynamicResource SecondaryTextBrush}"/>
@@ -91,8 +95,7 @@
                             </RadioButton.Content>
                         </RadioButton>
                         <RadioButton x:Name="LightThemeRadio"
-                                     Margin="0,0,8,0"
-                                     Width="100"
+                                     Margin="0,0,6,0"
                                      Style="{StaticResource ThemeOptionRadioButtonStyle}"
                                      GroupName="ThemeModes"
                                      Tag="Light"
@@ -101,7 +104,7 @@
                             <RadioButton.Content>
                                 <StackPanel>
                                     <TextBlock Text="Light"
-                                               FontSize="13"
+                                               FontSize="12"
                                                FontWeight="SemiBold">
                                         <TextBlock.Style>
                                             <Style TargetType="TextBlock">
@@ -116,7 +119,7 @@
                                     </TextBlock>
                                     <TextBlock Text="Soft &amp; airy"
                                                Margin="0,2,0,0"
-                                               FontSize="11">
+                                               FontSize="10">
                                         <TextBlock.Style>
                                             <Style TargetType="TextBlock">
                                                 <Setter Property="Foreground" Value="{DynamicResource SecondaryTextBrush}"/>
@@ -133,7 +136,6 @@
                             </RadioButton.Content>
                         </RadioButton>
                         <RadioButton x:Name="DarkThemeRadio"
-                                     Width="100"
                                      Style="{StaticResource ThemeOptionRadioButtonStyle}"
                                      GroupName="ThemeModes"
                                      Tag="Dark"
@@ -142,7 +144,7 @@
                             <RadioButton.Content>
                                 <StackPanel>
                                     <TextBlock Text="Dark"
-                                               FontSize="13"
+                                               FontSize="12"
                                                FontWeight="SemiBold">
                                         <TextBlock.Style>
                                             <Style TargetType="TextBlock">
@@ -157,7 +159,7 @@
                                     </TextBlock>
                                     <TextBlock Text="Focused &amp; calm"
                                                Margin="0,2,0,0"
-                                               FontSize="11">
+                                               FontSize="10">
                                         <TextBlock.Style>
                                             <Style TargetType="TextBlock">
                                                 <Setter Property="Foreground" Value="{DynamicResource SecondaryTextBrush}"/>
@@ -178,47 +180,55 @@
             </Grid>
         </Border>
 
-        <Grid Grid.Row="1" Margin="32">
-            <Border Background="{DynamicResource SurfaceBrush}"
+        <Grid Grid.Row="1" Margin="36,28,36,36">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Grid.Column="0"
+                        VerticalAlignment="Center"
+                        Margin="0,0,48,0"
+                        MaxWidth="320">
+                <Border Width="44"
+                        Height="3"
+                        CornerRadius="2"
+                        Background="{DynamicResource PrimaryBrush}"/>
+                <TextBlock Text="Generate your Clockify invoice"
+                           Margin="0,14,0,0"
+                           FontSize="28"
+                           FontWeight="SemiBold"
+                           TextWrapping="Wrap"
+                           Foreground="{DynamicResource TitleTextBrush}"/>
+                <TextBlock Text="Pick a billing period, choose your template, and export a clean PDF invoice in moments."
+                           Margin="0,12,0,0"
+                           TextWrapping="Wrap"
+                           Foreground="{DynamicResource BodyTextBrush}"/>
+            </StackPanel>
+
+            <Border Grid.Column="1"
+                    Background="{DynamicResource SurfaceBrush}"
                     BorderBrush="{DynamicResource CardBorderBrush}"
                     BorderThickness="1"
-                    CornerRadius="22"
-                    Padding="36"
-                    MaxWidth="560"
-                    HorizontalAlignment="Center"
+                    CornerRadius="18"
+                    Padding="28"
+                    MaxWidth="420"
                     VerticalAlignment="Center">
                 <Border.Effect>
-                    <DropShadowEffect BlurRadius="26"
+                    <DropShadowEffect BlurRadius="20"
                                       ShadowDepth="0"
-                                      Opacity="0.32"
+                                      Opacity="0.22"
                                       Color="{Binding Color, Source={StaticResource SurfaceShadowBrush}}"/>
                 </Border.Effect>
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
-
-                    <TextBlock Grid.Row="0"
-                               Text="Generate your Clockify invoice"
-                               FontSize="26"
+                <StackPanel>
+                    <TextBlock Text="Billing period"
+                               FontSize="12"
                                FontWeight="SemiBold"
-                               Foreground="{DynamicResource TitleTextBrush}"/>
-
-                    <TextBlock Grid.Row="1"
-                               Text="Select the billing period and configuration to create a polished PDF invoice in seconds."
-                               TextWrapping="Wrap"
-                               Margin="0,10,0,18"
-                               Foreground="{DynamicResource BodyTextBrush}"/>
-
-                    <Border Grid.Row="2"
-                            Background="{DynamicResource SurfaceAccentBrush}"
-                            Padding="18,12"
-                            CornerRadius="14"
+                               Foreground="{DynamicResource SecondaryTextBrush}"/>
+                    <Border Background="{DynamicResource SurfaceAccentBrush}"
+                            Margin="0,8,0,0"
+                            Padding="14,10"
+                            CornerRadius="12"
                             SnapsToDevicePixels="True">
                         <Grid>
                             <Grid.ColumnDefinitions>
@@ -237,18 +247,19 @@
                             <StackPanel Grid.Column="1"
                                         HorizontalAlignment="Center"
                                         VerticalAlignment="Center"
-                                        Margin="20,0"
+                                        Margin="18,0"
                                         Orientation="Vertical">
-                                <TextBlock Text="Billing period"
-                                           FontSize="12"
-                                           FontWeight="SemiBold"
-                                           Foreground="{DynamicResource SecondaryTextBrush}"/>
                                 <TextBlock x:Name="lblCurrentMonth"
                                            Text="{Binding CurrentMonthLabel}"
                                            FontSize="20"
                                            FontWeight="SemiBold"
                                            HorizontalAlignment="Center"
                                            Foreground="{DynamicResource TitleTextBrush}"/>
+                                <TextBlock Text="Change period"
+                                           Margin="0,4,0,0"
+                                           FontSize="11"
+                                           HorizontalAlignment="Center"
+                                           Foreground="{DynamicResource SecondaryTextBrush}"/>
                             </StackPanel>
 
                             <Button x:Name="btnNextMonth"
@@ -261,14 +272,13 @@
                         </Grid>
                     </Border>
 
-                    <TextBlock Grid.Row="3"
-                               Margin="0,24,0,6"
+                    <TextBlock Margin="0,22,0,6"
                                Text="Invoice configuration"
                                FontSize="13"
                                FontWeight="SemiBold"
                                Foreground="{DynamicResource SecondaryTextBrush}"/>
 
-                    <StackPanel Grid.Row="4" Orientation="Horizontal">
+                    <StackPanel Orientation="Horizontal">
                         <controls:PaletteComboBox Width="320"
                                                   Height="34"
                                                   Padding="8,0,2,0"
@@ -295,10 +305,8 @@
                         </Button>
                     </StackPanel>
 
-                    <Button Grid.Row="5"
-                            Margin="0,30,0,0"
-                            Width="260"
-                            Height="42"
+                    <Button Margin="0,26,0,0"
+                            Height="44"
                             Command="{Binding GenerateInvoiceCommand}"
                             Content="{Binding GenerateButtonText}"
                             IsEnabled="{Binding IsGenerateButtonEnabled}"
@@ -306,7 +314,7 @@
                             HorizontalContentAlignment="Center"
                             VerticalContentAlignment="Center"
                             FontSize="{Binding GenerateButtonFontSize}"/>
-                </Grid>
+                </StackPanel>
             </Border>
         </Grid>
     </Grid>

@@ -135,7 +135,7 @@
                 <Setter Property="Background" Value="{DynamicResource SurfaceAccentBrush}"/>
                 <Setter Property="BorderBrush" Value="{DynamicResource CardBorderBrush}"/>
                 <Setter Property="BorderThickness" Value="1"/>
-                <Setter Property="Padding" Value="10,8"/>
+                <Setter Property="Padding" Value="10,6"/>
                 <Setter Property="FontFamily" Value="Segoe UI"/>
                 <Setter Property="Foreground" Value="{DynamicResource BodyTextBrush}"/>
                 <Setter Property="Cursor" Value="Hand"/>
@@ -146,7 +146,7 @@
                                     Background="{TemplateBinding Background}"
                                     BorderBrush="{TemplateBinding BorderBrush}"
                                     BorderThickness="{TemplateBinding BorderThickness}"
-                                    CornerRadius="10"
+                                    CornerRadius="8"
                                     SnapsToDevicePixels="True">
                                 <ContentPresenter Margin="0"
                                                   HorizontalAlignment="Stretch"
