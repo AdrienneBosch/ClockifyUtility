@@ -1,4 +1,4 @@
-﻿<Window x:Class="ClockifyUtility.MainWindow"
+<Window x:Class="ClockifyUtility.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -6,96 +6,316 @@
         xmlns:local="clr-namespace:ClockifyUtility"
         xmlns:controls="clr-namespace:ClockifyUtility.Controls"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800"
+        Title="Clockify Utility"
+        Height="520"
+        Width="880"
         WindowStartupLocation="CenterScreen">
-    <Grid Background="{StaticResource BackgroundBrush}">
-        <Image Source="pack://application:,,,/Assets/ClockifyUtilityLogoSmaller.PNG"
-               Margin="6"
-               HorizontalAlignment="Left"
-               VerticalAlignment="Top"
-               Stretch="Uniform"
-               Height="64"/>
-        <Border Background="{StaticResource SurfaceBrush}"
-                Padding="32"
-                CornerRadius="3"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center"
+    <Grid Background="{DynamicResource BackgroundBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Border Grid.Row="0"
+                Background="{DynamicResource HeaderGradientBrush}"
+                Padding="28,18"
                 SnapsToDevicePixels="True">
-            <StackPanel>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
 
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,10">
-                    <Button x:Name="btnPreviousMonth"
-                            Style="{StaticResource MonthSelectorButtonStyle}"
-                            Content="&#xF272;"
-                            Margin="0,0,10,0"
-                            Command="{Binding PreviousMonthCommand}"
-                            ToolTip="Previous month"
-                            AutomationProperties.Name="Previous month" />
-
-                    <TextBlock x:Name="lblCurrentMonth"
-                               Text="{Binding CurrentMonthLabel}"
-                               Style="{StaticResource SectionHeaderTextBlockStyle}"
-                               VerticalAlignment="Center"
-                               Width="120"
-                               TextAlignment="Center" FontFamily="Nirmala UI Semilight" />
-
-                    <Button x:Name="btnNextMonth"
-                            Style="{StaticResource MonthSelectorButtonStyle}"
-                            Content="&#xF271;"
-                            Margin="10,0,0,0"
-                            Command="{Binding NextMonthCommand}"
-                            ToolTip="Next month"
-                            AutomationProperties.Name="Next month" />
-                </StackPanel>
-
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,10">
-                    <controls:PaletteComboBox Width="300"
-                                              Height="30"
-                                              Margin="0,0,10,0"
-                                              Padding="6,0,2,0"
-                                              FontSize="13"
-                                              VerticalContentAlignment="Center"
-                                              HorizontalContentAlignment="Left"
-                                              Foreground="{StaticResource WhiteBrush}"
-                                              KeyboardNavigation.TabNavigation="Local"
-                                              ItemsSource="{Binding DisplayInvoiceConfigs}"
-                                              SelectedItem="{Binding SelectedInvoiceConfig, Mode=TwoWay}"
-                                              BorderBrush="{DynamicResource PrimaryButtonBorderBrush}"
-                                              Background="{DynamicResource PrimaryButtonBackgroundBrush}"
-                                              FontFamily="Nirmala UI Semilight" />
-
-                    <Button Style="{StaticResource MonthSelectorButtonStyle}"
-                            Width="16"
-                            Height="16"
-                            Margin="6,6,0,6"
-                            Padding="0"
-                            Focusable="False"
-                            Command="{Binding SetDefaultInvoiceCommand}"
-                            ToolTip="Set as default"
-                            AutomationProperties.Name="Set as default"
+                <StackPanel Orientation="Vertical"
                             VerticalAlignment="Center">
-                        <TextBlock FontSize="10"
-                                   VerticalAlignment="Center"
-                                   HorizontalAlignment="Center"
-                                   Text="{Binding StarIconUnicode}"
-                                   FontFamily="{Binding StarIconFontFamily}" />
-                    </Button>
+                    <TextBlock Text="Clockify Utility"
+                               FontSize="20"
+                               FontWeight="SemiBold"
+                               Foreground="{DynamicResource OnPrimaryBrush}"/>
+                    <TextBlock Text="Create polished invoices with confidence"
+                               Margin="0,4,0,0"
+                               FontSize="12"
+                               Foreground="{DynamicResource OnPrimaryBrush}"
+                               Opacity="0.78"/>
                 </StackPanel>
 
-                <Button Width="220"
-                        Height="30"
-                        Command="{Binding GenerateInvoiceCommand}"
-                        Content="{Binding GenerateButtonText}"
-                        IsEnabled="{Binding IsGenerateButtonEnabled}"
-                        Style="{StaticResource PrimaryButtonStyle}"
-                        HorizontalContentAlignment="Center"
-                        VerticalContentAlignment="Center"
-                        BorderBrush="{DynamicResource PrimaryButtonBorderBrush}"
-                        Background="{DynamicResource PrimaryButtonBackgroundBrush}"
-                        FontSize="{Binding GenerateButtonFontSize}"
-                        FontFamily="Nirmala UI Semilight" />
+                <Border Grid.Column="1"
+                        Width="16"/>
 
-            </StackPanel>
+                <Border Grid.Column="2"
+                        Background="{DynamicResource SurfaceBrush}"
+                        BorderBrush="{DynamicResource CardBorderBrush}"
+                        BorderThickness="1"
+                        CornerRadius="12"
+                        Padding="6"
+                        VerticalAlignment="Center">
+                    <StackPanel Orientation="Horizontal"
+                                VerticalAlignment="Center">
+                        <RadioButton x:Name="SystemThemeRadio"
+                                     Margin="0,0,6,0"
+                                     Style="{StaticResource ThemeOptionRadioButtonStyle}"
+                                     GroupName="ThemeModes"
+                                     Tag="System"
+                                     Checked="ThemeOptionRadioButton_Checked"
+                                     ToolTip="Follow the Windows theme">
+                            <RadioButton.Content>
+                                <StackPanel>
+                                    <TextBlock Text="System"
+                                               FontSize="12"
+                                               FontWeight="SemiBold">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="Foreground" Value="{DynamicResource BodyTextBrush}"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding IsChecked, RelativeSource={RelativeSource AncestorType=RadioButton}}" Value="True">
+                                                        <Setter Property="Foreground" Value="{DynamicResource OnPrimaryBrush}"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                    <TextBlock x:Name="SystemThemeDetailText"
+                                               Text="Matches OS"
+                                               Margin="0,2,0,0"
+                                               FontSize="10">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="Foreground" Value="{DynamicResource SecondaryTextBrush}"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding IsChecked, RelativeSource={RelativeSource AncestorType=RadioButton}}" Value="True">
+                                                        <Setter Property="Foreground" Value="{DynamicResource OnPrimaryBrush}"/>
+                                                        <Setter Property="Opacity" Value="0.85"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                </StackPanel>
+                            </RadioButton.Content>
+                        </RadioButton>
+                        <RadioButton x:Name="LightThemeRadio"
+                                     Margin="0,0,6,0"
+                                     Style="{StaticResource ThemeOptionRadioButtonStyle}"
+                                     GroupName="ThemeModes"
+                                     Tag="Light"
+                                     Checked="ThemeOptionRadioButton_Checked"
+                                     ToolTip="Switch to the light theme">
+                            <RadioButton.Content>
+                                <StackPanel>
+                                    <TextBlock Text="Light"
+                                               FontSize="12"
+                                               FontWeight="SemiBold">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="Foreground" Value="{DynamicResource BodyTextBrush}"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding IsChecked, RelativeSource={RelativeSource AncestorType=RadioButton}}" Value="True">
+                                                        <Setter Property="Foreground" Value="{DynamicResource OnPrimaryBrush}"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                    <TextBlock Text="Soft &amp; airy"
+                                               Margin="0,2,0,0"
+                                               FontSize="10">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="Foreground" Value="{DynamicResource SecondaryTextBrush}"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding IsChecked, RelativeSource={RelativeSource AncestorType=RadioButton}}" Value="True">
+                                                        <Setter Property="Foreground" Value="{DynamicResource OnPrimaryBrush}"/>
+                                                        <Setter Property="Opacity" Value="0.85"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                </StackPanel>
+                            </RadioButton.Content>
+                        </RadioButton>
+                        <RadioButton x:Name="DarkThemeRadio"
+                                     Style="{StaticResource ThemeOptionRadioButtonStyle}"
+                                     GroupName="ThemeModes"
+                                     Tag="Dark"
+                                     Checked="ThemeOptionRadioButton_Checked"
+                                     ToolTip="Switch to the dark theme">
+                            <RadioButton.Content>
+                                <StackPanel>
+                                    <TextBlock Text="Dark"
+                                               FontSize="12"
+                                               FontWeight="SemiBold">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="Foreground" Value="{DynamicResource BodyTextBrush}"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding IsChecked, RelativeSource={RelativeSource AncestorType=RadioButton}}" Value="True">
+                                                        <Setter Property="Foreground" Value="{DynamicResource OnPrimaryBrush}"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                    <TextBlock Text="Focused &amp; calm"
+                                               Margin="0,2,0,0"
+                                               FontSize="10">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="Foreground" Value="{DynamicResource SecondaryTextBrush}"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding IsChecked, RelativeSource={RelativeSource AncestorType=RadioButton}}" Value="True">
+                                                        <Setter Property="Foreground" Value="{DynamicResource OnPrimaryBrush}"/>
+                                                        <Setter Property="Opacity" Value="0.85"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                </StackPanel>
+                            </RadioButton.Content>
+                        </RadioButton>
+                    </StackPanel>
+                </Border>
+            </Grid>
         </Border>
+
+        <Grid Grid.Row="1" Margin="36,28,36,36">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Grid.Column="0"
+                        VerticalAlignment="Center"
+                        Margin="0,0,48,0"
+                        MaxWidth="320">
+                <Border Width="44"
+                        Height="3"
+                        CornerRadius="2"
+                        Background="{DynamicResource PrimaryBrush}"/>
+                <TextBlock Text="Generate your Clockify invoice"
+                           Margin="0,14,0,0"
+                           FontSize="28"
+                           FontWeight="SemiBold"
+                           TextWrapping="Wrap"
+                           Foreground="{DynamicResource TitleTextBrush}"/>
+                <TextBlock Text="Pick a billing period, choose your template, and export a clean PDF invoice in moments."
+                           Margin="0,12,0,0"
+                           TextWrapping="Wrap"
+                           Foreground="{DynamicResource BodyTextBrush}"/>
+            </StackPanel>
+
+            <Border Grid.Column="1"
+                    Background="{DynamicResource SurfaceBrush}"
+                    BorderBrush="{DynamicResource CardBorderBrush}"
+                    BorderThickness="1"
+                    CornerRadius="18"
+                    Padding="28"
+                    MaxWidth="420"
+                    VerticalAlignment="Center">
+                <Border.Effect>
+                    <DropShadowEffect BlurRadius="20"
+                                      ShadowDepth="0"
+                                      Opacity="0.22"
+                                      Color="{Binding Color, Source={StaticResource SurfaceShadowBrush}}"/>
+                </Border.Effect>
+                <StackPanel>
+                    <TextBlock Text="Billing period"
+                               FontSize="12"
+                               FontWeight="SemiBold"
+                               Foreground="{DynamicResource SecondaryTextBrush}"/>
+                    <Border Background="{DynamicResource SurfaceAccentBrush}"
+                            Margin="0,8,0,0"
+                            Padding="14,10"
+                            CornerRadius="12"
+                            SnapsToDevicePixels="True">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Button x:Name="btnPreviousMonth"
+                                    Style="{StaticResource MonthSelectorButtonStyle}"
+                                    Content="&#xF272;"
+                                    Command="{Binding PreviousMonthCommand}"
+                                    ToolTip="Previous month"
+                                    AutomationProperties.Name="Previous month"/>
+
+                            <StackPanel Grid.Column="1"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        Margin="18,0"
+                                        Orientation="Vertical">
+                                <TextBlock x:Name="lblCurrentMonth"
+                                           Text="{Binding CurrentMonthLabel}"
+                                           FontSize="20"
+                                           FontWeight="SemiBold"
+                                           HorizontalAlignment="Center"
+                                           Foreground="{DynamicResource TitleTextBrush}"/>
+                                <TextBlock Text="Change period"
+                                           Margin="0,4,0,0"
+                                           FontSize="11"
+                                           HorizontalAlignment="Center"
+                                           Foreground="{DynamicResource SecondaryTextBrush}"/>
+                            </StackPanel>
+
+                            <Button x:Name="btnNextMonth"
+                                    Grid.Column="2"
+                                    Style="{StaticResource MonthSelectorButtonStyle}"
+                                    Content="&#xF271;"
+                                    Command="{Binding NextMonthCommand}"
+                                    ToolTip="Next month"
+                                    AutomationProperties.Name="Next month"/>
+                        </Grid>
+                    </Border>
+
+                    <TextBlock Margin="0,22,0,6"
+                               Text="Invoice configuration"
+                               FontSize="13"
+                               FontWeight="SemiBold"
+                               Foreground="{DynamicResource SecondaryTextBrush}"/>
+
+                    <StackPanel Orientation="Horizontal">
+                        <controls:PaletteComboBox Width="320"
+                                                  Height="34"
+                                                  Padding="8,0,2,0"
+                                                  FontSize="14"
+                                                  VerticalContentAlignment="Center"
+                                                  HorizontalContentAlignment="Left"
+                                                  ItemsSource="{Binding DisplayInvoiceConfigs}"
+                                                  SelectedItem="{Binding SelectedInvoiceConfig, Mode=TwoWay}"/>
+
+                        <Button Style="{StaticResource SecondaryButtonStyle}"
+                                Width="44"
+                                Height="34"
+                                Margin="12,0,0,0"
+                                Padding="0"
+                                Focusable="False"
+                                Command="{Binding SetDefaultInvoiceCommand}"
+                                ToolTip="Set as default"
+                                AutomationProperties.Name="Set as default">
+                            <TextBlock FontSize="14"
+                                       VerticalAlignment="Center"
+                                       HorizontalAlignment="Center"
+                                       Text="{Binding StarIconUnicode}"
+                                       FontFamily="{Binding StarIconFontFamily}"/>
+                        </Button>
+                    </StackPanel>
+
+                    <Button Margin="0,26,0,0"
+                            Height="44"
+                            Command="{Binding GenerateInvoiceCommand}"
+                            Content="{Binding GenerateButtonText}"
+                            IsEnabled="{Binding IsGenerateButtonEnabled}"
+                            Style="{StaticResource PrimaryButtonStyle}"
+                            HorizontalContentAlignment="Center"
+                            VerticalContentAlignment="Center"
+                            FontSize="{Binding GenerateButtonFontSize}"/>
+                </StackPanel>
+            </Border>
+        </Grid>
     </Grid>
 </Window>

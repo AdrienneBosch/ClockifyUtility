@@ -6,7 +6,7 @@
     <local:SubtractValueConverter x:Key="SubtractValueConverter" />
 
     <Style x:Key="CustomComboBoxItemStyle" TargetType="{x:Type ComboBoxItem}">
-        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="Foreground" Value="{DynamicResource OnSurfaceBrush}"/>
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="Padding" Value="8,2,8,2"/>
         <Setter Property="HorizontalContentAlignment" Value="Left"/>
@@ -15,14 +15,14 @@
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
                 <Setter Property="Background" Value="{DynamicResource ButtonHoverHighlightBrush}"/>
-                <Setter Property="Foreground" Value="White"/>
+                <Setter Property="Foreground" Value="{DynamicResource OnPrimaryBrush}"/>
             </Trigger>
             <Trigger Property="IsSelected" Value="True">
                 <Setter Property="Background" Value="{DynamicResource ButtonHoverHighlightBrush}"/>
-                <Setter Property="Foreground" Value="White"/>
+                <Setter Property="Foreground" Value="{DynamicResource OnPrimaryBrush}"/>
             </Trigger>
             <Trigger Property="IsEnabled" Value="False">
-                <Setter Property="Foreground" Value="#FF888888"/>
+                <Setter Property="Foreground" Value="{DynamicResource DisabledForegroundBrush}"/>
             </Trigger>
         </Style.Triggers>
     </Style>
@@ -36,7 +36,7 @@
         <Setter Property="MinHeight" Value="30"/>
         <Setter Property="Background" Value="{DynamicResource SurfaceBrush}"/>
         <Setter Property="BorderBrush" Value="{DynamicResource PrimaryVariantBrush}"/>
-        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="Foreground" Value="{DynamicResource OnSurfaceBrush}"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="Padding" Value="6,0,2,0"/>
         <Setter Property="ItemContainerStyle" Value="{StaticResource CustomComboBoxItemStyle}"/>
@@ -84,7 +84,7 @@
                                     <Grid>
                                         <Path x:Name="Arrow"
                                               Data="M 0 0 L 6 8 L 12 0 Z"
-                                              Fill="White"
+                                              Fill="{DynamicResource OnSurfaceBrush}"
                                               Width="12" Height="8"
                                               HorizontalAlignment="Center"
                                               VerticalAlignment="Center"/>

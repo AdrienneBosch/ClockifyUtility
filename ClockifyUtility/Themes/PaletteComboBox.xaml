@@ -3,7 +3,7 @@
                     xmlns:local="clr-namespace:ClockifyUtility.Controls">
     <!-- ComboBoxItem style for dropdown items -->
     <Style x:Key="PaletteComboBoxItemStyle" TargetType="{x:Type ComboBoxItem}">
-        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="Foreground" Value="{DynamicResource OnPrimaryBrush}"/>
         <Setter Property="Background" Value="{DynamicResource PrimaryButtonBackgroundBrush}"/>
         <Setter Property="FontSize" Value="11"/>
         <Setter Property="HorizontalContentAlignment" Value="Left"/>
@@ -27,15 +27,15 @@
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter TargetName="Bd" Property="Background" Value="{DynamicResource PrimaryButtonHoverBrush}"/>
                             <Setter TargetName="Bd" Property="BorderBrush" Value="{DynamicResource PrimaryButtonHoverBrush}"/>
-                            <Setter Property="Foreground" Value="White"/>
+                            <Setter Property="Foreground" Value="{DynamicResource OnPrimaryBrush}"/>
                         </Trigger>
                         <Trigger Property="IsSelected" Value="True">
                             <Setter TargetName="Bd" Property="Background" Value="{DynamicResource PrimaryButtonHoverBrush}"/>
                             <Setter TargetName="Bd" Property="BorderBrush" Value="{DynamicResource PrimaryButtonHoverBrush}"/>
-                            <Setter Property="Foreground" Value="White"/>
+                            <Setter Property="Foreground" Value="{DynamicResource OnPrimaryBrush}"/>
                         </Trigger>
                         <Trigger Property="IsEnabled" Value="False">
-                            <Setter Property="Foreground" Value="#FF888888"/>
+                            <Setter Property="Foreground" Value="{DynamicResource DisabledForegroundBrush}"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -55,7 +55,7 @@
                 <ControlTemplate TargetType="ToggleButton">
                     <Grid x:Name="ToggleGrid" Background="{TemplateBinding Background}">
                         <Path Data="M 0 0 L 8 8 L 16 0 Z"
-                              Fill="White"
+                              Fill="{DynamicResource OnPrimaryBrush}"
                               Width="16" Height="8"
                               HorizontalAlignment="Center"
                               VerticalAlignment="Center"/>
@@ -80,7 +80,7 @@
         <Setter Property="MinHeight" Value="30"/>
         <Setter Property="Background" Value="{DynamicResource PrimaryButtonBackgroundBrush}"/>
         <Setter Property="BorderBrush" Value="{DynamicResource PrimaryButtonBorderBrush}"/>
-        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="Foreground" Value="{DynamicResource OnPrimaryBrush}"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="Padding" Value="6,0,2,0"/>
         <Setter Property="ItemContainerStyle" Value="{StaticResource PaletteComboBoxItemStyle}"/>
@@ -154,8 +154,8 @@
                             <Setter TargetName="SelectedItemBackground" Property="CornerRadius" Value="0"/>
                         </Trigger>
                         <Trigger Property="IsEnabled" Value="False">
-                            <Setter TargetName="Border" Property="Background" Value="#333"/>
-                            <Setter Property="Foreground" Value="#888"/>
+                            <Setter TargetName="Border" Property="Background" Value="{DynamicResource DisabledButtonBackgroundBrush}"/>
+                            <Setter Property="Foreground" Value="{DynamicResource DisabledForegroundBrush}"/>
                         </Trigger>
                         <Trigger Property="IsKeyboardFocusWithin" Value="True">
                             <Setter TargetName="Border" Property="BorderBrush" Value="{DynamicResource PrimaryButtonHoverBrush}"/>
